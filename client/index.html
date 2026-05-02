@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Parvaz Focus - Discipline Unlocks Ambition</title>
+
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Discipline Unlocks Ambition - Your personal focus and productivity companion" />
+    <meta name="theme-color" content="#a78bfa" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Parvaz Focus" />
+    <meta name="application-name" content="Parvaz Focus" />
+    <meta name="msapplication-TileColor" content="#a78bfa" />
+
+    <!-- Touch & interaction -->
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="HandheldFriendly" content="true" />
+
+    <!-- PWA Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/icon32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/icon16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icon180x180.png" />
+    <link rel="apple-touch-icon" sizes="1024x1024" href="/icon1024x1024.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Geist:wght@400;500;600&display=swap" rel="stylesheet" />
+    <style>
+      /* Prevent text size adjustment on mobile/tablet */
+      html {
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+      }
+      /* Safe area insets for notched/gesture devices */
+      body {
+        padding-bottom: env(safe-area-inset-bottom, 0);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js')
+            .then(function(reg) {
+              console.log('[Parvaz] Service Worker registered:', reg.scope);
+            })
+            .catch(function(err) {
+              console.warn('[Parvaz] Service Worker registration failed:', err);
+            });
+        });
+      }
+    </script>
+  </body>
+
+</html>
