@@ -4,13 +4,14 @@
   Entertainment: 1hr & 2hr warnings
   Creative: 2hr & 4hr milestones
   Study: 3hr & 5hr celebrations
-  All in app pastel aesthetic
+  All system notifications except smart reminders (biology, weakest subject, no creative today)
 */
 
 import { useEffect, useRef, useState } from 'react';
 import { useTracking } from '@/contexts/TrackingContext';
 import { X, Droplets, Clock, Trophy, AlertTriangle } from 'lucide-react';
 import { useAppContext } from '@/contexts/AppContext';
+import { showNotificationNow, requestNotificationPermission } from '@/lib/notifications';
 
 interface Reminder {
   id: string;
@@ -75,12 +76,24 @@ export function TimeReminders() {
 
   const dismiss = (id: string) => setReminders(prev => prev.filter(r => r.id !== id));
 
+  const isSmart = (id: string): boolean => {
+    return id.startsWith('smart_');
+  };
+
   const addReminder = (r: Reminder) => {
     setReminders(prev => [...prev.filter(x => x.id !== r.id), r]);
+    
+    // Send system notifications for non-smart reminders
+    if (!isSmart(r.id)) {
+      showNotificationNow(r.title, r.message);
+    }
   };
 
   // Check reminders every 30s
   useEffect(() => {
+    // Request notification permission on mount
+    requestNotificationPermission().catch(() => {});
+
     const daysSince = (date: Date) => {
       const now = new Date();
       const then = new Date(date);
@@ -262,5 +275,7 @@ export function TimeReminders() {
 }
 
 export function useNotificationPermission() {
-  // In-app only reminder mode: no external notification permissions needed.
+  useEffect(() => {
+    requestNotificationPermission().catch(() => {});
+  }, []);
 }

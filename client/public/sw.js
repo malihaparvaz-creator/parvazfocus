@@ -161,6 +161,21 @@ self.addEventListener('message', e => {
     case 'SKIP_WAITING':
       self.skipWaiting();
       break;
+
+    // Immediate notification display
+    case 'SHOW_NOTIFICATION': {
+      const { title, body, tag } = msg;
+      self.registration.showNotification(title, {
+        body,
+        icon: '/icon192x192.png',
+        badge: '/icon32x32.png',
+        tag: tag || 'parvaz-reminder',
+        requireInteraction: false,
+        vibrate: [200, 100, 200],
+        data: { url: '/', timestamp: Date.now() },
+      });
+      break;
+    }
   }
 });
 

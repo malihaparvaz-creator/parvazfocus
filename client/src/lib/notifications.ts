@@ -28,6 +28,16 @@ export async function requestNotificationPermission(): Promise<boolean> {
 
 export function showNotificationNow(title: string, body: string, tag = 'parvaz') {
   if (Notification.permission !== 'granted') return;
+  
+  // Send to service worker for display (works even when app is closed)
+  sendToSW({ 
+    type: 'SHOW_NOTIFICATION', 
+    title, 
+    body,
+    tag
+  });
+  
+  // Also try direct notification as fallback
   navigator.serviceWorker.ready.then(reg => {
     reg.showNotification(title, {
       body,
