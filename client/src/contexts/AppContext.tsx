@@ -43,6 +43,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
       lastRemoteUpdatedAtRef.current = remoteUpdatedAtMs;
       skipNextCloudSyncRef.current = true;
+      latestStateRef.current = remote;
       setState(remote);
       saveAppState(remote); // keep local cache aligned with cloud state
     });
@@ -96,6 +97,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         ? (nextStateOrUpdater as (prevState: AppState) => AppState)(prevState)
         : nextStateOrUpdater;
 
+      latestStateRef.current = nextState;
       saveAppState(nextState);
       return nextState;
     });

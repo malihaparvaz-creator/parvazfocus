@@ -108,6 +108,7 @@ export function TrackingProvider({ children }: { children: React.ReactNode }) {
   const startApp = useCallback((appName: string) => {
     setTrackingState(prev => {
       const next = startTracking(prev, appName, studyApps, creativeApps, entertainmentApps);
+      latestTrackingStateRef.current = next;
       saveTrackingState(next);
       return next;
     });
@@ -118,6 +119,7 @@ export function TrackingProvider({ children }: { children: React.ReactNode }) {
       if (!prev.activeApp || !prev.activeSessionStart) return prev;
       const elapsed = Math.floor((Date.now() - prev.activeSessionStart) / 1000);
       const next = stopTracking(prev);
+      latestTrackingStateRef.current = next;
       saveTrackingState(next);
 
       // Wire elapsed time into AppContext with category-specific rules
