@@ -40,6 +40,7 @@ export interface RealTimeTrackingState {
 }
 
 const TRACKING_KEY = 'parvaz-realtime-tracking';
+const TRACKING_BACKUP_KEY = 'parvaz-realtime-tracking-backup';
 const TICK_INTERVAL = 1000; // 1 second
 
 function getTodayStr(): string {
@@ -57,12 +58,28 @@ export function loadTrackingState(): RealTimeTrackingState {
   try {
     const raw = localStorage.getItem(TRACKING_KEY);
     if (!raw) return createFreshState();
-    const parsed = JSON.parse(raw) as RealTimeTrackingState;
-    // Reset if it's a new day
-    if (parsed.todayDate !== getTodayStr()) {
-      return resetDayInState(parsed);
+
+    try {
+      const parsed = JSON.parse(raw) as RealTimeTrackingState;
+      if (parsed.todayDate !== getTodayStr()) {
+        return resetDayInState(parsed);
+      }
+      return parsed;
+    } catch (primaryError) {
+      console.warn('Failed to parse tracking state. Falling back to backup.', primaryError);
+      const backup = localStorage.getItem(TRACKING_BACKUP_KEY);
+      if (!backup) return createFreshState();
+      try {
+        const parsedBackup = JSON.parse(backup) as RealTimeTrackingState;
+        if (parsedBackup.todayDate !== getTodayStr()) {
+          return resetDayInState(parsedBackup);
+        }
+        return parsedBackup;
+      } catch (backupError) {
+        console.error('Failed to parse tracking backup state:', backupError);
+        return createFreshState();
+      }
     }
-    return parsed;
   } catch {
     return createFreshState();
   }
@@ -73,10 +90,12 @@ export function loadTrackingState(): RealTimeTrackingState {
  */
 export function saveTrackingState(state: RealTimeTrackingState): void {
   try {
-    localStorage.setItem(TRACKING_KEY, JSON.stringify({
+    const payload = JSON.stringify({
       ...state,
       lastUpdated: Date.now(),
-    }));
+    });
+    localStorage.setItem(TRACKING_KEY, payload);
+    localStorage.setItem(TRACKING_BACKUP_KEY, payload);
   } catch {
     // Storage full or unavailable - ignore
   }

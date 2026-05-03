@@ -44,6 +44,12 @@ export function TrackingProvider({ children }: { children: React.ReactNode }) {
   const [trackingState, setTrackingState] = useState<RealTimeTrackingState>(() => loadTrackingState());
   const [tick, setTick] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const latestTrackingStateRef = useRef<RealTimeTrackingState>(trackingState);
+
+  // Keep a ref copy of the latest tracking state for unload/visibility save handlers
+  useEffect(() => {
+    latestTrackingStateRef.current = trackingState;
+  }, [trackingState]);
 
   // Get user-configured app lists
   const studyApps = state.studyAppsSetup ?? [];
@@ -74,6 +80,26 @@ export function TrackingProvider({ children }: { children: React.ReactNode }) {
     }, 30000);
     return () => clearInterval(saveInterval);
   }, [trackingState]);
+
+  useEffect(() => {
+    const handleSave = () => {
+      saveTrackingState(latestTrackingStateRef.current);
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        saveTrackingState(latestTrackingStateRef.current);
+      }
+    };
+
+    window.addEventListener('beforeunload', handleSave);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleSave);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
 
   // Computed values (re-computed each tick for live display)
   const categoryTotals = getCategoryTotals(trackingState);

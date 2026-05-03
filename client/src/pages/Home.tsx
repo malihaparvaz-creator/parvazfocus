@@ -60,6 +60,9 @@ export default function Home() {
   };
 
   const handleResetCoreStats = () => {
+    if (!window.confirm('Reset today\'s activity? This clears live tracking for study, creative, and entertainment today.')) {
+      return;
+    }
     updateState(prev => resetTodaysActivity(prev));
   };
   return (

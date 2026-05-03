@@ -1,6 +1,7 @@
 import { AppState, LEVEL_NAMES, STORE_ITEMS } from './types';
 
 const STORAGE_KEY = 'parvaz-focus-state';
+const STORAGE_BACKUP_KEY = 'parvaz-focus-state-backup';
 
 export function initializeAppState(): AppState {
   const today = new Date();
@@ -369,9 +370,22 @@ export function loadAppState(): AppState {
       return initializeAppState();
     }
 
-    let state = JSON.parse(stored) as AppState;
-    state = migrateAppState(state);
-    return state;
+    try {
+      const state = JSON.parse(stored) as AppState;
+      return migrateAppState(state);
+    } catch (primaryError) {
+      console.warn('Failed to parse primary app state. Falling back to backup.', primaryError);
+      const backup = localStorage.getItem(STORAGE_BACKUP_KEY);
+      if (backup) {
+        try {
+          const backupState = JSON.parse(backup) as AppState;
+          return migrateAppState(backupState);
+        } catch (backupError) {
+          console.error('Failed to parse backup app state:', backupError);
+        }
+      }
+      return initializeAppState();
+    }
   } catch (error) {
     console.error('Failed to load app state:', error);
     return initializeAppState();
@@ -380,7 +394,9 @@ export function loadAppState(): AppState {
 
 export function saveAppState(state: AppState): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const payload = JSON.stringify(state);
+    localStorage.setItem(STORAGE_KEY, payload);
+    localStorage.setItem(STORAGE_BACKUP_KEY, payload);
   } catch (error) {
     console.error('Failed to save app state:', error);
   }
@@ -389,6 +405,7 @@ export function saveAppState(state: AppState): void {
 export function clearAppState(): void {
   try {
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(STORAGE_BACKUP_KEY);
   } catch (error) {
     console.error('Failed to clear app state:', error);
   }

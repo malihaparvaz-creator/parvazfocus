@@ -21,6 +21,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const remoteBootstrappedRef = useRef(false);
   const skipNextCloudSyncRef = useRef(false);
   const lastRemoteUpdatedAtRef = useRef(0);
+  const latestStateRef = useRef<AppState>(state);
+
+  // Keep a ref copy of the latest state for unload/visibility save handlers
+  useEffect(() => {
+    latestStateRef.current = state;
+  }, [state]);
 
   // On mount: subscribe to Firestore (cross-device real-time sync)
   useEffect(() => {
@@ -61,19 +67,50 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    saveAppState(state);
+    saveAppStateWithSync(state);
   }, [state]);
 
+  useEffect(() => {
+    const handleSave = () => {
+      saveAppState(latestStateRef.current);
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        saveAppState(latestStateRef.current);
+      }
+    };
+
+    window.addEventListener('beforeunload', handleSave);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleSave);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
+
+  const setAndPersistState = useCallback((nextStateOrUpdater: AppState | ((prevState: AppState) => AppState)) => {
+    setState((prevState) => {
+      const nextState = typeof nextStateOrUpdater === 'function'
+        ? (nextStateOrUpdater as (prevState: AppState) => AppState)(prevState)
+        : nextStateOrUpdater;
+
+      saveAppState(nextState);
+      return nextState;
+    });
+  }, []);
+
   const addNewTask = useCallback((task: Task) => {
-    setState(prevState => {
+    setAndPersistState(prevState => {
       const newState = { ...prevState };
       newState.today.mission.tasks.push(task);
       return newState;
     });
-  }, []);
+  }, [setAndPersistState]);
 
   const completeTaskById = useCallback((taskId: string) => {
-    setState(prevState => {
+    setAndPersistState(prevState => {
       let newState = { ...prevState };
       const task = newState.today.mission.tasks.find(t => t.id === taskId);
       if (task && !task.completed) {
@@ -103,38 +140,34 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       }
       return newState;
     });
-  }, []);
+  }, [setAndPersistState]);
 
   const addXPToUser = useCallback((amount: number) => {
-    setState(prevState => {
+    setAndPersistState(prevState => {
       const newState = { ...prevState };
       newState.user.stats.totalXP += amount;
       newState.user.stats.currentLevel.currentXP += amount;
       return newState;
     });
-  }, []);
+  }, [setAndPersistState]);
 
   const updateState = useCallback((newState: AppState | ((prevState: AppState) => AppState)) => {
-    setState(prevState =>
-      typeof newState === 'function'
-        ? (newState as (prevState: AppState) => AppState)(prevState)
-        : newState
-    );
-  }, []);
+    setAndPersistState(newState);
+  }, [setAndPersistState]);
 
   const toggleEmergencyMode = useCallback(() => {
-    setState(prevState => ({
+    setAndPersistState(prevState => ({
       ...prevState,
       emergencyModeActive: !prevState.emergencyModeActive,
     }));
-  }, []);
+  }, [setAndPersistState]);
 
   const unlockProjects = useCallback(() => {
-    setState(prevState => ({
+    setAndPersistState(prevState => ({
       ...prevState,
       projectsLocked: false,
     }));
-  }, []);
+  }, [setAndPersistState]);
 
   return (
     <AppContext.Provider

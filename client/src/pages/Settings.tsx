@@ -203,6 +203,10 @@ export default function Settings() {
 
   // Targeted reset handlers
   const handleResetFocusHours = () => {
+    if (!window.confirm('Reset focus hours and today\'s timer totals? This does not remove saved tasks or projects.')) {
+      return;
+    }
+
     const ns = { ...state };
     ns.user.stats.totalFocusHours = 0;
     ns.user.timeTracking = {
@@ -216,10 +220,18 @@ export default function Settings() {
   };
 
   const handleResetWeekly = () => {
+    if (!window.confirm('Reset weekly logs? This clears daily and weekly summaries only.')) {
+      return;
+    }
+
     updateState(prev => resetWeeklyTracking(prev));
   };
 
   const handleResetXP = () => {
+    if (!window.confirm('Reset all XP and level progress? This cannot be undone unless you add XP again.')) {
+      return;
+    }
+
     const ns = { ...state };
     ns.user.stats.totalXP = 0;
     ns.user.stats.totalXPSpent = 0;
@@ -234,6 +246,10 @@ export default function Settings() {
   };
 
   const handleResetStatsOnly = () => {
+    if (!window.confirm('Reset progress stats only? This will clear streak, focus hours, XP and task ratings.')) {
+      return;
+    }
+
     updateState(prev => {
       const reset = resetCoreStats(prev);
       return {
@@ -251,6 +267,10 @@ export default function Settings() {
   };
 
   const handleResetReflections = () => {
+    if (!window.confirm('Reset all reflections? This will remove your reflection history permanently.')) {
+      return;
+    }
+
     updateState(prev => ({
       ...prev,
       today: { ...prev.today, reflection: undefined, reflectionLocked: false },
@@ -265,6 +285,10 @@ export default function Settings() {
   };
 
   const handleResetCreativeDump = () => {
+    if (!window.confirm('Reset creative dump? This clears all saved creative entries.')) {
+      return;
+    }
+
     updateState(prev => ({
       ...prev,
       user: {
@@ -275,12 +299,20 @@ export default function Settings() {
   };
 
   const handleResetStreak = () => {
+    if (!window.confirm('Reset streak to zero? This cannot be undone automatically.')) {
+      return;
+    }
+
     const ns = { ...state };
     ns.user.stats.streak = 0;
     updateState(ns);
   };
 
   const handleResetTodaysActivity = () => {
+    if (!window.confirm('Reset today\'s activity? This will clear today\'s study, creative, and entertainment tracking.')) {
+      return;
+    }
+
     updateState(prev => resetTodaysActivity(prev));
   };
   const subjects = state.user.subjectSettings.subjects;
