@@ -14,7 +14,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Plus, Trash2, RotateCcw, Calendar, MessageSquare, BookOpen, Palette, X } from 'lucide-react';
 import { WeeklySummary } from '@/components/WeeklySummary';
 import { SubjectTaskTracker } from '@/components/SubjectTaskTracker';
-import { resetCoreStats, resetWeeklyTracking } from '@/lib/time-aggregation';
+import { resetCoreStats, resetWeeklyTracking, resetTodaysActivity } from '@/lib/time-aggregation';
 
 export default function Settings() {
   const { state, updateState } = useAppContext();
@@ -279,6 +279,10 @@ export default function Settings() {
     ns.user.stats.streak = 0;
     updateState(ns);
   };
+
+  const handleResetTodaysActivity = () => {
+    updateState(prev => resetTodaysActivity(prev));
+  };
   const subjects = state.user.subjectSettings.subjects;
   const reflections = state.user.reflectionHistory.reflections;
 
@@ -521,6 +525,16 @@ export default function Settings() {
                 Reset only what you need — everything else stays untouched.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="p-4 rounded-xl border border-blue-200 bg-blue-50/40 space-y-2 md:col-span-2">
+                  <p className="font-semibold text-sm">Today's Activity Tracking</p>
+                  <p className="text-xs text-muted-foreground">Clears today's live time tracker (Study, Creative, Entertainment). Weekly summaries and all stats are preserved. Today's data that was already counted in weekly logs will remain there.</p>
+                  <Button size="sm" variant="outline"
+                    className="border-blue-300 text-blue-700 hover:bg-blue-100 w-full mt-1"
+                    onClick={handleResetTodaysActivity}>
+                    <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> Reset Today's Activity
+                  </Button>
+                </div>
+
                 <div className="p-4 rounded-xl border border-border/50 space-y-2">
                   <p className="font-semibold text-sm">Focus Hours & Time Tracking</p>
                   <p className="text-xs text-muted-foreground">Resets totalFocusHours, study time, creative time, entertainment time.</p>

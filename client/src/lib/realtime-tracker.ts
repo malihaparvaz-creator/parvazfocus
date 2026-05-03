@@ -342,3 +342,19 @@ export function getCategoryEmoji(category: TrackingCategory): string {
 }
 
 export const TICK_MS = TICK_INTERVAL;
+
+/**
+ * Reset today's tracking data in the real-time tracker
+ * Keeps total history but clears today's session counts
+ */
+export function resetTodayTracking(): void {
+  try {
+    const current = loadTrackingState();
+    const reset = resetDayInState(current);
+    saveTrackingState(reset);
+  } catch {
+    // If error, just create fresh state
+    const fresh = createFreshState();
+    saveTrackingState(fresh);
+  }
+}

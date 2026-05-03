@@ -12,7 +12,7 @@ import { useLocation } from 'wouter';
 import { BookOpen, Zap, Clock, Target, Gift, X, RotateCcw } from 'lucide-react';
 import { LiveTracker } from '@/components/LiveTracker';
 import { useTracking } from '@/contexts/TrackingContext';
-import { resetCoreStats } from '@/lib/time-aggregation';
+import { resetTodaysActivity } from '@/lib/time-aggregation';
 
 export default function Home() {
   const { state, addXPToUser, updateState } = useAppContext();
@@ -60,7 +60,7 @@ export default function Home() {
   };
 
   const handleResetCoreStats = () => {
-    updateState(prev => resetCoreStats(prev));
+    updateState(prev => resetTodaysActivity(prev));
   };
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -225,22 +225,22 @@ export default function Home() {
             Projects
           </Button>
         </div>
-        {/* Home reset (quick core stats reset) */}
-        <Card className="p-6 shadow-md border-orange-200 bg-orange-50/40">
+        {/* Home reset (today's activity reset) */}
+        <Card className="p-6 shadow-md border-blue-200 bg-blue-50/40">
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <div>
-              <p className="font-semibold text-sm">Quick Reset: Streak + Focus Hours + XP</p>
+              <p className="font-semibold text-sm">Reset Today's Activity</p>
               <p className="text-xs text-muted-foreground mt-1">
-                Resets only streak, focus hours, XP, and level. Your tasks and logs stay intact.
+                Clears today's time tracking (Study, Creative, Entertainment). Weekly summaries and stats are preserved.
               </p>
             </div>
             <Button
               variant="outline"
               onClick={handleResetCoreStats}
-              className="border-orange-300 text-orange-700 hover:bg-orange-100"
+              className="border-blue-300 text-blue-700 hover:bg-blue-100"
             >
               <RotateCcw className="w-4 h-4 mr-2" />
-              Reset Core Stats
+              Reset Activity
             </Button>
           </div>
         </Card>

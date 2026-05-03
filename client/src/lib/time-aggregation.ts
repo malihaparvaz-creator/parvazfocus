@@ -1,4 +1,5 @@
 import type { AppState, TimeTracking, WeeklySummary } from './types';
+import { resetTodayTracking } from './realtime-tracker';
 
 export type TimeCategory = 'STUDY' | 'CREATIVE' | 'ENTERTAINMENT';
 
@@ -169,6 +170,40 @@ export function resetWeeklyTracking(state: AppState): AppState {
   tracking.dailyStudyLog = [];
   tracking.weeklyStudyLog = [];
   tracking.lastUpdated = new Date();
+  nextState.user.timeTracking = tracking;
+  return nextState;
+}
+
+/**
+ * Reset ONLY today's real-time activity tracking
+ * Preserves: stats, XP, streak, weekly logs, all other data
+ * Resets: live tracker session data for today
+ */
+export function resetTodaysActivity(state: AppState): AppState {
+  // Reset the real-time tracking (today's sessions)
+  resetTodayTracking();
+  
+  // Also reset today's daily log entry to start fresh
+  // but keep weekly logs intact
+  const nextState = { ...state };
+  const tracking = nextState.user.timeTracking
+    ? { ...nextState.user.timeTracking }
+    : createEmptyTimeTracking();
+  
+  const today = startOfToday();
+  // Remove today's entry from daily log (so fresh tracking starts with 0)
+  tracking.dailyStudyLog = tracking.dailyStudyLog.filter(entry => {
+    const entryDate = new Date(entry.date);
+    entryDate.setHours(0, 0, 0, 0);
+    return entryDate.getTime() !== today.getTime();
+  });
+  
+  // Reset study and creative time for today (but keep entertainment breakdown)
+  tracking.studyTime = 0;
+  tracking.creativeTime = 0;
+  tracking.entertainmentTime = {};
+  tracking.lastUpdated = new Date();
+  
   nextState.user.timeTracking = tracking;
   return nextState;
 }
