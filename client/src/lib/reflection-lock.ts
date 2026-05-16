@@ -59,7 +59,7 @@ export function getReflectionStatus(today: { reflection?: NightReflection; refle
 } {
   const canAdd = canAddReflectionToday(today);
   const canEdit = canEditReflection(today);
-  const isLocked = today.reflectionLocked && today.reflection && isReflectionFromToday(today.reflection);
+  const isLocked = Boolean(today.reflectionLocked && today.reflection && isReflectionFromToday(today.reflection));
 
   let message = '';
   if (isLocked && today.reflection) {
