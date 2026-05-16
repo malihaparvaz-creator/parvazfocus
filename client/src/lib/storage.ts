@@ -1,4 +1,5 @@
 import { AppState, LEVEL_NAMES, STORE_ITEMS } from './types';
+import { updateStreak } from './time-aggregation';
 
 const STORAGE_KEY = 'parvaz-focus-state';
 const STORAGE_BACKUP_KEY = 'parvaz-focus-state-backup';
@@ -270,6 +271,10 @@ function migrateAppState(state: AppState): AppState {
       state.user.timeTracking.entertainmentTime = {};
       state.user.timeTracking.lastUpdated = today;
       state.today.reflectionLocked = false;
+      
+      // Update streak when transitioning to new day
+      // Only update if they had study time yesterday (lastActivityDate should already be set)
+      state = updateStreak(state);
     }
   }
 

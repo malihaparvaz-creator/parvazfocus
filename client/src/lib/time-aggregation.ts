@@ -1,4 +1,4 @@
-import type { AppState, TimeTracking, WeeklySummary } from './types';
+import type { AppState, TimeTracking, WeeklySummary, LEVEL_NAMES } from './types';
 import { resetTodayTracking } from './realtime-tracker';
 
 export type TimeCategory = 'STUDY' | 'CREATIVE' | 'ENTERTAINMENT';
@@ -116,7 +116,7 @@ export function addTrackedDuration(
 
   const minutes = Math.max(1, Math.round(durationSeconds / 60));
   const hours = durationSeconds / 3600;
-  const nextState = { ...state };
+  let nextState = { ...state };
   const tracking = nextState.user.timeTracking
     ? { ...nextState.user.timeTracking }
     : createEmptyTimeTracking();
@@ -139,6 +139,78 @@ export function addTrackedDuration(
   upsertWeeklyLog(tracking, minutes, category);
   tracking.lastUpdated = new Date();
   nextState.user.timeTracking = tracking;
+  
+  // Update streak when study time is logged
+  nextState = updateStreak(nextState);
+
+  return nextState;
+}
+
+/**
+ * Update streak based on lastActivityDate
+ * Increments streak if activity happened today (after yesterday)
+ * Resets to 1 if first activity today after a gap
+ */
+export function updateStreak(state: AppState): AppState {
+  const nextState = { ...state };
+  const today = startOfToday();
+  const lastActivityDate = state.user.stats.lastActivityDate
+    ? new Date(state.user.stats.lastActivityDate)
+    : null;
+
+  if (!lastActivityDate) {
+    // First time activity logged
+    nextState.user.stats.streak = 1;
+    nextState.user.stats.lastActivityDate = today;
+    return nextState;
+  }
+
+  lastActivityDate.setHours(0, 0, 0, 0);
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  if (lastActivityDate.getTime() === yesterday.getTime()) {
+    // Activity happened yesterday, increment streak
+    nextState.user.stats.streak = (nextState.user.stats.streak || 0) + 1;
+  } else if (lastActivityDate.getTime() !== today.getTime()) {
+    // Gap detected - reset streak to 1 (since they're active today)
+    nextState.user.stats.streak = 1;
+  }
+  // If activity was already logged today, don't change streak
+
+  nextState.user.stats.lastActivityDate = today;
+  return nextState;
+}
+
+/**
+ * Update level based on currentXP
+ * Level up when currentXP >= nextLevelXP
+ * Each level requires 50% more XP than previous (100, 150, 225, 337, 506, 759)
+ */
+export function updateLevel(state: AppState): AppState {
+  const nextState = { ...state };
+  const LEVEL_NAMES = ['Focused', 'Consistent', 'Disciplined', 'Relentless', 'Unstoppable', 'Legendary'];
+  const MAX_LEVEL = LEVEL_NAMES.length;
+  
+  let level = nextState.user.stats.currentLevel.level;
+  let currentXP = nextState.user.stats.currentLevel.currentXP;
+  let nextLevelXP = nextState.user.stats.currentLevel.nextLevelXP;
+
+  // Keep leveling up while currentXP >= nextLevelXP and not at max level
+  while (currentXP >= nextLevelXP && level < MAX_LEVEL) {
+    currentXP -= nextLevelXP;
+    level += 1;
+    // Calculate next level XP: 100 * 1.5^(level-1)
+    nextLevelXP = Math.round(100 * Math.pow(1.5, level - 1));
+  }
+
+  nextState.user.stats.currentLevel = {
+    level: Math.min(level, MAX_LEVEL),
+    currentXP,
+    totalXP: nextState.user.stats.totalXP,
+    nextLevelXP: level >= MAX_LEVEL ? 0 : nextLevelXP,
+    levelName: LEVEL_NAMES[Math.min(level - 1, LEVEL_NAMES.length - 1)],
+  };
 
   return nextState;
 }

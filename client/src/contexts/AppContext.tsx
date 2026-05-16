@@ -3,6 +3,7 @@ import { AppState, Task } from '@/lib/types';
 import { loadAppState, saveAppState, saveAppStateWithSync } from '@/lib/storage';
 import { subscribeToFirestoreState } from '@/lib/firebase';
 import { updateSubjectPerformance } from '@/lib/subject-tracker';
+import { updateStreak, updateLevel } from '@/lib/time-aggregation';
 
 interface AppContextType {
   state: AppState;
@@ -146,9 +147,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const addXPToUser = useCallback((amount: number) => {
     setAndPersistState(prevState => {
-      const newState = { ...prevState };
+      let newState = { ...prevState };
       newState.user.stats.totalXP += amount;
       newState.user.stats.currentLevel.currentXP += amount;
+      
+      // Update streak when XP is earned
+      newState = updateStreak(newState);
+      
+      // Update level based on new currentXP
+      newState = updateLevel(newState);
+      
       return newState;
     });
   }, [setAndPersistState]);

@@ -144,6 +144,14 @@ export default function StudyMode() {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                 <div>
+                  <p className="text-xs text-muted-foreground mb-1">Streak</p>
+                  <p className="text-2xl font-bold text-accent">{state.user.stats.streak}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Level</p>
+                  <p className="text-2xl font-bold">{state.user.stats.currentLevel.level}</p>
+                </div>
+                <div>
                   <p className="text-xs text-muted-foreground mb-1">Total Focus Hours</p>
                   <p className="text-2xl font-bold">{state.user.stats.totalFocusHours.toFixed(2)}</p>
                 </div>
@@ -158,6 +166,14 @@ export default function StudyMode() {
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">Total XP Spent</p>
                   <p className="text-2xl font-bold">{state.user.stats.totalXPSpent}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">XP to Next Level</p>
+                  <p className="text-2xl font-bold">{Math.max(0, state.user.stats.currentLevel.nextLevelXP - state.user.stats.currentLevel.currentXP)}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Current XP</p>
+                  <p className="text-2xl font-bold">{state.user.stats.currentLevel.currentXP}/{state.user.stats.currentLevel.nextLevelXP}</p>
                 </div>
               </div>
             </Card>
