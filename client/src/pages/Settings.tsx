@@ -474,9 +474,10 @@ export default function Settings() {
                             <Trash2 className="w-4 h-4 text-destructive" />
                           </button>
                         </div>
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(item.createdAt).toLocaleString()}
-                        </p>
+                        <div className="flex items-center justify-between gap-4 text-xs text-muted-foreground">
+                          <span>Captured</span>
+                          <span>{new Date(item.createdAt).toLocaleString()}</span>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -507,10 +508,28 @@ export default function Settings() {
                         key={reflection.id}
                         className="p-4 bg-card border border-border/50 rounded-lg hover:border-accent/50 transition-all"
                       >
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between mb-3 gap-4">
+                          <div>
+                            <p className="text-sm text-muted-foreground">Reflection date</p>
+                            <p className="font-medium">{new Date(reflection.date).toLocaleDateString()}</p>
+                          </div>
                           <Badge className="bg-accent/20 text-accent text-base">
                             {reflection.energyLevel}/10
                           </Badge>
+                        </div>
+                        <div className="space-y-3 text-sm">
+                          <div>
+                            <p className="text-muted-foreground mb-1">What moved you forward?</p>
+                            <p>{reflection.whatMovedMeForward}</p>
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground mb-1">What distracted you?</p>
+                            <p>{reflection.whatDistractedMe}</p>
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground mb-1">What should improve tomorrow?</p>
+                            <p>{reflection.shouldImprove}</p>
+                          </div>
                         </div>
                       </div>
                     ))}
