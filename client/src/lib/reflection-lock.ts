@@ -11,11 +11,12 @@ export function canAddReflectionToday(today: { reflection?: NightReflection; ref
     return true;
   }
 
-  // If reflection is locked, cannot add
-  if (today.reflectionLocked) {
+  // If the existing reflection is from today, do not allow another one
+  if (isReflectionFromToday(today.reflection)) {
     return false;
   }
 
+  // If the saved reflection is from a previous day, allow a new one regardless of an old lock flag
   return true;
 }
 
@@ -38,17 +39,16 @@ export function lockReflectionForDay(): boolean {
 }
 
 export function canEditReflection(today: { reflection?: NightReflection; reflectionLocked?: boolean }): boolean {
-  // Cannot edit if reflection is locked
+  // Can only edit a reflection that exists for today and is not locked
+  if (!today.reflection || !isReflectionFromToday(today.reflection)) {
+    return false;
+  }
+
   if (today.reflectionLocked) {
     return false;
   }
 
-  // Can only edit if reflection exists and is from today
-  if (today.reflection && isReflectionFromToday(today.reflection)) {
-    return true;
-  }
-
-  return false;
+  return true;
 }
 
 export function getReflectionStatus(today: { reflection?: NightReflection; reflectionLocked?: boolean }): {
@@ -59,7 +59,7 @@ export function getReflectionStatus(today: { reflection?: NightReflection; refle
 } {
   const canAdd = canAddReflectionToday(today);
   const canEdit = canEditReflection(today);
-  const isLocked = today.reflectionLocked || false;
+  const isLocked = today.reflectionLocked && today.reflection && isReflectionFromToday(today.reflection);
 
   let message = '';
   if (isLocked && today.reflection) {

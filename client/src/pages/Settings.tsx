@@ -502,38 +502,15 @@ export default function Settings() {
               ) : (
                 <ScrollArea className="h-[500px] pr-4">
                   <div className="space-y-4">
-                    {reflections.map((reflection, index) => (
+                    {reflections.map((reflection) => (
                       <div
                         key={reflection.id}
-                        className="p-4 bg-card border border-border/50 rounded-lg space-y-3 hover:border-accent/50 transition-all"
+                        className="p-4 bg-card border border-border/50 rounded-lg hover:border-accent/50 transition-all"
                       >
                         <div className="flex items-center justify-between">
-                          <p className="font-semibold text-sm">
-                            {new Date(reflection.date).toLocaleDateString('en-US', {
-                              weekday: 'long',
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                            })}
-                          </p>
-                          <Badge className="bg-accent/20 text-accent">
-                            Energy: {reflection.energyLevel}/10
+                          <Badge className="bg-accent/20 text-accent text-base">
+                            {reflection.energyLevel}/10
                           </Badge>
-                        </div>
-
-                        <div className="space-y-2 text-sm">
-                          <div>
-                            <p className="text-muted-foreground font-medium mb-1">What moved you forward?</p>
-                            <p className="text-foreground">{reflection.whatMovedMeForward}</p>
-                          </div>
-                          <div>
-                            <p className="text-muted-foreground font-medium mb-1">What distracted you?</p>
-                            <p className="text-foreground">{reflection.whatDistractedMe}</p>
-                          </div>
-                          <div>
-                            <p className="text-muted-foreground font-medium mb-1">What should improve tomorrow?</p>
-                            <p className="text-foreground">{reflection.shouldImprove}</p>
-                          </div>
                         </div>
                       </div>
                     ))}
