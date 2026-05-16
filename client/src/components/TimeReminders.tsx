@@ -32,7 +32,6 @@ const CATEGORY_REMINDERS = [
 ];
 
 const SHOWN_KEY = 'parvaz-reminders-shown';
-const WATER_KEY = 'parvaz-water-last';
 const WATER_INTERVAL = 45 * 60 * 1000; // 45 mins
 
 function getShownToday(): Set<string> {
@@ -70,9 +69,7 @@ export function TimeReminders() {
   const { categoryTotals } = useTracking();
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const shownRef = useRef<Set<string>>(getShownToday());
-  const lastWaterRef = useRef<number>(
-    parseInt(localStorage.getItem(WATER_KEY) || '0') || Date.now()
-  );
+  const lastWaterRef = useRef<number>(Date.now());
 
   const dismiss = (id: string) => setReminders(prev => prev.filter(r => r.id !== id));
 
@@ -156,17 +153,10 @@ export function TimeReminders() {
     };
 
     const check = () => {
-      // Water reminder — only when screen is active
+      if (document.visibilityState !== 'visible') return;
       const now = Date.now();
-      // If device was off/tab hidden for a very long time, reset the water clock
-      // so we don't spam reminders immediately on return
-      if (now - lastWaterRef.current > WATER_INTERVAL * 3) {
-        lastWaterRef.current = now - WATER_INTERVAL + 60000; // 1 min until next
-        localStorage.setItem(WATER_KEY, String(lastWaterRef.current));
-      }
       if (now - lastWaterRef.current >= WATER_INTERVAL) {
         lastWaterRef.current = now;
-        localStorage.setItem(WATER_KEY, String(now));
         addReminder({
           id: `water_${now}`,
           type: 'water',
@@ -199,7 +189,8 @@ export function TimeReminders() {
     // Only run water check when screen/tab is visible (device is on and active)
     const handleVisibility = () => {
       if (document.visibilityState === 'visible') {
-        check(); // run immediately when user comes back
+        lastWaterRef.current = Date.now();
+        check();
       }
     };
     document.addEventListener('visibilitychange', handleVisibility);

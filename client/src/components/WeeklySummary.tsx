@@ -6,7 +6,7 @@
 import { AppState } from '@/lib/types';
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import { Clock, Zap, AlertCircle, BookOpen } from 'lucide-react';
 import { calculateSubjectBreakdown, formatSubjectTime } from '@/lib/subject-breakdown';
 
@@ -34,13 +34,6 @@ export function WeeklySummary({ state }: WeeklySummaryProps) {
   const totalCreativeTime = timeTracking.creativeTime || 0;
   const totalEntertainmentTime = Object.values(timeTracking.entertainmentTime || {}).reduce((a, b) => a + b, 0);
   const totalTime = totalStudyTime + totalCreativeTime + totalEntertainmentTime;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const weekStart = new Date(today);
-  weekStart.setDate(today.getDate() - today.getDay());
-  const currentWeek = (timeTracking.weeklyStudyLog || []).find(
-    week => new Date(week.weekStart).setHours(0, 0, 0, 0) === weekStart.getTime()
-  );
 
   // Prepare pie chart data
   const timeAllocationData = [
@@ -48,15 +41,6 @@ export function WeeklySummary({ state }: WeeklySummaryProps) {
     { name: 'Creative', value: totalCreativeTime, color: '#a78bfa' },
     { name: 'Entertainment', value: totalEntertainmentTime, color: '#fca5a5' },
   ].filter(item => item.value > 0);
-
-  // Prepare entertainment apps data
-  const entertainmentData = Object.entries(timeTracking.entertainmentTime || {})
-    .map(([app, time]) => ({
-      name: app,
-      time,
-      displayTime: formatTime(time),
-    }))
-    .sort((a, b) => b.time - a.time);
 
   // Calculate percentages
   const studyPercent = totalTime > 0 ? ((totalStudyTime / totalTime) * 100).toFixed(1) : 0;
@@ -98,29 +82,9 @@ export function WeeklySummary({ state }: WeeklySummaryProps) {
         </div>
       </Card>
 
-      {/* Weekly Totals */}
-      <Card className="p-6 shadow-md">
-        <h3 className="text-xl font-bold mb-2">This Week's Totals</h3>
-        <p className="text-sm text-muted-foreground mb-6">From daily and weekly logs</p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 bg-secondary/30 rounded-lg border border-border/50">
-            <p className="text-sm font-semibold text-muted-foreground mb-2">Study</p>
-            <p className="text-2xl font-bold text-accent">{formatTime(currentWeek?.totalStudyTime || 0)}</p>
-          </div>
-          <div className="p-4 bg-secondary/30 rounded-lg border border-border/50">
-            <p className="text-sm font-semibold text-muted-foreground mb-2">Creative</p>
-            <p className="text-2xl font-bold text-accent">{formatTime(currentWeek?.totalCreativeTime || 0)}</p>
-          </div>
-          <div className="p-4 bg-secondary/30 rounded-lg border border-border/50">
-            <p className="text-sm font-semibold text-muted-foreground mb-2">Entertainment</p>
-            <p className="text-2xl font-bold text-destructive">{formatTime(currentWeek?.totalEntertainmentTime || 0)}</p>
-          </div>
-        </div>
-      </Card>
       {/* Time Allocation Overview */}
       <Card className="p-6 shadow-md">
-        <h3 className="text-xl font-bold mb-2">Today's Time Allocation</h3>
-        <p className="text-sm text-muted-foreground mb-6">Tracked from active Pomodoro sessions</p>
+        <h3 className="text-xl font-bold mb-2">This Week's Totals</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           {/* Study Time */}
@@ -179,44 +143,6 @@ export function WeeklySummary({ state }: WeeklySummaryProps) {
           </div>
         )}
       </Card>
-
-      {/* Entertainment Apps Breakdown */}
-      {entertainmentData.length > 0 && (
-        <Card className="p-6 shadow-md">
-          <h3 className="text-xl font-bold mb-6">Entertainment App Usage</h3>
-
-          <div className="space-y-3">
-            {entertainmentData.map((app, idx) => {
-              const appPercent = totalEntertainmentTime > 0 ? ((app.time / totalEntertainmentTime) * 100).toFixed(1) : 0;
-              return (
-                <div key={idx} className="flex items-center justify-between p-3 bg-secondary/20 rounded-lg">
-                  <div className="flex-1">
-                    <p className="font-semibold text-sm">{app.name}</p>
-                    <p className="text-xs text-muted-foreground">{appPercent}% of entertainment time</p>
-                  </div>
-                  <p className="font-bold text-accent">{app.displayTime}</p>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Bar Chart */}
-          <div className="h-64 mt-6 flex items-center justify-center">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={entertainmentData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                <XAxis dataKey="name" stroke="var(--muted-foreground)" />
-                <YAxis stroke="var(--muted-foreground)" />
-                <Tooltip
-                  formatter={(value) => formatTime(value as number)}
-                  contentStyle={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)' }}
-                />
-                <Bar dataKey="time" fill="var(--accent)" radius={[8, 8, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
-      )}
 
       {/* Study Apps Tracked */}
       {studyApps.length > 0 && (

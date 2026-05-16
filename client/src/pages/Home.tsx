@@ -115,7 +115,7 @@ export default function Home() {
               <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Focus Hours</p>
               <BookOpen className="w-4 h-4 text-accent" />
             </div>
-            <p className="text-4xl font-bold text-accent">{stats.totalFocusHours}h</p>
+            <p className="text-4xl font-bold text-accent">{stats.totalFocusHours.toFixed(2)}h</p>
             <p className="text-xs text-muted-foreground mt-2">Total Invested</p>
           </Card>
         </div>

@@ -78,7 +78,7 @@ export default function StudyMode() {
             </div>
             <div>
               <p className="text-xs text-muted-foreground mb-1">Focus Hours</p>
-              <p className="text-2xl font-bold">{state.user.stats.totalFocusHours}h</p>
+              <p className="text-2xl font-bold">{state.user.stats.totalFocusHours.toFixed(2)}h</p>
             </div>
           </div>
         </div>
@@ -145,7 +145,7 @@ export default function StudyMode() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">Total Focus Hours</p>
-                  <p className="text-2xl font-bold">{state.user.stats.totalFocusHours}</p>
+                  <p className="text-2xl font-bold">{state.user.stats.totalFocusHours.toFixed(2)}</p>
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">Tasks Completed</p>

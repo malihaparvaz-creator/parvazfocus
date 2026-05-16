@@ -24,6 +24,8 @@ interface SimpleTimerSession {
   isActive: boolean;
   isPaused: boolean;
   startedAt: Date;
+  pausedAt?: Date | null;
+  elapsedPausedSeconds?: number;
 }
 
 const CATEGORY_CONFIG: Record<TimerCategory, { label: string; color: string; icon: typeof BookOpen }> = {
@@ -54,15 +56,18 @@ export function SimpleTimer() {
   // Countdown tick
   useEffect(() => {
     if (!activeSessionId) return;
-    const active = sessions.find(s => s.id === activeSessionId);
-    if (!active || !active.isActive || active.isPaused) return;
 
     const interval = setInterval(() => {
       setSessions(prev => prev.map(s => {
-        if (s.id !== activeSessionId) return s;
-        const newTime = s.timeRemaining - 1;
+        if (!s.isActive || s.isPaused) return s;
+
+        const elapsedSinceStart = Math.floor((Date.now() - s.startedAt.getTime()) / 1000);
+        const pausedSeconds = s.elapsedPausedSeconds || 0;
+        const elapsed = Math.max(0, elapsedSinceStart - pausedSeconds);
+        const newTime = Math.max(0, s.duration - elapsed);
+
         if (newTime <= 0) {
-          // Timer done — wire into focus hours + logs
+          if (s.timeRemaining === 0) return { ...s, isActive: false };
           const finished = { ...s, timeRemaining: 0, isActive: false };
           const newAppState = addTrackedDuration(
             stateRef.current,
@@ -73,7 +78,6 @@ export function SimpleTimer() {
           updateState(newAppState);
           cancelTimerNotification(s.id);
 
-          // Notification
           if ('Notification' in window && Notification.permission === 'granted') {
             navigator.serviceWorker.ready.then(reg => {
               reg.showNotification('Parvaz Focus — Timer Done! ⏱️', {
@@ -85,14 +89,16 @@ export function SimpleTimer() {
               new Notification('Timer Done!', { body: 'Your timer is complete.' });
             });
           }
+
           return finished;
         }
+
         return { ...s, timeRemaining: newTime };
       }));
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [activeSessionId, sessions]);
+  }, [activeSessionId]);
 
   const handleAddTimer = () => {
     const mins = parseInt(timerMinutes);
@@ -107,6 +113,8 @@ export function SimpleTimer() {
       isActive: true,
       isPaused: false,
       startedAt: new Date(),
+      pausedAt: null,
+      elapsedPausedSeconds: 0,
     };
     setSessions(prev => [...prev, newSession]);
     setActiveSessionId(newSession.id);
@@ -118,9 +126,23 @@ export function SimpleTimer() {
   };
 
   const handlePauseResume = (id: string) => {
-    setSessions(prev => prev.map(s =>
-      s.id === id ? { ...s, isPaused: !s.isPaused } : s
-    ));
+    setSessions(prev => prev.map(s => {
+      if (s.id !== id) return s;
+      if (s.isPaused) {
+        const pausedAt = s.pausedAt ? Math.floor((Date.now() - s.pausedAt.getTime()) / 1000) : 0;
+        return {
+          ...s,
+          isPaused: false,
+          pausedAt: null,
+          elapsedPausedSeconds: (s.elapsedPausedSeconds || 0) + pausedAt,
+        };
+      }
+      return {
+        ...s,
+        isPaused: true,
+        pausedAt: new Date(),
+      };
+    }));
   };
 
   const handleStop = (id: string) => {

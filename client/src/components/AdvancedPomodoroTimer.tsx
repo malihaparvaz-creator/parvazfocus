@@ -281,7 +281,7 @@ export function AdvancedPomodoroTimer() {
           </div>
 
           <div className="text-6xl font-bold font-mono mb-4 text-indigo-900">
-            {formatTime(timeLeft * 60)}
+            {formatTime(timeLeft)}
           </div>
 
           <p className="text-lg text-indigo-800 mb-6">{motivation}</p>

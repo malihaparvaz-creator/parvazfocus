@@ -77,7 +77,7 @@ export function SubjectTracker() {
           </Card>
           <Card className="p-4 shadow-md">
             <p className="text-xs text-muted-foreground mb-1">Focus Hours</p>
-            <p className="text-3xl font-bold">{stats.totalFocusHours.toFixed(1)}h</p>
+            <p className="text-3xl font-bold">{stats.totalFocusHours.toFixed(2)}h</p>
           </Card>
         </div>
 
