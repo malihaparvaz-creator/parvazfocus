@@ -12,7 +12,7 @@ import { useLocation } from 'wouter';
 import { BookOpen, Zap, Clock, Target, Gift, X, RotateCcw } from 'lucide-react';
 import { LiveTracker } from '@/components/LiveTracker';
 import { useTracking } from '@/contexts/TrackingContext';
-import { resetTodaysActivity } from '@/lib/time-aggregation';
+import { addTrackedDuration, resetTodaysActivity, TimeCategory } from '@/lib/time-aggregation';
 
 export default function Home() {
   const { state, addXPToUser, updateState } = useAppContext();
@@ -57,6 +57,20 @@ export default function Home() {
       return `${hours}h ${mins}m`;
     }
     return `${mins}m`;
+  };
+
+  const [manualHours, setManualHours] = useState<Record<TimeCategory, string>>({
+    STUDY: '',
+    CREATIVE: '',
+    ENTERTAINMENT: '',
+  });
+
+  const handleManualAdd = (category: TimeCategory) => {
+    const value = parseFloat(manualHours[category]);
+    if (!isFinite(value) || value <= 0) return;
+
+    updateState(prev => addTrackedDuration(prev, Math.round(value * 3600), category, 'manual'));
+    setManualHours(prev => ({ ...prev, [category]: '' }));
   };
 
   const handleResetCoreStats = () => {
@@ -183,6 +197,41 @@ export default function Home() {
 
         {/* Live App Tracker */}
         <LiveTracker />
+
+        {/* Manual Time Entry */}
+        <Card className="p-6 shadow-md">
+          <div className="flex items-center justify-between mb-5">
+            <div>
+              <p className="text-lg font-semibold">Add Time Manually</p>
+              <p className="text-sm text-muted-foreground">Enter hours below to add time to the connected tracking buckets for that category.</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {(['STUDY', 'CREATIVE', 'ENTERTAINMENT'] as TimeCategory[]).map((category) => {
+              const label = category === 'STUDY' ? 'Study' : category === 'CREATIVE' ? 'Creative' : 'Entertainment';
+              return (
+                <div key={category} className="rounded-xl border border-border/50 p-4 bg-card">
+                  <p className="text-sm font-semibold text-muted-foreground mb-3">{label}</p>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.25"
+                    value={manualHours[category]}
+                    onChange={(e) => setManualHours(prev => ({ ...prev, [category]: e.target.value }))}
+                    placeholder="Hours"
+                    className="w-full rounded-lg border border-border/50 bg-background px-3 py-2 text-sm outline-none focus:border-accent focus:ring-accent/30"
+                  />
+                  <Button
+                    onClick={() => handleManualAdd(category)}
+                    className="mt-3 w-full bg-accent hover:bg-accent/90 text-accent-foreground"
+                  >
+                    Add Time
+                  </Button>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
 
         {/* Time Tracking Summary */}
         <Card className="p-8 shadow-md">
