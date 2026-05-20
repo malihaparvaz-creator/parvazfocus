@@ -16,7 +16,7 @@ import { WeeklySummary } from '@/components/WeeklySummary';
 import { useTheme } from '@/contexts/ThemeContext';
 // Small selector component to switch between purchased themes
 function ThemeSelector({ state }: { state: any }) {
-  const { theme, setTheme } = useTheme();
+  const { theme, applyTheme } = useTheme();
   const purchased = state.user.stats.xpStore.purchasedItems || [];
   const themeItems = state.user.stats.xpStore.items.filter((i: any) => i.type === 'THEME' && purchased.includes(i.id));
 
@@ -28,7 +28,7 @@ function ThemeSelector({ state }: { state: any }) {
       <select
         className="px-2 py-1 border rounded"
         value={theme}
-        onChange={(e) => setTheme && setTheme(e.target.value)}
+        onChange={(e) => applyTheme && applyTheme(e.target.value)}
       >
         <option value="light">Light</option>
         {themeItems.map((t: any) => (
