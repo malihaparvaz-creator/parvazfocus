@@ -150,6 +150,33 @@ export function TimeReminders() {
           });
         }
       }
+
+      const dateEntries = state.moneyTracker?.dateEntries || [];
+      const today = new Date();
+      const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+      for (const entry of dateEntries) {
+        if (!entry.date) continue;
+        const entryDate = new Date(entry.date);
+        entryDate.setHours(0, 0, 0, 0);
+        const daysUntil = Math.round((entryDate.getTime() - todayStart) / (1000 * 60 * 60 * 24));
+        if (daysUntil === 0 || daysUntil === 1) {
+          const when = daysUntil === 1 ? 'tomorrow' : 'today';
+          const id = `date_reminder_${entry.id}_${when}`;
+          if (!shownRef.current.has(id)) {
+            shownRef.current.add(id);
+            markShown(id);
+            addReminder({
+              id,
+              type: 'info',
+              title: daysUntil === 1 ? `Upcoming: ${entry.title} is tomorrow` : `Today: ${entry.title}`,
+              message: daysUntil === 1
+                ? entry.notes || 'Prepare ahead so you don’t miss it.'
+                : entry.notes || 'This is happening today. Check your plans and stay ready.',
+              icon: 'clock',
+            });
+          }
+        }
+      }
     };
 
     const check = () => {
