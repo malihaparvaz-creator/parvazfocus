@@ -440,6 +440,20 @@ export const STORE_ITEMS: StoreItemData[] = [
     description: 'Warm, high-contrast palette for daytime productivity',
   },
   {
+    id: 'theme_mint',
+    name: 'Mint Theme',
+    type: 'THEME',
+    cost: 180,
+    description: 'Fresh mint accents for a clean, energized interface',
+  },
+  {
+    id: 'theme_twilight',
+    name: 'Twilight Theme',
+    type: 'THEME',
+    cost: 220,
+    description: 'Subtle dark blue tones for a calm evening workspace',
+  },
+  {
     id: 'soundtrack_focus',
     name: 'Deep Focus Soundtrack',
     type: 'SOUNDTRACK',
@@ -468,6 +482,20 @@ export const STORE_ITEMS: StoreItemData[] = [
     description: 'Epic instrumental tracks to power intense sessions',
   },
   {
+    id: 'soundtrack_piano',
+    name: 'Piano Focus Suite',
+    type: 'SOUNDTRACK',
+    cost: 200,
+    description: 'Soft piano melodies to keep your mind centered',
+  },
+  {
+    id: 'soundtrack_space',
+    name: 'Space Ambient',
+    type: 'SOUNDTRACK',
+    cost: 270,
+    description: 'Expansive ambient textures for deep concentration',
+  },
+  {
     id: 'quotes_stoic',
     name: 'Stoic Quotes Pack',
     type: 'QUOTE_PACK',
@@ -480,6 +508,20 @@ export const STORE_ITEMS: StoreItemData[] = [
     type: 'FOCUS_ROOM',
     cost: 300,
     description: 'Study in a virtual library setting',
+  },
+  {
+    id: 'room_cafe',
+    name: 'Cafe Focus Room',
+    type: 'FOCUS_ROOM',
+    cost: 320,
+    description: 'Warm cafe environment to keep energy high',
+  },
+  {
+    id: 'room_garden',
+    name: 'Garden Focus Room',
+    type: 'FOCUS_ROOM',
+    cost: 340,
+    description: 'Relaxing garden ambience for steady focus',
   },
   // Bonus project time / unlocks
   {
@@ -497,11 +539,25 @@ export const STORE_ITEMS: StoreItemData[] = [
     description: 'Add 60 minutes of project time unlock',
   },
   {
+    id: 'bonus_90min',
+    name: '90m Bonus Project Time',
+    type: 'BONUS_PROJECT_TIME',
+    cost: 260,
+    description: 'Extend your project time by 90 focused minutes',
+  },
+  {
     id: 'bonus_evening',
     name: 'Evening Bonus Unlock',
     type: 'BONUS_PROJECT_TIME',
     cost: 400,
     description: 'Unlock evening project window for relaxed work',
+  },
+  {
+    id: 'bonus_focus_boost',
+    name: 'Focus Boost Unlock',
+    type: 'BONUS_PROJECT_TIME',
+    cost: 350,
+    description: 'Unlock an extra focused session for high-priority work',
   },
 ];
 

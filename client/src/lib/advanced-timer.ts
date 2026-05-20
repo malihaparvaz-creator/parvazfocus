@@ -99,6 +99,16 @@ export function completeStudyCycle(state: AppState): AppState {
   return newState;
 }
 
+function getPauseAdjustmentMs(session: AdvancedTimerSession): number {
+  const pausedSoFar = session.pausedDurationMs || 0;
+  if (session.isPaused && session.pausedAt) {
+    const now = Date.now();
+    const pausedNow = now - new Date(session.pausedAt).getTime();
+    return pausedSoFar + pausedNow;
+  }
+  return pausedSoFar;
+}
+
 /**
  * Pause timer
  */
@@ -151,8 +161,8 @@ export function endTimerSession(state: AppState): AppState {
  * Get timer progress percentage
  */
 export function getTimerProgress(session: AdvancedTimerSession): number {
-  const now = new Date().getTime();
-  const paused = session.pausedDurationMs || 0;
+  const now = Date.now();
+  const paused = getPauseAdjustmentMs(session);
   const elapsedTime = now - new Date(session.startedAt).getTime() - paused;
   const totalTime = session.duration * 60 * 1000; // Convert to milliseconds
   return Math.min(100, (elapsedTime / totalTime) * 100);
@@ -162,8 +172,8 @@ export function getTimerProgress(session: AdvancedTimerSession): number {
  * Get remaining time in minutes
  */
 export function getRemainingTime(session: AdvancedTimerSession): number {
-  const now = new Date().getTime();
-  const paused = session.pausedDurationMs || 0;
+  const now = Date.now();
+  const paused = getPauseAdjustmentMs(session);
   const elapsedTime = now - new Date(session.startedAt).getTime() - paused;
   const remainingMs = session.duration * 60 * 1000 - elapsedTime;
   return Math.max(0, Math.ceil(remainingMs / (1000 * 60)));
@@ -174,14 +184,13 @@ export function getRemainingTime(session: AdvancedTimerSession): number {
  */
 export function getCurrentCycleInfo(session: AdvancedTimerSession) {
   const cycleTime = STUDY_DURATION + BREAK_DURATION;
-  const now = new Date().getTime();
-  const paused = session.pausedDurationMs || 0;
+  const now = Date.now();
+  const paused = getPauseAdjustmentMs(session);
   const elapsedTime = now - new Date(session.startedAt).getTime() - paused;
   const elapsedMinutes = elapsedTime / (1000 * 60);
 
   const currentCycle = Math.floor(elapsedMinutes / cycleTime) + 1;
   const timeInCurrentCycle = elapsedMinutes % cycleTime;
-
   const isStudyPhase = timeInCurrentCycle < STUDY_DURATION;
   const timeRemaining = isStudyPhase
     ? STUDY_DURATION - timeInCurrentCycle
@@ -200,7 +209,7 @@ export function getCurrentCycleInfo(session: AdvancedTimerSession) {
  */
 export function getRemainingSeconds(session: AdvancedTimerSession): number {
   const now = Date.now();
-  const paused = session.pausedDurationMs || 0;
+  const paused = getPauseAdjustmentMs(session);
   const elapsedMs = now - new Date(session.startedAt).getTime() - paused;
   const remainingMs = Math.max(0, session.duration * 60 * 1000 - elapsedMs);
   return Math.ceil(remainingMs / 1000);
@@ -217,7 +226,9 @@ export function getBreakCostInXP(breakDurationMinutes: number): number {
  * Get timer statistics
  */
 export function getTimerStats(session: AdvancedTimerSession) {
-  const elapsedTime = new Date().getTime() - new Date(session.startedAt).getTime();
+  const now = Date.now();
+  const paused = getPauseAdjustmentMs(session);
+  const elapsedTime = now - new Date(session.startedAt).getTime() - paused;
   const elapsedMinutes = elapsedTime / (1000 * 60);
 
   return {

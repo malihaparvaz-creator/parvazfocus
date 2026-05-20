@@ -91,7 +91,161 @@
   --sidebar-border: #E8D5F2;
   --sidebar-ring: #D8A8E8;
 }
+.theme-dark {
+  --background: #111827;
+  --foreground: #F3F4F6;
+  --card: #1F2937;
+  --card-foreground: #F9FAFB;
+  --popover: #111827;
+  --popover-foreground: #F9FAFB;
+  --secondary: #374151;
+  --secondary-foreground: #D1D5DB;
+  --muted: #1F2937;
+  --muted-foreground: #D1D5DB;
+  --accent: #6366F1;
+  --accent-foreground: #F8FAFC;
+  --destructive: #EF4444;
+  --destructive-foreground: #F8FAFC;
+  --border: #374151;
+  --input: #111827;
+  --ring: #818CF8;
+  --sidebar: #111827;
+  --sidebar-foreground: #E5E7EB;
+  --sidebar-accent: #4F46E5;
+  --sidebar-accent-foreground: #F8FAFC;
+  --sidebar-border: #374151;
+  --sidebar-ring: #6366F1;
+}
 
+.theme-forest {
+  --background: #EDF7EF;
+  --foreground: #1F363D;
+  --card: #F3FBF5;
+  --card-foreground: #1F363D;
+  --popover: #F3FBF5;
+  --popover-foreground: #1F363D;
+  --secondary: #CDE6D0;
+  --secondary-foreground: #24634F;
+  --muted: #D8EADD;
+  --muted-foreground: #2B4A3A;
+  --accent: #2F855A;
+  --accent-foreground: #EFF7ED;
+  --destructive: #E53E3E;
+  --destructive-foreground: #FFFFFF;
+  --border: #C6E0C8;
+  --input: #E8F3EA;
+  --ring: #68D391;
+  --sidebar: #E8F3EA;
+  --sidebar-foreground: #1F363D;
+  --sidebar-accent: #9AE6B4;
+  --sidebar-accent-foreground: #1F363D;
+  --sidebar-border: #C6E0C8;
+  --sidebar-ring: #68D391;
+}
+
+.theme-ocean {
+  --background: #E8F5FF;
+  --foreground: #0F1F3D;
+  --card: #F0FBFF;
+  --card-foreground: #0F1F3D;
+  --popover: #F0FBFF;
+  --popover-foreground: #0F1F3D;
+  --secondary: #BEE3F8;
+  --secondary-foreground: #1D4E89;
+  --muted: #DFF5FF;
+  --muted-foreground: #1E3A5F;
+  --accent: #3B82F6;
+  --accent-foreground: #FFFFFF;
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+  --border: #BAE6FD;
+  --input: #EFF8FF;
+  --ring: #60A5FA;
+  --sidebar: #E8F5FF;
+  --sidebar-foreground: #0F1F3D;
+  --sidebar-accent: #93C5FD;
+  --sidebar-accent-foreground: #0F1F3D;
+  --sidebar-border: #BAE6FD;
+  --sidebar-ring: #60A5FA;
+}
+
+.theme-solar {
+  --background: #FFF7ED;
+  --foreground: #4A2511;
+  --card: #FFFAF5;
+  --card-foreground: #4A2511;
+  --popover: #FFFAF5;
+  --popover-foreground: #4A2511;
+  --secondary: #FED7AA;
+  --secondary-foreground: #7C2D12;
+  --muted: #FEEBC8;
+  --muted-foreground: #7C2D12;
+  --accent: #F97316;
+  --accent-foreground: #FFFFFF;
+  --destructive: #DC2626;
+  --destructive-foreground: #FFFFFF;
+  --border: #FDBA74;
+  --input: #FFF1E0;
+  --ring: #FB923C;
+  --sidebar: #FFF7ED;
+  --sidebar-foreground: #4A2511;
+  --sidebar-accent: #FDBA74;
+  --sidebar-accent-foreground: #4A2511;
+  --sidebar-border: #FCD9B6;
+  --sidebar-ring: #FB923C;
+}
+
+.theme-mint {
+  --background: #F2FEF7;
+  --foreground: #11403B;
+  --card: #F8FFF9;
+  --card-foreground: #11403B;
+  --popover: #F8FFF9;
+  --popover-foreground: #11403B;
+  --secondary: #ADE7D6;
+  --secondary-foreground: #124F47;
+  --muted: #DDF5EE;
+  --muted-foreground: #0F3E35;
+  --accent: #34D399;
+  --accent-foreground: #FFFFFF;
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+  --border: #A7F3D0;
+  --input: #EFEFF0;
+  --ring: #6EE7B7;
+  --sidebar: #F2FEF7;
+  --sidebar-foreground: #11403B;
+  --sidebar-accent: #6EE7B7;
+  --sidebar-accent-foreground: #11403B;
+  --sidebar-border: #A7F3D0;
+  --sidebar-ring: #6EE7B7;
+}
+
+.theme-twilight {
+  --background: #101827;
+  --foreground: #E2E8F0;
+  --card: #1E293B;
+  --card-foreground: #E2E8F0;
+  --popover: #1E293B;
+  --popover-foreground: #E2E8F0;
+  --secondary: #334155;
+  --secondary-foreground: #CBD5E1;
+  --muted: #1E293B;
+  --muted-foreground: #CBD5E1;
+  --accent: #A78BFA;
+  --accent-foreground: #F8FAFC;
+  --destructive: #F97316;
+  --destructive-foreground: #FFFFFF;
+  --border: #334155;
+  --input: #1E293B;
+  --ring: #A78BFA;
+  --sidebar: #0F172A;
+  --sidebar-foreground: #E2E8F0;
+  --sidebar-accent: #A78BFA;
+  --sidebar-accent-foreground: #F8FAFC;
+  --sidebar-border: #334155;
+  --sidebar-ring: #A78BFA;
+}
 @layer base {
   * {
     @apply border-border outline-ring/50;
