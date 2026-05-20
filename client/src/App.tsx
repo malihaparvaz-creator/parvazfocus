@@ -11,6 +11,7 @@ import { Navigation } from "./components/Navigation";
 import Home from "./pages/Home";
 import StudyMode from "./pages/StudyMode";
 import ProjectMode from "./pages/ProjectMode";
+import Money from "./pages/Money";
 import Settings from "./pages/Settings";
 import { TimeReminders, useNotificationPermission } from "./components/TimeReminders";
 import { MiniMusicBar } from "./components/MiniMusicBar";
@@ -21,6 +22,7 @@ function Router() {
       <Route path={"/"} component={Home} />
       <Route path={"/study"} component={StudyMode} />
       <Route path={"/projects"} component={ProjectMode} />
+      <Route path={"/money"} component={Money} />
       <Route path={"/settings"} component={Settings} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />

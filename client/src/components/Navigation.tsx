@@ -4,7 +4,7 @@
 
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
-import { Home, BookOpen, Zap, Settings } from 'lucide-react';
+import { Home, BookOpen, Zap, Settings, DollarSign } from 'lucide-react';
 
 export function Navigation() {
   const [location, navigate] = useLocation();
@@ -13,6 +13,7 @@ export function Navigation() {
     { href: '/', label: 'Home', icon: Home },
     { href: '/study', label: 'Study', icon: BookOpen },
     { href: '/projects', label: 'Projects', icon: Zap },
+    { href: '/money', label: 'Money', icon: DollarSign },
     { href: '/settings', label: 'Settings', icon: Settings },
   ];
 
