@@ -4,6 +4,7 @@
 */
 
 import { useState } from 'react';
+import { useLocation } from 'wouter';
 import { useAppContext } from '@/contexts/AppContext';
 import { IdeaVaultItem, CreativeTodo, ParvazProject } from '@/lib/types';
 import { Button } from '@/components/ui/button';
@@ -18,6 +19,7 @@ import { Plus, Lightbulb, Zap, BookOpen, Target, Trash2, CheckCircle2, Circle, E
 
 export default function ProjectMode() {
   const { state, updateState } = useAppContext();
+  const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState('todo');
   const [newTodoTitle, setNewTodoTitle] = useState('');
   const [newTodoDescription, setNewTodoDescription] = useState('');
@@ -83,6 +85,18 @@ export default function ProjectMode() {
           <p className="text-muted-foreground">
             {hasPriorityTasks ? 'Your projects are unlocked. Time to build.' : 'No tasks today. Dive into your projects!'}
           </p>
+          <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="rounded-2xl border border-border/60 bg-secondary/10 p-4">
+              <p className="text-sm font-medium text-muted-foreground">Need to book money flow?</p>
+              <p className="text-base font-semibold text-foreground">Money tracking lives in its own page.</p>
+            </div>
+            <button
+              onClick={() => navigate('/money')}
+              className="inline-flex items-center justify-center rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-accent-foreground hover:bg-accent/90"
+            >
+              Go to Money Tracker
+            </button>
+          </div>
         </div>
       </header>
 

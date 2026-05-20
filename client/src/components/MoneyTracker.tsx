@@ -8,10 +8,20 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { CreditCard, DollarSign, Globe, Trash2 } from 'lucide-react';
 
+const EXCHANGE_RATES_TO_INR: Record<'INR' | 'USD' | 'EUR' | 'GBP' | 'AED' | 'JPY', number> = {
+  INR: 1,
+  USD: 83.5,
+  EUR: 90.2,
+  GBP: 103.8,
+  AED: 22.8,
+  JPY: 0.55,
+};
+
 const DEFAULT_MONEY_DRAFT = {
   person: '',
   item: '',
   amount: '',
+  currency: 'INR' as const,
   method: 'ONLINE' as const,
   date: new Date().toISOString().slice(0, 10),
   notes: '',
@@ -24,17 +34,23 @@ export function MoneyTracker() {
   const entries = tracker?.entries || [];
 
   const totals = useMemo(() => {
-    const total = entries.reduce((sum, entry) => sum + entry.amount, 0);
-    const online = entries
+    const totalInRupees = entries.reduce((sum, entry) => {
+      const rate = EXCHANGE_RATES_TO_INR[entry.currency] ?? 1;
+      return sum + entry.amount * rate;
+    }, 0);
+
+    const onlineInRupees = entries
       .filter(entry => entry.method === 'ONLINE')
-      .reduce((sum, entry) => sum + entry.amount, 0);
-    const offline = entries
+      .reduce((sum, entry) => sum + entry.amount * (EXCHANGE_RATES_TO_INR[entry.currency] ?? 1), 0);
+
+    const offlineInRupees = entries
       .filter(entry => entry.method === 'OFFLINE')
-      .reduce((sum, entry) => sum + entry.amount, 0);
+      .reduce((sum, entry) => sum + entry.amount * (EXCHANGE_RATES_TO_INR[entry.currency] ?? 1), 0);
+
     return {
-      total,
-      online,
-      offline,
+      totalInRupees,
+      onlineInRupees,
+      offlineInRupees,
       count: entries.length,
     };
   }, [entries]);
@@ -69,6 +85,7 @@ export function MoneyTracker() {
           person: draft.person.trim(),
           item: draft.item.trim(),
           amount,
+          currency: draft.currency,
           method: draft.method,
           date: draft.date,
           notes: draft.notes.trim(),
@@ -99,8 +116,8 @@ export function MoneyTracker() {
             <CreditCard className="w-5 h-5 text-violet-600" />
             <p className="text-sm font-semibold text-violet-700">Money Dashboard</p>
           </div>
-          <p className="text-3xl font-bold text-foreground">${totals.total.toFixed(2)}</p>
-          <p className="text-sm text-muted-foreground mt-2">Tracked cash flow across creative work & side income.</p>
+          <p className="text-3xl font-bold text-foreground">₹{totals.totalInRupees.toFixed(2)}</p>
+          <p className="text-sm text-muted-foreground mt-2">Total converted to Indian Rupees using current exchange rates.</p>
         </Card>
 
         <Card className="p-6 bg-gradient-to-br from-sky-50 via-sky-100 to-cyan-50 border border-sky-200/80 shadow-sm">
@@ -108,7 +125,7 @@ export function MoneyTracker() {
             <Globe className="w-5 h-5 text-sky-600" />
             <p className="text-sm font-semibold text-sky-700">Online Payments</p>
           </div>
-          <p className="text-3xl font-bold text-foreground">${totals.online.toFixed(2)}</p>
+          <p className="text-3xl font-bold text-foreground">₹{totals.onlineInRupees.toFixed(2)}</p>
           <p className="text-sm text-muted-foreground mt-2">Digital purchases, freelance pay, subscriptions.</p>
         </Card>
 
@@ -117,7 +134,7 @@ export function MoneyTracker() {
             <DollarSign className="w-5 h-5 text-rose-600" />
             <p className="text-sm font-semibold text-rose-700">Offline Cash</p>
           </div>
-          <p className="text-3xl font-bold text-foreground">${totals.offline.toFixed(2)}</p>
+          <p className="text-3xl font-bold text-foreground">₹{totals.offlineInRupees.toFixed(2)}</p>
           <p className="text-sm text-muted-foreground mt-2">Cash, receipts, and in-person purchases.</p>
         </Card>
       </div>
@@ -131,35 +148,51 @@ export function MoneyTracker() {
           <Badge className="bg-emerald-100 text-emerald-700">Autosave Enabled</Badge>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-muted-foreground">Person / Source</label>
-            <Input
-              placeholder="Client, friend, vendor"
-              value={draft.person}
-              onChange={(e) => updateDraft('person', e.target.value)}
-            />
-          </div>
+<div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">Person / Source</label>
+              <Input
+                placeholder="Client, friend, vendor"
+                value={draft.person}
+                onChange={(e) => updateDraft('person', e.target.value)}
+              />
+            </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-muted-foreground">Item / Purpose</label>
-            <Input
-              placeholder="Website design, tools, props"
-              value={draft.item}
-              onChange={(e) => updateDraft('item', e.target.value)}
-            />
-          </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">Item / Purpose</label>
+              <Input
+                placeholder="Website design, tools, props"
+                value={draft.item}
+                onChange={(e) => updateDraft('item', e.target.value)}
+              />
+            </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-muted-foreground">Amount</label>
-            <Input
-              type="number"
-              min="0"
-              step="0.01"
-              placeholder="0.00"
-              value={draft.amount}
-              onChange={(e) => updateDraft('amount', e.target.value)}
-            />
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">Amount</label>
+              <Input
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="0.00"
+                value={draft.amount}
+                onChange={(e) => updateDraft('amount', e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">Currency</label>
+              <select
+                value={draft.currency}
+                onChange={(e) => updateDraft('currency', e.target.value)}
+                className="w-full rounded-lg border border-border/50 bg-background px-3 py-2 text-sm outline-none focus:border-accent focus:ring-accent/30"
+              >
+                <option value="INR">INR</option>
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+                <option value="AED">AED</option>
+                <option value="JPY">JPY</option>
+              </select>
           </div>
         </div>
 
@@ -235,8 +268,9 @@ export function MoneyTracker() {
 
                   <div className="flex items-center gap-3 flex-wrap justify-between lg:justify-end">
                     <div className="text-right">
-                      <p className="text-2xl font-bold text-foreground">${entry.amount.toFixed(2)}</p>
+                      <p className="text-2xl font-bold text-foreground">{entry.currency} {entry.amount.toFixed(2)}</p>
                       <p className="text-xs text-muted-foreground">Recorded</p>
+                      <p className="text-xs text-muted-foreground mt-1">₹{(entry.amount * (EXCHANGE_RATES_TO_INR[entry.currency] ?? 1)).toFixed(2)} in INR</p>
                     </div>
                     <Button
                       variant="outline"

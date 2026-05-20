@@ -21,7 +21,7 @@ export function Navigation() {
     <>
       {/* Sidebar — desktop only (lg and up) */}
       <nav className="hidden lg:flex fixed left-0 top-0 h-screen w-20 bg-card border-r border-border/50 flex-col items-center py-8 gap-4 z-50">
-        {links.slice(0, 3).map(({ href, label, icon: Icon }) => (
+        {links.slice(0, 4).map(({ href, label, icon: Icon }) => (
           <Button
             key={href}
             onClick={() => navigate(href)}

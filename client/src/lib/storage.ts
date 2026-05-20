@@ -1,4 +1,4 @@
-import { AppState, LEVEL_NAMES, STORE_ITEMS } from './types';
+import { AppState, LEVEL_NAMES, STORE_ITEMS, MoneyTrackerDraft } from './types';
 import { updateStreak } from './time-aggregation';
 
 const STORAGE_KEY = 'parvaz-focus-state';
@@ -100,6 +100,7 @@ export function initializeAppState(): AppState {
         person: '',
         item: '',
         amount: '',
+        currency: 'INR',
         method: 'ONLINE',
         date: today.toISOString().slice(0, 10),
         notes: '',
@@ -315,6 +316,7 @@ export function migrateAppState(state: AppState): AppState {
         person: '',
         item: '',
         amount: '',
+        currency: 'INR',
         method: 'ONLINE',
         date: today.toISOString().slice(0, 10),
         notes: '',
@@ -329,10 +331,19 @@ export function migrateAppState(state: AppState): AppState {
         person: '',
         item: '',
         amount: '',
+        currency: 'INR',
         method: 'ONLINE',
         date: today.toISOString().slice(0, 10),
         notes: '',
       };
+    } else {
+      const draft = state.moneyTracker.draft as Partial<MoneyTrackerDraft>;
+      if (!('currency' in draft)) {
+        state.moneyTracker.draft = {
+          ...state.moneyTracker.draft,
+          currency: 'INR',
+        };
+      }
     }
   }
 

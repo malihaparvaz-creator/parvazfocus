@@ -325,6 +325,7 @@ export interface MoneyTrackerDraft {
   person: string;
   item: string;
   amount: string;
+  currency: 'INR' | 'USD' | 'EUR' | 'GBP' | 'AED' | 'JPY';
   method: 'ONLINE' | 'OFFLINE';
   date: string;
   notes: string;
@@ -335,6 +336,7 @@ export interface MoneyTrackerEntry {
   person: string;
   item: string;
   amount: number;
+  currency: 'INR' | 'USD' | 'EUR' | 'GBP' | 'AED' | 'JPY';
   method: 'ONLINE' | 'OFFLINE';
   date: string;
   notes?: string;
