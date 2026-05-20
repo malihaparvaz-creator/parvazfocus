@@ -246,6 +246,84 @@
   --sidebar-border: #334155;
   --sidebar-ring: #A78BFA;
 }
+
+.theme-aurora {
+  --background: linear-gradient(180deg,#071B3A 0%, #07324A 60%);
+  --foreground: #E9F8FF;
+  --card: rgba(255,255,255,0.04);
+  --card-foreground: #E9F8FF;
+  --popover: rgba(255,255,255,0.03);
+  --popover-foreground: #E9F8FF;
+  --secondary: #7CE7D9;
+  --secondary-foreground: #042E3A;
+  --muted: rgba(255,255,255,0.02);
+  --muted-foreground: #AEE9F7;
+  --accent: linear-gradient(90deg,#7DE9C0,#8AB3FF);
+  --accent-foreground: #041426;
+  --destructive: #FF6B6B;
+  --destructive-foreground: #07121A;
+  --border: rgba(255,255,255,0.06);
+  --input: rgba(255,255,255,0.02);
+  --ring: #7DE9C0;
+  --sidebar: rgba(7,29,58,0.6);
+  --sidebar-foreground: #E6F8FF;
+  --sidebar-accent: #7DE9C0;
+  --sidebar-accent-foreground: #041426;
+  --sidebar-border: rgba(255,255,255,0.04);
+  --sidebar-ring: #8AB3FF;
+}
+
+.theme-midnight {
+  --background: #070812;
+  --foreground: #E6EEF7;
+  --card: #0F1724;
+  --card-foreground: #E6EEF7;
+  --popover: #0B1320;
+  --popover-foreground: #E6EEF7;
+  --secondary: #1E293B;
+  --secondary-foreground: #CBD5E1;
+  --muted: #0B1220;
+  --muted-foreground: #A8B3C2;
+  --accent: #00B4D8;
+  --accent-foreground: #001219;
+  --destructive: #FF6B6B;
+  --destructive-foreground: #0B0B0C;
+  --border: #102030;
+  --input: #071018;
+  --ring: #00B4D8;
+  --sidebar: #071018;
+  --sidebar-foreground: #CFDEE9;
+  --sidebar-accent: #00B4D8;
+  --sidebar-accent-foreground: #071018;
+  --sidebar-border: #0F2030;
+  --sidebar-ring: #00B4D8;
+}
+
+.theme-crystal {
+  --background: #F7FBFF;
+  --foreground: #0B2840;
+  --card: rgba(255,255,255,0.8);
+  --card-foreground: #082033;
+  --popover: #FFFFFF;
+  --popover-foreground: #082033;
+  --secondary: #E6F7FF;
+  --secondary-foreground: #083246;
+  --muted: #F0F7FB;
+  --muted-foreground: #6B8796;
+  --accent: #56CCF2;
+  --accent-foreground: #082033;
+  --destructive: #E15B5B;
+  --destructive-foreground: #FFFFFF;
+  --border: #DDEFF7;
+  --input: #F5FBFF;
+  --ring: #56CCF2;
+  --sidebar: #F7FBFF;
+  --sidebar-foreground: #082033;
+  --sidebar-accent: #CFF5FF;
+  --sidebar-accent-foreground: #082033;
+  --sidebar-border: #DDEFF7;
+  --sidebar-ring: #56CCF2;
+}
 @layer base {
   * {
     @apply border-border outline-ring/50;

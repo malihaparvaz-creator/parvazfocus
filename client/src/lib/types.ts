@@ -454,6 +454,27 @@ export const STORE_ITEMS: StoreItemData[] = [
     description: 'Subtle dark blue tones for a calm evening workspace',
   },
   {
+    id: 'theme_aurora',
+    name: 'Aurora Theme',
+    type: 'THEME',
+    cost: 800,
+    description: 'Premium northern-lights inspired gradient with vibrant accents',
+  },
+  {
+    id: 'theme_midnight',
+    name: 'Midnight Theme',
+    type: 'THEME',
+    cost: 900,
+    description: 'Deep high-contrast midnight palette for focused late-night work',
+  },
+  {
+    id: 'theme_crystal',
+    name: 'Crystal Theme',
+    type: 'THEME',
+    cost: 1000,
+    description: 'Luminous glass-like UI with soft glows and elegant highlights',
+  },
+  {
     id: 'soundtrack_focus',
     name: 'Deep Focus Soundtrack',
     type: 'SOUNDTRACK',
