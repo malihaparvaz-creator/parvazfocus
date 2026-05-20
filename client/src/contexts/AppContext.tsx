@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react';
 import { AppState, Task } from '@/lib/types';
-import { loadAppState, saveAppState, saveAppStateWithSync } from '@/lib/storage';
+import { loadAppState, saveAppState, saveAppStateWithSync, migrateAppState } from '@/lib/storage';
 import { subscribeToFirestoreState } from '@/lib/firebase';
 import { updateSubjectPerformance } from '@/lib/subject-tracker';
 import { updateStreak, updateLevel } from '@/lib/time-aggregation';
@@ -44,9 +44,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
       lastRemoteUpdatedAtRef.current = remoteUpdatedAtMs;
       skipNextCloudSyncRef.current = true;
-      latestStateRef.current = remote;
-      setState(remote);
-      saveAppState(remote); // keep local cache aligned with cloud state
+      // Ensure remote state is migrated (merge new store items etc.) before applying
+      const migrated = migrateAppState(remote);
+      latestStateRef.current = migrated;
+      setState(migrated);
+      saveAppState(migrated); // keep local cache aligned with cloud state
     });
 
     return () => {

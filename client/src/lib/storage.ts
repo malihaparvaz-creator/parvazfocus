@@ -157,7 +157,7 @@ function generateDailyBrief(date: Date) {
   };
 }
 
-function migrateAppState(state: AppState): AppState {
+export function migrateAppState(state: AppState): AppState {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   
