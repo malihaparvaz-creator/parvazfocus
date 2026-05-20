@@ -200,6 +200,21 @@ function migrateAppState(state: AppState): AppState {
       purchasedItems: [],
     };
   }
+  else {
+    // If the app previously stored xpStore items, merge any new items
+    // from the canonical STORE_ITEMS so existing users see added themes
+    try {
+      const existing = state.user.stats.xpStore.items || [];
+      const existingIds = new Set(existing.map((i: any) => i.id));
+      const additions = STORE_ITEMS.filter(i => !existingIds.has(i.id));
+      if (additions.length > 0) {
+        state.user.stats.xpStore.items = [...existing, ...additions];
+      }
+    } catch (e) {
+      // If anything goes wrong, fall back to the canonical list
+      state.user.stats.xpStore.items = STORE_ITEMS;
+    }
+  }
   
   if (!state.user.stats.totalXPSpent) {
     state.user.stats.totalXPSpent = 0;
