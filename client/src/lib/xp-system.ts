@@ -11,14 +11,14 @@ import { AppState, FocusRank, FOCUS_RANKS, XP_COSTS } from './types';
 export function calculateTrustScore(state: AppState): number {
   const stats = state.user.stats;
   
-  // Consistency: streak / max possible streak
+  // Consistency: scaled to 40 points (30-day reference)
   const consistencyScore = Math.min((stats.streak / 30) * 40, 40);
-  
-  // Promises Kept: completed tasks / total tasks
-  const promisesKeptScore = Math.min((stats.totalTasksCompleted / Math.max(stats.totalTasksCompleted + 10, 1)) * 30, 30);
-  
-  // Focus Quality: average focus rating
-  const focusQualityScore = Math.min((stats.averageFocusRating / 3) * 30, 30);
+
+  // Promises Kept: normalize completed tasks to a 0-30 scale (assume 100 tasks = full)
+  const promisesKeptScore = Math.min((Math.min(stats.totalTasksCompleted, 100) / 100) * 30, 30);
+
+  // Focus Quality: average focus rating expected 0-100
+  const focusQualityScore = Math.min((stats.averageFocusRating / 100) * 30, 30);
   
   const total = Math.round(consistencyScore + promisesKeptScore + focusQualityScore);
   return Math.max(0, Math.min(100, total));
@@ -202,6 +202,15 @@ export function purchaseStoreItem(state: AppState, itemId: string): AppState {
     newState.user.stats.totalXP -= item.cost;
     newState.user.stats.totalXPSpent += item.cost;
     newState.user.stats.xpStore.purchasedItems.push(itemId);
+    // If theme purchased, persist selection to localStorage and notify ThemeProvider
+    if (item.type === 'THEME') {
+      try {
+        // Store a short theme key (e.g., 'dark', 'forest', 'ocean', 'solar')
+        const key = item.id.replace('theme_', '');
+        localStorage.setItem('theme', key);
+        window.dispatchEvent(new CustomEvent('themeChange', { detail: { theme: key } }));
+      } catch (e) {}
+    }
     return newState;
   }
   

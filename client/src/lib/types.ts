@@ -254,6 +254,9 @@ export interface AdvancedTimerSession {
   endedAt?: Date;
   isActive: boolean;
   isPaused: boolean;
+  // Pause tracking
+  pausedAt?: Date;
+  pausedDurationMs?: number; // accumulated paused milliseconds
   appBlockerActive: boolean;
   blockedApps: string[];
 }
@@ -423,6 +426,20 @@ export const STORE_ITEMS: StoreItemData[] = [
     description: 'Calming green palette inspired by nature',
   },
   {
+    id: 'theme_ocean',
+    name: 'Ocean Theme',
+    type: 'THEME',
+    cost: 200,
+    description: 'Cool blue tones to keep you calm and focused',
+  },
+  {
+    id: 'theme_solar',
+    name: 'Solar Theme',
+    type: 'THEME',
+    cost: 200,
+    description: 'Warm, high-contrast palette for daytime productivity',
+  },
+  {
     id: 'soundtrack_focus',
     name: 'Deep Focus Soundtrack',
     type: 'SOUNDTRACK',
@@ -437,6 +454,20 @@ export const STORE_ITEMS: StoreItemData[] = [
     description: 'Calming rain sounds for relaxed focus',
   },
   {
+    id: 'soundtrack_lofi',
+    name: 'Lofi Study Beats',
+    type: 'SOUNDTRACK',
+    cost: 180,
+    description: 'Chill lo-fi beats to maintain steady rhythm',
+  },
+  {
+    id: 'soundtrack_cinematic',
+    name: 'Cinematic Drive',
+    type: 'SOUNDTRACK',
+    cost: 300,
+    description: 'Epic instrumental tracks to power intense sessions',
+  },
+  {
     id: 'quotes_stoic',
     name: 'Stoic Quotes Pack',
     type: 'QUOTE_PACK',
@@ -449,6 +480,28 @@ export const STORE_ITEMS: StoreItemData[] = [
     type: 'FOCUS_ROOM',
     cost: 300,
     description: 'Study in a virtual library setting',
+  },
+  // Bonus project time / unlocks
+  {
+    id: 'bonus_30min',
+    name: '30m Bonus Project Time',
+    type: 'BONUS_PROJECT_TIME',
+    cost: 100,
+    description: 'Add 30 minutes of project time unlock',
+  },
+  {
+    id: 'bonus_60min',
+    name: '60m Bonus Project Time',
+    type: 'BONUS_PROJECT_TIME',
+    cost: 180,
+    description: 'Add 60 minutes of project time unlock',
+  },
+  {
+    id: 'bonus_evening',
+    name: 'Evening Bonus Unlock',
+    type: 'BONUS_PROJECT_TIME',
+    cost: 400,
+    description: 'Unlock evening project window for relaxed work',
   },
 ];
 

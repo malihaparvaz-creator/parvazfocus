@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { AlertCircle, Play, Pause, RotateCcw, Coffee, Lock, Zap } from 'lucide-react';
+import { AlertCircle, Play, Pause, RotateCcw, Coffee, Zap } from 'lucide-react';
 import {
   createTimerSession,
   takeExtraBreak,
@@ -26,36 +26,21 @@ import {
   validateTimerDuration,
 } from '@/lib/advanced-timer';
 import { logTimerSessionToApps } from '@/lib/timer-logging';
-import {
-  createBlockerConfig,
-  getEffectiveBlockedApps,
-  getBlockerSummary,
-  DEFAULT_BLOCKED_APPS,
-} from '@/lib/app-blocker';
-import {
-  schedulePomodoroNotifications,
-  cancelPomodoroNotifications,
-  requestNotificationPermission,
-} from '@/lib/notifications';
+import { schedulePomodoroNotifications, cancelPomodoroNotifications, requestNotificationPermission } from '@/lib/notifications';
+import { getRemainingSeconds } from '@/lib/advanced-timer';
 import { addTrackedDuration } from '@/lib/time-aggregation';
 
 export function AdvancedPomodoroTimer() {
   const { state, updateState } = useAppContext();
   const [showStartDialog, setShowStartDialog] = useState(false);
   const [durationInput, setDurationInput] = useState('120');
-  const [selectedApps, setSelectedApps] = useState<string[]>(DEFAULT_BLOCKED_APPS);
+  const [selectedApps, setSelectedApps] = useState<string[]>([]);
   const [timeLeft, setTimeLeft] = useState(0);
   const [showBreakDialog, setShowBreakDialog] = useState(false);
   const [breakDuration, setBreakDuration] = useState('10');
-  const [enableBlocker, setEnableBlocker] = useState(true);
+  // app blocker removed for Pomodoro flow
 
-  // Create blocker config with user's study apps as whitelist
-  const blockerConfig = createBlockerConfig(
-    state.studyAppsSetup || [],
-    DEFAULT_BLOCKED_APPS
-  );
-  const effectiveBlockedApps = getEffectiveBlockedApps(blockerConfig);
-  const blockerSummary = getBlockerSummary(blockerConfig);
+  // app blocker removed for Pomodoro flow
 
   const session = state.currentTimerSession;
 
@@ -63,7 +48,7 @@ export function AdvancedPomodoroTimer() {
     if (!session || !session.isActive) return;
 
     const interval = setInterval(() => {
-      const remaining = Math.max(0, session.duration * 60 - (new Date().getTime() - new Date(session.startedAt).getTime()) / 1000);
+      const remaining = getRemainingSeconds(session);
       setTimeLeft(Math.ceil(remaining));
     }, 1000);
 
@@ -78,12 +63,6 @@ export function AdvancedPomodoroTimer() {
     }
 
     let newState = createTimerSession(state, parseInt(durationInput), selectedApps);
-    
-    // Store blocker status in session
-    if (newState.currentTimerSession) {
-      (newState.currentTimerSession as any).blockerActive = enableBlocker;
-    }
-    
     updateState(newState);
     setShowStartDialog(false);
     // Schedule background notifications
@@ -177,47 +156,7 @@ export function AdvancedPomodoroTimer() {
                   </p>
                 </div>
 
-                <div>
-                  <label className="text-sm font-semibold mb-3 block flex items-center gap-2">
-                    <Lock className="w-4 h-4" />
-                    Smart App Blocker
-                  </label>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={enableBlocker}
-                        onChange={(e) => setEnableBlocker(e.target.checked)}
-                        className="w-4 h-4 cursor-pointer"
-                        id="enable-blocker"
-                      />
-                      <label htmlFor="enable-blocker" className="text-sm cursor-pointer">
-                        Enable app blocking during session
-                      </label>
-                    </div>
-                    
-                    {enableBlocker && (
-                      <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm space-y-2">
-                        <div>
-                          <p className="font-semibold text-red-900 mb-1">Blocked Apps ({effectiveBlockedApps.length}):</p>
-                          <p className="text-red-800 text-xs">
-                            {effectiveBlockedApps.length > 0
-                              ? effectiveBlockedApps.join(', ')
-                              : 'None (all apps whitelisted)'}
-                          </p>
-                        </div>
-                        {state.studyAppsSetup && state.studyAppsSetup.length > 0 && (
-                          <div className="pt-2 border-t border-red-200">
-                            <p className="font-semibold text-green-900 mb-1">✓ Whitelisted Study Apps ({state.studyAppsSetup.length}):</p>
-                            <p className="text-green-800 text-xs">
-                              {state.studyAppsSetup.join(', ')}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
+                {/* Smart App Blocker removed from Pomodoro UI */}
 
                 <div>
                   <label className="text-sm font-semibold mb-3 block">Track App Usage</label>
@@ -354,17 +293,7 @@ export function AdvancedPomodoroTimer() {
             </Button>
           </div>
 
-          {/* App Blocker Status */}
-          {session.appBlockerActive && (
-            <Card className="p-4 bg-red-50/50 border-red-200/50 mt-6">
-              <div className="flex items-center gap-2 text-red-900 text-sm">
-                <Lock className="w-4 h-4" />
-                <span>
-                  <strong>{session.blockedApps.length} apps blocked</strong> during this session
-                </span>
-              </div>
-            </Card>
-          )}
+          {/* Smart app blocker removed from Pomodoro UI */}
         </div>
       </Card>
 

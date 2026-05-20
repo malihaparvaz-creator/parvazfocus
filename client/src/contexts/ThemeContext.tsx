@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = "light" | "dark";
+type Theme = string;
 
 interface ThemeContextType {
   theme: Theme;
   toggleTheme?: () => void;
+  setTheme?: (theme: Theme) => void;
   switchable: boolean;
 }
 
@@ -31,25 +32,45 @@ export function ThemeProvider({
 
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
+    // Remove any theme-* classes first
+    Array.from(root.classList)
+      .filter(c => c.startsWith('theme-') || c === 'dark')
+      .forEach(c => root.classList.remove(c));
+
+    // Add applied theme class
+    const themeClass = `theme-${theme}`;
+    root.classList.add(themeClass);
+
+    // Also add legacy 'dark' class for dark theme support
+    if (theme === 'dark') root.classList.add('dark');
 
     if (switchable) {
-      localStorage.setItem("theme", theme);
+      try { localStorage.setItem("theme", theme); } catch (e) {}
     }
   }, [theme, switchable]);
 
   const toggleTheme = switchable
     ? () => {
-        setTheme(prev => (prev === "light" ? "dark" : "light"));
+        setThemeState(prev => (prev === 'light' ? 'dark' : 'light'));
       }
     : undefined;
 
+  const setTheme = switchable
+    ? (t: Theme) => setThemeState(t)
+    : undefined;
+
+  // Listen for external themeChange events (e.g., purchases)
+  useEffect(() => {
+    function onThemeChange(e: any) {
+      const newTheme = e?.detail?.theme;
+      if (switchable && newTheme) setThemeState(newTheme);
+    }
+    window.addEventListener('themeChange', onThemeChange as EventListener);
+    return () => window.removeEventListener('themeChange', onThemeChange as EventListener);
+  }, [switchable]);
+
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, switchable }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, setTheme, switchable }}>
       {children}
     </ThemeContext.Provider>
   );

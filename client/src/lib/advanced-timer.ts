@@ -40,6 +40,8 @@ export function createTimerSession(
     startedAt: new Date(),
     isActive: true,
     isPaused: false,
+    pausedAt: undefined,
+    pausedDurationMs: 0,
     appBlockerActive: true,
     blockedApps,
   };
@@ -103,7 +105,11 @@ export function completeStudyCycle(state: AppState): AppState {
 export function pauseTimer(state: AppState): AppState {
   const newState = { ...state };
   if (newState.currentTimerSession) {
-    newState.currentTimerSession.isPaused = true;
+    if (!newState.currentTimerSession.isPaused) {
+      newState.currentTimerSession.isPaused = true;
+      newState.currentTimerSession.pausedAt = new Date();
+      if (newState.currentTimerSession.pausedDurationMs === undefined) newState.currentTimerSession.pausedDurationMs = 0;
+    }
   }
   return newState;
 }
@@ -114,7 +120,17 @@ export function pauseTimer(state: AppState): AppState {
 export function resumeTimer(state: AppState): AppState {
   const newState = { ...state };
   if (newState.currentTimerSession) {
-    newState.currentTimerSession.isPaused = false;
+    if (newState.currentTimerSession.isPaused) {
+      // accumulate paused duration
+      const now = new Date();
+      const pausedAt = newState.currentTimerSession.pausedAt ? new Date(newState.currentTimerSession.pausedAt).getTime() : null;
+      if (pausedAt) {
+        const delta = now.getTime() - pausedAt;
+        newState.currentTimerSession.pausedDurationMs = (newState.currentTimerSession.pausedDurationMs || 0) + delta;
+      }
+      newState.currentTimerSession.isPaused = false;
+      newState.currentTimerSession.pausedAt = undefined;
+    }
   }
   return newState;
 }
@@ -135,7 +151,9 @@ export function endTimerSession(state: AppState): AppState {
  * Get timer progress percentage
  */
 export function getTimerProgress(session: AdvancedTimerSession): number {
-  const elapsedTime = new Date().getTime() - new Date(session.startedAt).getTime();
+  const now = new Date().getTime();
+  const paused = session.pausedDurationMs || 0;
+  const elapsedTime = now - new Date(session.startedAt).getTime() - paused;
   const totalTime = session.duration * 60 * 1000; // Convert to milliseconds
   return Math.min(100, (elapsedTime / totalTime) * 100);
 }
@@ -144,7 +162,9 @@ export function getTimerProgress(session: AdvancedTimerSession): number {
  * Get remaining time in minutes
  */
 export function getRemainingTime(session: AdvancedTimerSession): number {
-  const elapsedTime = new Date().getTime() - new Date(session.startedAt).getTime();
+  const now = new Date().getTime();
+  const paused = session.pausedDurationMs || 0;
+  const elapsedTime = now - new Date(session.startedAt).getTime() - paused;
   const remainingMs = session.duration * 60 * 1000 - elapsedTime;
   return Math.max(0, Math.ceil(remainingMs / (1000 * 60)));
 }
@@ -154,7 +174,9 @@ export function getRemainingTime(session: AdvancedTimerSession): number {
  */
 export function getCurrentCycleInfo(session: AdvancedTimerSession) {
   const cycleTime = STUDY_DURATION + BREAK_DURATION;
-  const elapsedTime = new Date().getTime() - new Date(session.startedAt).getTime();
+  const now = new Date().getTime();
+  const paused = session.pausedDurationMs || 0;
+  const elapsedTime = now - new Date(session.startedAt).getTime() - paused;
   const elapsedMinutes = elapsedTime / (1000 * 60);
 
   const currentCycle = Math.floor(elapsedMinutes / cycleTime) + 1;
@@ -171,6 +193,17 @@ export function getCurrentCycleInfo(session: AdvancedTimerSession) {
     timeRemaining: Math.ceil(timeRemaining),
     phase: isStudyPhase ? 'Study' : 'Break',
   };
+}
+
+/**
+ * Get remaining seconds for display (uses paused duration)
+ */
+export function getRemainingSeconds(session: AdvancedTimerSession): number {
+  const now = Date.now();
+  const paused = session.pausedDurationMs || 0;
+  const elapsedMs = now - new Date(session.startedAt).getTime() - paused;
+  const remainingMs = Math.max(0, session.duration * 60 * 1000 - elapsedMs);
+  return Math.ceil(remainingMs / 1000);
 }
 
 /**
