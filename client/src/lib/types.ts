@@ -321,6 +321,32 @@ export interface TimeTracking {
   weeklyStudyLog: WeeklySummary[];
 }
 
+export interface MoneyTrackerDraft {
+  person: string;
+  item: string;
+  amount: string;
+  method: 'ONLINE' | 'OFFLINE';
+  date: string;
+  notes: string;
+}
+
+export interface MoneyTrackerEntry {
+  id: string;
+  person: string;
+  item: string;
+  amount: number;
+  method: 'ONLINE' | 'OFFLINE';
+  date: string;
+  notes?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface MoneyTrackerState {
+  entries: MoneyTrackerEntry[];
+  draft: MoneyTrackerDraft;
+}
+
 export interface CreativeProject {
   id: string;
   name: string;
@@ -370,6 +396,7 @@ export interface AppState {
   studyAppsSetupOnce: boolean; // Track if study apps were set up on first task
   creativeProjects?: CreativeProject[]; // Creative zone projects/todo list
   creativeTodos?: CreativeTodo[]; // Creative zone independent todo list
+  moneyTracker: MoneyTrackerState;
 }
 
 export const LEVEL_NAMES = [

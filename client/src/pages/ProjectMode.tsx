@@ -13,7 +13,8 @@ import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Lightbulb, Zap, BookOpen, Target, Trash2, CheckCircle2, Circle, Edit2, X } from 'lucide-react';
+import { MoneyTracker } from '@/components/MoneyTracker';
+import { Plus, Lightbulb, Zap, BookOpen, Target, Trash2, CheckCircle2, Circle, Edit2, X, CreditCard } from 'lucide-react';
 
 
 export default function ProjectMode() {
@@ -89,7 +90,7 @@ export default function ProjectMode() {
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mb-8">
+          <TabsList className="grid w-full grid-cols-6 mb-8">
             <TabsTrigger value="todo">
               <CheckCircle2 className="w-4 h-4 mr-2" />
               Todo
@@ -109,6 +110,10 @@ export default function ProjectMode() {
             <TabsTrigger value="vision">
               <Target className="w-4 h-4 mr-2" />
               Vision Board
+            </TabsTrigger>
+            <TabsTrigger value="money">
+              <CreditCard className="w-4 h-4 mr-2" />
+              Money
             </TabsTrigger>
           </TabsList>
 
@@ -692,6 +697,24 @@ export default function ProjectMode() {
                 )}
               </div>
             </Card>
+          </TabsContent>
+
+          {/* Money Tracker */}
+          <TabsContent value="money" className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">Money Tracker</h2>
+                <p className="text-sm text-muted-foreground">Log income, expenses, and payments from your creative work.</p>
+              </div>
+              <Button
+                onClick={() => setActiveTab('money')}
+                className="bg-accent hover:bg-accent/90 text-accent-foreground"
+              >
+                <CreditCard className="w-4 h-4 mr-2" />
+                Open Tracker
+              </Button>
+            </div>
+            <MoneyTracker />
           </TabsContent>
         </Tabs>
       </main>

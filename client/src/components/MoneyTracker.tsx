@@ -1,0 +1,257 @@
+import { useMemo } from 'react';
+import { useAppContext } from '@/contexts/AppContext';
+import type { MoneyTrackerEntry, MoneyTrackerState } from '@/lib/types';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import { CreditCard, DollarSign, Globe, Trash2 } from 'lucide-react';
+
+const DEFAULT_MONEY_DRAFT = {
+  person: '',
+  item: '',
+  amount: '',
+  method: 'ONLINE' as const,
+  date: new Date().toISOString().slice(0, 10),
+  notes: '',
+};
+
+export function MoneyTracker() {
+  const { state, updateState } = useAppContext();
+  const tracker = state.moneyTracker;
+  const draft = tracker?.draft || DEFAULT_MONEY_DRAFT;
+  const entries = tracker?.entries || [];
+
+  const totals = useMemo(() => {
+    const total = entries.reduce((sum, entry) => sum + entry.amount, 0);
+    const online = entries
+      .filter(entry => entry.method === 'ONLINE')
+      .reduce((sum, entry) => sum + entry.amount, 0);
+    const offline = entries
+      .filter(entry => entry.method === 'OFFLINE')
+      .reduce((sum, entry) => sum + entry.amount, 0);
+    return {
+      total,
+      online,
+      offline,
+      count: entries.length,
+    };
+  }, [entries]);
+
+  const setTracker = (updater: (tracker: MoneyTrackerState | undefined) => MoneyTrackerState) => {
+    updateState(prev => ({
+      ...prev,
+      moneyTracker: updater(prev.moneyTracker),
+    }));
+  };
+
+  const updateDraft = (field: keyof typeof draft, value: string) => {
+    setTracker(current => ({
+      entries: current?.entries || [],
+      draft: {
+        ...(current?.draft || DEFAULT_MONEY_DRAFT),
+        [field]: value,
+      },
+    }));
+  };
+
+  const addEntry = () => {
+    const amount = parseFloat(draft.amount);
+    if (!draft.person.trim() || !draft.item.trim() || !Number.isFinite(amount) || amount <= 0) {
+      return;
+    }
+
+    setTracker(current => ({
+      entries: [
+        {
+          id: `money_${Date.now()}`,
+          person: draft.person.trim(),
+          item: draft.item.trim(),
+          amount,
+          method: draft.method,
+          date: draft.date,
+          notes: draft.notes.trim(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        ...(current?.entries || []),
+      ],
+      draft: {
+        ...DEFAULT_MONEY_DRAFT,
+        date: new Date().toISOString().slice(0, 10),
+      },
+    }));
+  };
+
+  const removeEntry = (entryId: string) => {
+    setTracker(current => ({
+      ...(current || { entries: [], draft: DEFAULT_MONEY_DRAFT }),
+      entries: (current?.entries || []).filter((entry: MoneyTrackerEntry) => entry.id !== entryId),
+    }));
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <Card className="p-6 bg-gradient-to-br from-violet-50 via-purple-50 to-fuchsia-50 border border-violet-200/80 shadow-sm">
+          <div className="flex items-center gap-3 mb-4">
+            <CreditCard className="w-5 h-5 text-violet-600" />
+            <p className="text-sm font-semibold text-violet-700">Money Dashboard</p>
+          </div>
+          <p className="text-3xl font-bold text-foreground">${totals.total.toFixed(2)}</p>
+          <p className="text-sm text-muted-foreground mt-2">Tracked cash flow across creative work & side income.</p>
+        </Card>
+
+        <Card className="p-6 bg-gradient-to-br from-sky-50 via-sky-100 to-cyan-50 border border-sky-200/80 shadow-sm">
+          <div className="flex items-center gap-3 mb-4">
+            <Globe className="w-5 h-5 text-sky-600" />
+            <p className="text-sm font-semibold text-sky-700">Online Payments</p>
+          </div>
+          <p className="text-3xl font-bold text-foreground">${totals.online.toFixed(2)}</p>
+          <p className="text-sm text-muted-foreground mt-2">Digital purchases, freelance pay, subscriptions.</p>
+        </Card>
+
+        <Card className="p-6 bg-gradient-to-br from-rose-50 via-orange-50 to-amber-50 border border-rose-200/80 shadow-sm">
+          <div className="flex items-center gap-3 mb-4">
+            <DollarSign className="w-5 h-5 text-rose-600" />
+            <p className="text-sm font-semibold text-rose-700">Offline Cash</p>
+          </div>
+          <p className="text-3xl font-bold text-foreground">${totals.offline.toFixed(2)}</p>
+          <p className="text-sm text-muted-foreground mt-2">Cash, receipts, and in-person purchases.</p>
+        </Card>
+      </div>
+
+      <Card className="p-6 shadow-md border border-border/60">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+          <div>
+            <p className="text-lg font-semibold">Record a New Entry</p>
+            <p className="text-sm text-muted-foreground">Everything you type is saved automatically.</p>
+          </div>
+          <Badge className="bg-emerald-100 text-emerald-700">Autosave Enabled</Badge>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-muted-foreground">Person / Source</label>
+            <Input
+              placeholder="Client, friend, vendor"
+              value={draft.person}
+              onChange={(e) => updateDraft('person', e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-muted-foreground">Item / Purpose</label>
+            <Input
+              placeholder="Website design, tools, props"
+              value={draft.item}
+              onChange={(e) => updateDraft('item', e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-muted-foreground">Amount</label>
+            <Input
+              type="number"
+              min="0"
+              step="0.01"
+              placeholder="0.00"
+              value={draft.amount}
+              onChange={(e) => updateDraft('amount', e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-muted-foreground">Type</label>
+            <select
+              value={draft.method}
+              onChange={(e) => updateDraft('method', e.target.value)}
+              className="w-full rounded-lg border border-border/50 bg-background px-3 py-2 text-sm outline-none focus:border-accent focus:ring-accent/30"
+            >
+              <option value="ONLINE">Online</option>
+              <option value="OFFLINE">Offline</option>
+            </select>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-muted-foreground">Date</label>
+            <input
+              type="date"
+              value={draft.date}
+              onChange={(e) => updateDraft('date', e.target.value)}
+              className="w-full rounded-lg border border-border/50 bg-background px-3 py-2 text-sm outline-none focus:border-accent focus:ring-accent/30"
+            />
+          </div>
+
+          <div className="flex items-end">
+            <Button onClick={addEntry} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground">
+              Add Entry
+            </Button>
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <label className="text-sm font-medium text-muted-foreground">Notes</label>
+          <Textarea
+            placeholder="Optional context for this transaction"
+            value={draft.notes}
+            onChange={(e) => updateDraft('notes', e.target.value)}
+            className="min-h-[120px]"
+          />
+        </div>
+      </Card>
+
+      <Card className="p-6 shadow-md border border-border/60">
+        <div className="flex items-center justify-between mb-6 gap-4">
+          <div>
+            <p className="text-lg font-semibold">Money Log</p>
+            <p className="text-sm text-muted-foreground">Track all recent entries in one place.</p>
+          </div>
+          <span className="text-sm text-muted-foreground">{totals.count} entries</span>
+        </div>
+
+        {entries.length === 0 ? (
+          <div className="rounded-3xl border border-dashed border-border/60 p-10 text-center text-muted-foreground">
+            <p className="font-medium text-foreground mb-2">No money entries yet.</p>
+            <p>Start by logging one transaction above.</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {entries.map((entry) => (
+              <Card key={entry.id} className="p-4 border border-border/60 bg-background">
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Badge className="bg-slate-100 text-slate-700 border-transparent">{entry.method}</Badge>
+                      <span className="text-sm text-muted-foreground">{entry.date}</span>
+                    </div>
+                    <p className="text-xl font-semibold">{entry.person}</p>
+                    <p className="text-sm text-muted-foreground">{entry.item}</p>
+                    {entry.notes ? <p className="text-sm text-muted-foreground mt-2">{entry.notes}</p> : null}
+                  </div>
+
+                  <div className="flex items-center gap-3 flex-wrap justify-between lg:justify-end">
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-foreground">${entry.amount.toFixed(2)}</p>
+                      <p className="text-xs text-muted-foreground">Recorded</p>
+                    </div>
+                    <Button
+                      variant="outline"
+                      onClick={() => removeEntry(entry.id)}
+                      className="border-destructive text-destructive hover:bg-destructive/10"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
+      </Card>
+    </div>
+  );
+}

@@ -94,6 +94,17 @@ export function initializeAppState(): AppState {
         weeklyStudyLog: [],
       },
     },
+    moneyTracker: {
+      entries: [],
+      draft: {
+        person: '',
+        item: '',
+        amount: '',
+        method: 'ONLINE',
+        date: today.toISOString().slice(0, 10),
+        notes: '',
+      },
+    },
     today: {
       mission: {
         id: `mission_${today.toISOString()}`,
@@ -295,6 +306,34 @@ export function migrateAppState(state: AppState): AppState {
 
   if (!state.today.reflectionLocked) {
     state.today.reflectionLocked = false;
+  }
+
+  if (!state.moneyTracker) {
+    state.moneyTracker = {
+      entries: [],
+      draft: {
+        person: '',
+        item: '',
+        amount: '',
+        method: 'ONLINE',
+        date: today.toISOString().slice(0, 10),
+        notes: '',
+      },
+    };
+  } else {
+    if (!state.moneyTracker.entries) {
+      state.moneyTracker.entries = [];
+    }
+    if (!state.moneyTracker.draft) {
+      state.moneyTracker.draft = {
+        person: '',
+        item: '',
+        amount: '',
+        method: 'ONLINE',
+        date: today.toISOString().slice(0, 10),
+        notes: '',
+      };
+    }
   }
 
   // Reset daily tasks if it's a new day
