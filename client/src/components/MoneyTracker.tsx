@@ -172,46 +172,47 @@ export function MoneyTracker() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Card className="p-6 bg-gradient-to-br from-violet-50 via-purple-50 to-fuchsia-50 border border-violet-200/80 shadow-sm">
-          <div className="flex items-center gap-3 mb-4">
-            <CreditCard className="w-5 h-5 text-violet-600" />
-            <p className="text-sm font-semibold text-violet-700">Money Dashboard</p>
-          </div>
-          <p className="text-3xl font-bold text-foreground">₹{totals.totalInRupees.toFixed(2)}</p>
-          <p className="text-sm text-muted-foreground mt-2">Total converted to Indian Rupees using current exchange rates.</p>
-        </Card>
+    <div className="grid grid-cols-1 xl:grid-cols-[1.85fr_1fr] gap-6">
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <Card className="p-6 bg-gradient-to-br from-violet-50 via-purple-50 to-fuchsia-50 border border-violet-200/80 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <CreditCard className="w-5 h-5 text-violet-600" />
+              <p className="text-sm font-semibold text-violet-700">Money Dashboard</p>
+            </div>
+            <p className="text-3xl font-bold text-foreground">₹{totals.totalInRupees.toFixed(2)}</p>
+            <p className="text-sm text-muted-foreground mt-2">Total converted to Indian Rupees using current exchange rates.</p>
+          </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-sky-50 via-sky-100 to-cyan-50 border border-sky-200/80 shadow-sm">
-          <div className="flex items-center gap-3 mb-4">
-            <Globe className="w-5 h-5 text-sky-600" />
-            <p className="text-sm font-semibold text-sky-700">Online Payments</p>
-          </div>
-          <p className="text-3xl font-bold text-foreground">₹{totals.onlineInRupees.toFixed(2)}</p>
-          <p className="text-sm text-muted-foreground mt-2">Digital purchases, freelance pay, subscriptions.</p>
-        </Card>
+          <Card className="p-6 bg-gradient-to-br from-sky-50 via-sky-100 to-cyan-50 border border-sky-200/80 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <Globe className="w-5 h-5 text-sky-600" />
+              <p className="text-sm font-semibold text-sky-700">Online Payments</p>
+            </div>
+            <p className="text-3xl font-bold text-foreground">₹{totals.onlineInRupees.toFixed(2)}</p>
+            <p className="text-sm text-muted-foreground mt-2">Digital purchases, freelance pay, subscriptions.</p>
+          </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-rose-50 via-orange-50 to-amber-50 border border-rose-200/80 shadow-sm">
-          <div className="flex items-center gap-3 mb-4">
-            <DollarSign className="w-5 h-5 text-rose-600" />
-            <p className="text-sm font-semibold text-rose-700">Offline Cash</p>
-          </div>
-          <p className="text-3xl font-bold text-foreground">₹{totals.offlineInRupees.toFixed(2)}</p>
-          <p className="text-sm text-muted-foreground mt-2">Cash, receipts, and in-person purchases.</p>
-        </Card>
-      </div>
-
-      <Card className="p-6 shadow-md border border-border/60">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-          <div>
-            <p className="text-lg font-semibold">Record a New Entry</p>
-            <p className="text-sm text-muted-foreground">Everything you type is saved automatically.</p>
-          </div>
-          <Badge className="bg-emerald-100 text-emerald-700">Autosave Enabled</Badge>
+          <Card className="p-6 bg-gradient-to-br from-rose-50 via-orange-50 to-amber-50 border border-rose-200/80 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <DollarSign className="w-5 h-5 text-rose-600" />
+              <p className="text-sm font-semibold text-rose-700">Offline Cash</p>
+            </div>
+            <p className="text-3xl font-bold text-foreground">₹{totals.offlineInRupees.toFixed(2)}</p>
+            <p className="text-sm text-muted-foreground mt-2">Cash, receipts, and in-person purchases.</p>
+          </Card>
         </div>
 
-<div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        <Card className="p-6 shadow-md border border-border/60">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+            <div>
+              <p className="text-lg font-semibold">Record a New Entry</p>
+              <p className="text-sm text-muted-foreground">Everything you type is saved automatically.</p>
+            </div>
+            <Badge className="bg-emerald-100 text-emerald-700">Autosave Enabled</Badge>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium text-muted-foreground">Person / Source</label>
               <Input
@@ -256,182 +257,88 @@ export function MoneyTracker() {
                 <option value="AED">AED</option>
                 <option value="JPY">JPY</option>
               </select>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-muted-foreground">Type</label>
-            <select
-              value={draft.method}
-              onChange={(e) => updateDraft('method', e.target.value)}
-              className="w-full rounded-lg border border-border/50 bg-background px-3 py-2 text-sm outline-none focus:border-accent focus:ring-accent/30"
-            >
-              <option value="ONLINE">Online</option>
-              <option value="OFFLINE">Offline</option>
-            </select>
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-muted-foreground">Date</label>
-            <input
-              type="date"
-              value={draft.date}
-              onChange={(e) => updateDraft('date', e.target.value)}
-              className="w-full rounded-lg border border-border/50 bg-background px-3 py-2 text-sm outline-none focus:border-accent focus:ring-accent/30"
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">Type</label>
+              <select
+                value={draft.method}
+                onChange={(e) => updateDraft('method', e.target.value)}
+                className="w-full rounded-lg border border-border/50 bg-background px-3 py-2 text-sm outline-none focus:border-accent focus:ring-accent/30"
+              >
+                <option value="ONLINE">Online</option>
+                <option value="OFFLINE">Offline</option>
+              </select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">Date</label>
+              <input
+                type="date"
+                value={draft.date}
+                onChange={(e) => updateDraft('date', e.target.value)}
+                className="w-full rounded-lg border border-border/50 bg-background px-3 py-2 text-sm outline-none focus:border-accent focus:ring-accent/30"
+              />
+            </div>
+
+            <div className="flex items-end">
+              <Button onClick={addEntry} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground">
+                Add Entry
+              </Button>
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <label className="text-sm font-medium text-muted-foreground">Notes</label>
+            <Textarea
+              placeholder="Optional context for this transaction"
+              value={draft.notes}
+              onChange={(e) => updateDraft('notes', e.target.value)}
+              className="min-h-[120px]"
             />
           </div>
+        </Card>
 
-          <div className="flex items-end">
-            <Button onClick={addEntry} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground">
-              Add Entry
-            </Button>
-          </div>
-        </div>
-
-        <div className="mt-4">
-          <label className="text-sm font-medium text-muted-foreground">Notes</label>
-          <Textarea
-            placeholder="Optional context for this transaction"
-            value={draft.notes}
-            onChange={(e) => updateDraft('notes', e.target.value)}
-            className="min-h-[120px]"
-          />
-        </div>
-      </Card>
-
-      <Card className="p-6 shadow-md border border-border/60">
-        <div className="flex items-center justify-between mb-6 gap-4">
-          <div>
-            <p className="text-lg font-semibold">Money Log</p>
-            <p className="text-sm text-muted-foreground">Track all recent entries in one place.</p>
-          </div>
-          <span className="text-sm text-muted-foreground">{totals.count} entries</span>
-        </div>
-
-        {entries.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-border/60 p-10 text-center text-muted-foreground">
-            <p className="font-medium text-foreground mb-2">No money entries yet.</p>
-            <p>Start by logging one transaction above.</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {entries.map((entry) => (
-              <Card key={entry.id} className="p-4 border border-border/60 bg-background">
-                <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Badge className="bg-slate-100 text-slate-700 border-transparent">{entry.method}</Badge>
-                      <span className="text-sm text-muted-foreground">{entry.date}</span>
-                    </div>
-                    <p className="text-xl font-semibold">{entry.person}</p>
-                    <p className="text-sm text-muted-foreground">{entry.item}</p>
-                    {entry.notes ? <p className="text-sm text-muted-foreground mt-2">{entry.notes}</p> : null}
-                  </div>
-
-                  <div className="flex items-center gap-3 flex-wrap justify-between lg:justify-end">
-                    <div className="text-right">
-                      <p className="text-2xl font-bold text-foreground">{entry.currency} {entry.amount.toFixed(2)}</p>
-                      <p className="text-xs text-muted-foreground">Recorded</p>
-                      <p className="text-xs text-muted-foreground mt-1">₹{(entry.amount * (EXCHANGE_RATES_TO_INR[entry.currency] ?? 1)).toFixed(2)} in INR</p>
-                    </div>
-                    <Button
-                      variant="outline"
-                      onClick={() => removeEntry(entry.id)}
-                      className="border-destructive text-destructive hover:bg-destructive/10"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        )}
-      </Card>
-
-      <Card className="p-6 shadow-md border border-border/60">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-          <div>
-            <p className="text-lg font-semibold">Important Dates</p>
-            <p className="text-sm text-muted-foreground">Record special dates and why they matter.</p>
-          </div>
-          <Badge className="bg-slate-100 text-slate-700">Date Log</Badge>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-muted-foreground">Title</label>
-            <Input
-              placeholder="Meeting, deadline, anniversary"
-              value={dateDraft.title}
-              onChange={(e) => updateDateDraft('title', e.target.value)}
-            />
+        <Card className="p-6 shadow-md border border-border/60">
+          <div className="flex items-center justify-between mb-6 gap-4">
+            <div>
+              <p className="text-lg font-semibold">Money Log</p>
+              <p className="text-sm text-muted-foreground">Track all recent entries in one place.</p>
+            </div>
+            <span className="text-sm text-muted-foreground">{totals.count} entries</span>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-muted-foreground">Date</label>
-            <input
-              type="date"
-              value={dateDraft.date}
-              onChange={(e) => updateDateDraft('date', e.target.value)}
-              className="w-full rounded-lg border border-border/50 bg-background px-3 py-2 text-sm outline-none focus:border-accent focus:ring-accent/30"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-muted-foreground">Type</label>
-            <select
-              value={dateDraft.type}
-              onChange={(e) => updateDateDraft('type', e.target.value)}
-              className="w-full rounded-lg border border-border/50 bg-background px-3 py-2 text-sm outline-none focus:border-accent focus:ring-accent/30"
-            >
-              <option value="FUTURE">Upcoming</option>
-              <option value="PAST">Past</option>
-            </select>
-          </div>
-
-          <div className="flex items-end">
-            <Button onClick={addDateEntry} className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground">
-              Add Date
-            </Button>
-          </div>
-        </div>
-
-        <div className="mt-4">
-          <label className="text-sm font-medium text-muted-foreground">What happened / will happen</label>
-          <Textarea
-            placeholder="Describe the importance of this date"
-            value={dateDraft.notes}
-            onChange={(e) => updateDateDraft('notes', e.target.value)}
-            className="min-h-[120px]"
-          />
-        </div>
-
-        <div className="mt-6">
-          {dateEntries.length === 0 ? (
+          {entries.length === 0 ? (
             <div className="rounded-3xl border border-dashed border-border/60 p-10 text-center text-muted-foreground">
-              <p className="font-medium text-foreground mb-2">No dates recorded yet.</p>
-              <p>Add an important date to keep it visible and accessible.</p>
+              <p className="font-medium text-foreground mb-2">No money entries yet.</p>
+              <p>Start by logging one transaction above.</p>
             </div>
           ) : (
             <div className="space-y-3">
-              {dateEntries.map((entry) => (
+              {entries.map((entry) => (
                 <Card key={entry.id} className="p-4 border border-border/60 bg-background">
                   <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
-                        <Badge className="bg-slate-100 text-slate-700 border-transparent">{entry.type === 'FUTURE' ? 'Upcoming' : 'Past'}</Badge>
+                        <Badge className="bg-slate-100 text-slate-700 border-transparent">{entry.method}</Badge>
                         <span className="text-sm text-muted-foreground">{entry.date}</span>
                       </div>
-                      <p className="text-xl font-semibold">{entry.title}</p>
+                      <p className="text-xl font-semibold">{entry.person}</p>
+                      <p className="text-sm text-muted-foreground">{entry.item}</p>
                       {entry.notes ? <p className="text-sm text-muted-foreground mt-2">{entry.notes}</p> : null}
                     </div>
 
                     <div className="flex items-center gap-3 flex-wrap justify-between lg:justify-end">
+                      <div className="text-right">
+                        <p className="text-2xl font-bold text-foreground">{entry.currency} {entry.amount.toFixed(2)}</p>
+                        <p className="text-xs text-muted-foreground">Recorded</p>
+                        <p className="text-xs text-muted-foreground mt-1">₹{(entry.amount * (EXCHANGE_RATES_TO_INR[entry.currency] ?? 1)).toFixed(2)} in INR</p>
+                      </div>
                       <Button
                         variant="outline"
-                        onClick={() => removeDateEntry(entry.id)}
+                        onClick={() => removeEntry(entry.id)}
                         className="border-destructive text-destructive hover:bg-destructive/10"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -442,8 +349,105 @@ export function MoneyTracker() {
               ))}
             </div>
           )}
-        </div>
-      </Card>
+        </Card>
+      </div>
+
+      <div className="space-y-6">
+        <Card className="p-6 shadow-md border border-border/60">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+            <div>
+              <p className="text-lg font-semibold">Important Dates</p>
+              <p className="text-sm text-muted-foreground">Record special dates and why they matter.</p>
+            </div>
+            <Badge className="bg-slate-100 text-slate-700">Date Log</Badge>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">Title</label>
+              <Input
+                placeholder="Meeting, deadline, anniversary"
+                value={dateDraft.title}
+                onChange={(e) => updateDateDraft('title', e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">Date</label>
+              <input
+                type="date"
+                value={dateDraft.date}
+                onChange={(e) => updateDateDraft('date', e.target.value)}
+                className="w-full rounded-lg border border-border/50 bg-background px-3 py-2 text-sm outline-none focus:border-accent focus:ring-accent/30"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-muted-foreground">Type</label>
+              <select
+                value={dateDraft.type}
+                onChange={(e) => updateDateDraft('type', e.target.value)}
+                className="w-full rounded-lg border border-border/50 bg-background px-3 py-2 text-sm outline-none focus:border-accent focus:ring-accent/30"
+              >
+                <option value="FUTURE">Upcoming</option>
+                <option value="PAST">Past</option>
+              </select>
+            </div>
+
+            <div className="flex items-end">
+              <Button onClick={addDateEntry} className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground">
+                Add Date
+              </Button>
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <label className="text-sm font-medium text-muted-foreground">What happened / will happen</label>
+            <Textarea
+              placeholder="Describe the importance of this date"
+              value={dateDraft.notes}
+              onChange={(e) => updateDateDraft('notes', e.target.value)}
+              className="min-h-[120px]"
+            />
+          </div>
+
+          <div className="mt-6">
+            {dateEntries.length === 0 ? (
+              <div className="rounded-3xl border border-dashed border-border/60 p-10 text-center text-muted-foreground">
+                <p className="font-medium text-foreground mb-2">No dates recorded yet.</p>
+                <p>Add an important date to keep it visible and accessible.</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {dateEntries.map((entry) => (
+                  <Card key={entry.id} className="p-4 border border-border/60 bg-background">
+                    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <Badge className="bg-slate-100 text-slate-700 border-transparent">{entry.type === 'FUTURE' ? 'Upcoming' : 'Past'}</Badge>
+                          <span className="text-sm text-muted-foreground">{entry.date}</span>
+                        </div>
+                        <p className="text-xl font-semibold">{entry.title}</p>
+                        {entry.notes ? <p className="text-sm text-muted-foreground mt-2">{entry.notes}</p> : null}
+                      </div>
+
+                      <div className="flex items-center gap-3 flex-wrap justify-between lg:justify-end">
+                        <Button
+                          variant="outline"
+                          onClick={() => removeDateEntry(entry.id)}
+                          className="border-destructive text-destructive hover:bg-destructive/10"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+        </Card>
+      </div>
     </div>
   );
 }
