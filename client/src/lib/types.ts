@@ -344,9 +344,24 @@ export interface MoneyTrackerEntry {
   updatedAt: Date;
 }
 
+export interface MoneyTrackerDateDraft {
+  title: string;
+  date: string;
+  notes: string;
+  type: 'PAST' | 'FUTURE';
+}
+
+export interface MoneyTrackerDateEntry extends MoneyTrackerDateDraft {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface MoneyTrackerState {
   entries: MoneyTrackerEntry[];
   draft: MoneyTrackerDraft;
+  dateEntries: MoneyTrackerDateEntry[];
+  dateDraft: MoneyTrackerDateDraft;
 }
 
 export interface CreativeProject {

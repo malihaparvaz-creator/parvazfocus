@@ -105,6 +105,13 @@ export function initializeAppState(): AppState {
         date: today.toISOString().slice(0, 10),
         notes: '',
       },
+      dateEntries: [],
+      dateDraft: {
+        title: '',
+        date: today.toISOString().slice(0, 10),
+        notes: '',
+        type: 'FUTURE',
+      },
     },
     today: {
       mission: {
@@ -321,6 +328,13 @@ export function migrateAppState(state: AppState): AppState {
         date: today.toISOString().slice(0, 10),
         notes: '',
       },
+      dateEntries: [],
+      dateDraft: {
+        title: '',
+        date: today.toISOString().slice(0, 10),
+        notes: '',
+        type: 'FUTURE',
+      },
     };
   } else {
     if (!state.moneyTracker.entries) {
@@ -344,6 +358,18 @@ export function migrateAppState(state: AppState): AppState {
           currency: 'INR',
         };
       }
+    }
+
+    if (!state.moneyTracker.dateEntries) {
+      state.moneyTracker.dateEntries = [];
+    }
+    if (!state.moneyTracker.dateDraft) {
+      state.moneyTracker.dateDraft = {
+        title: '',
+        date: today.toISOString().slice(0, 10),
+        notes: '',
+        type: 'FUTURE',
+      };
     }
   }
 

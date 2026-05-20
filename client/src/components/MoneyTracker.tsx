@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useAppContext } from '@/contexts/AppContext';
-import type { MoneyTrackerEntry, MoneyTrackerState } from '@/lib/types';
+import type { MoneyTrackerDateEntry, MoneyTrackerEntry, MoneyTrackerState } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -27,11 +27,20 @@ const DEFAULT_MONEY_DRAFT = {
   notes: '',
 };
 
+const DEFAULT_DATE_DRAFT = {
+  title: '',
+  date: new Date().toISOString().slice(0, 10),
+  notes: '',
+  type: 'FUTURE' as const,
+};
+
 export function MoneyTracker() {
   const { state, updateState } = useAppContext();
   const tracker = state.moneyTracker;
   const draft = tracker?.draft || DEFAULT_MONEY_DRAFT;
+  const dateDraft = tracker?.dateDraft || DEFAULT_DATE_DRAFT;
   const entries = tracker?.entries || [];
+  const dateEntries = tracker?.dateEntries || [];
 
   const totals = useMemo(() => {
     const totalInRupees = entries.reduce((sum, entry) => {
@@ -69,6 +78,20 @@ export function MoneyTracker() {
         ...(current?.draft || DEFAULT_MONEY_DRAFT),
         [field]: value,
       },
+      dateEntries: current?.dateEntries || [],
+      dateDraft: current?.dateDraft || DEFAULT_DATE_DRAFT,
+    }));
+  };
+
+  const updateDateDraft = (field: keyof typeof dateDraft, value: string) => {
+    setTracker(current => ({
+      entries: current?.entries || [],
+      draft: current?.draft || DEFAULT_MONEY_DRAFT,
+      dateEntries: current?.dateEntries || [],
+      dateDraft: {
+        ...(current?.dateDraft || DEFAULT_DATE_DRAFT),
+        [field]: value,
+      },
     }));
   };
 
@@ -98,13 +121,53 @@ export function MoneyTracker() {
         ...DEFAULT_MONEY_DRAFT,
         date: new Date().toISOString().slice(0, 10),
       },
+      dateEntries: current?.dateEntries || [],
+      dateDraft: current?.dateDraft || DEFAULT_DATE_DRAFT,
+    }));
+  };
+
+  const addDateEntry = () => {
+    if (!dateDraft.title.trim() || !dateDraft.date) {
+      return;
+    }
+
+    setTracker(current => ({
+      entries: current?.entries || [],
+      draft: current?.draft || DEFAULT_MONEY_DRAFT,
+      dateEntries: [
+        {
+          id: `date_${Date.now()}`,
+          title: dateDraft.title.trim(),
+          date: dateDraft.date,
+          notes: dateDraft.notes.trim(),
+          type: dateDraft.type,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        ...(current?.dateEntries || []),
+      ],
+      dateDraft: {
+        ...DEFAULT_DATE_DRAFT,
+        date: new Date().toISOString().slice(0, 10),
+      },
+    }));
+  };
+
+  const removeDateEntry = (entryId: string) => {
+    setTracker(current => ({
+      entries: current?.entries || [],
+      draft: current?.draft || DEFAULT_MONEY_DRAFT,
+      dateEntries: (current?.dateEntries || []).filter((entry: MoneyTrackerDateEntry) => entry.id !== entryId),
+      dateDraft: current?.dateDraft || DEFAULT_DATE_DRAFT,
     }));
   };
 
   const removeEntry = (entryId: string) => {
     setTracker(current => ({
-      ...(current || { entries: [], draft: DEFAULT_MONEY_DRAFT }),
       entries: (current?.entries || []).filter((entry: MoneyTrackerEntry) => entry.id !== entryId),
+      draft: current?.draft || DEFAULT_MONEY_DRAFT,
+      dateEntries: current?.dateEntries || [],
+      dateDraft: current?.dateDraft || DEFAULT_DATE_DRAFT,
     }));
   };
 
@@ -285,6 +348,101 @@ export function MoneyTracker() {
             ))}
           </div>
         )}
+      </Card>
+
+      <Card className="p-6 shadow-md border border-border/60">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+          <div>
+            <p className="text-lg font-semibold">Important Dates</p>
+            <p className="text-sm text-muted-foreground">Record special dates and why they matter.</p>
+          </div>
+          <Badge className="bg-slate-100 text-slate-700">Date Log</Badge>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-muted-foreground">Title</label>
+            <Input
+              placeholder="Meeting, deadline, anniversary"
+              value={dateDraft.title}
+              onChange={(e) => updateDateDraft('title', e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-muted-foreground">Date</label>
+            <input
+              type="date"
+              value={dateDraft.date}
+              onChange={(e) => updateDateDraft('date', e.target.value)}
+              className="w-full rounded-lg border border-border/50 bg-background px-3 py-2 text-sm outline-none focus:border-accent focus:ring-accent/30"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-muted-foreground">Type</label>
+            <select
+              value={dateDraft.type}
+              onChange={(e) => updateDateDraft('type', e.target.value)}
+              className="w-full rounded-lg border border-border/50 bg-background px-3 py-2 text-sm outline-none focus:border-accent focus:ring-accent/30"
+            >
+              <option value="FUTURE">Upcoming</option>
+              <option value="PAST">Past</option>
+            </select>
+          </div>
+
+          <div className="flex items-end">
+            <Button onClick={addDateEntry} className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground">
+              Add Date
+            </Button>
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <label className="text-sm font-medium text-muted-foreground">What happened / will happen</label>
+          <Textarea
+            placeholder="Describe the importance of this date"
+            value={dateDraft.notes}
+            onChange={(e) => updateDateDraft('notes', e.target.value)}
+            className="min-h-[120px]"
+          />
+        </div>
+
+        <div className="mt-6">
+          {dateEntries.length === 0 ? (
+            <div className="rounded-3xl border border-dashed border-border/60 p-10 text-center text-muted-foreground">
+              <p className="font-medium text-foreground mb-2">No dates recorded yet.</p>
+              <p>Add an important date to keep it visible and accessible.</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {dateEntries.map((entry) => (
+                <Card key={entry.id} className="p-4 border border-border/60 bg-background">
+                  <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Badge className="bg-slate-100 text-slate-700 border-transparent">{entry.type === 'FUTURE' ? 'Upcoming' : 'Past'}</Badge>
+                        <span className="text-sm text-muted-foreground">{entry.date}</span>
+                      </div>
+                      <p className="text-xl font-semibold">{entry.title}</p>
+                      {entry.notes ? <p className="text-sm text-muted-foreground mt-2">{entry.notes}</p> : null}
+                    </div>
+
+                    <div className="flex items-center gap-3 flex-wrap justify-between lg:justify-end">
+                      <Button
+                        variant="outline"
+                        onClick={() => removeDateEntry(entry.id)}
+                        className="border-destructive text-destructive hover:bg-destructive/10"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
       </Card>
     </div>
   );
