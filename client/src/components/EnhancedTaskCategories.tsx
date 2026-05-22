@@ -46,8 +46,8 @@ export function EnhancedTaskCategories() {
       id: 'TOP_PRIORITY',
       title: 'Top Priority',
       icon: <AlertCircle className="w-5 h-5" />,
-      color: 'bg-red-50',
-      badgeColor: 'bg-red-100 text-red-800',
+      color: 'bg-red-50 dark:bg-red-500/10',
+      badgeColor: 'bg-red-100 dark:bg-red-500/20 text-red-800 dark:text-red-100',
       minTasks: 3,
       tasks: mission.tasks.filter(t => t.priority === 'MUST_DO'),
     },
@@ -55,8 +55,8 @@ export function EnhancedTaskCategories() {
       id: 'PRIORITY',
       title: 'Priority',
       icon: <Target className="w-5 h-5" />,
-      color: 'bg-orange-50',
-      badgeColor: 'bg-orange-100 text-orange-800',
+      color: 'bg-orange-50 dark:bg-orange-500/10',
+      badgeColor: 'bg-orange-100 dark:bg-orange-500/20 text-orange-800 dark:text-orange-100',
       minTasks: 3,
       tasks: mission.tasks.filter(t => t.priority === 'SHOULD_DO'),
     },
@@ -64,8 +64,8 @@ export function EnhancedTaskCategories() {
       id: 'BONUS',
       title: 'Bonus',
       icon: <Sparkles className="w-5 h-5" />,
-      color: 'bg-blue-50',
-      badgeColor: 'bg-blue-100 text-blue-800',
+      color: 'bg-blue-50 dark:bg-blue-500/10',
+      badgeColor: 'bg-blue-100 dark:bg-blue-500/20 text-blue-800 dark:text-blue-100',
       minTasks: 3,
       tasks: mission.tasks.filter(t => t.priority === 'BONUS'),
     },
@@ -136,7 +136,7 @@ export function EnhancedTaskCategories() {
             className={`p-4 rounded-lg border-2 transition-all ${
               activeCategory === key
                 ? `${cat.color} border-current`
-                : 'bg-secondary/20 border-border/30 hover:border-border/50'
+                : 'bg-secondary/10 dark:bg-secondary/20 border-border/30 hover:bg-secondary/20 dark:hover:bg-secondary/30 hover:border-border/50'
             }`}
           >
             <div className="flex items-center gap-2 mb-2">
@@ -156,7 +156,7 @@ export function EnhancedTaskCategories() {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             {currentCategory.icon}
-            <h3 className="font-semibold">{currentCategory.title} Tasks</h3>
+            <h3 className="font-semibold text-foreground">{currentCategory.title} Tasks</h3>
             <Badge className={currentCategory.badgeColor}>{currentCategory.tasks.length}</Badge>
           </div>
           <Dialog open={showAddTask} onOpenChange={setShowAddTask}>
@@ -278,7 +278,7 @@ export function EnhancedTaskCategories() {
             {currentCategory.tasks.map(task => (
               <div
                 key={task.id}
-                className="flex items-center gap-3 p-3 bg-white/50 rounded-lg border border-border/30 hover:border-border/50 transition-all"
+                className="flex items-center gap-3 p-3 bg-card/80 dark:bg-card/90 rounded-lg border border-border/30 hover:border-border/50 transition-all"
               >
                 <Checkbox
                   checked={task.completed}
@@ -306,7 +306,7 @@ export function EnhancedTaskCategories() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleOpenEditTask(task)}
-                    className="p-2 hover:bg-secondary/20 rounded-lg transition-colors"
+                    className="p-2 rounded-lg transition-colors hover:bg-secondary/20 dark:hover:bg-secondary/30"
                   >
                     <Edit2 className="w-4 h-4 text-foreground" />
                   </button>
@@ -316,7 +316,7 @@ export function EnhancedTaskCategories() {
                       newState.today.mission.tasks = newState.today.mission.tasks.filter(t => t.id !== task.id);
                       updateState(newState);
                     }}
-                    className="p-2 hover:bg-destructive/10 rounded-lg transition-colors"
+                    className="p-2 rounded-lg transition-colors hover:bg-destructive/10"
                   >
                     <Trash2 className="w-4 h-4 text-destructive" />
                   </button>

@@ -240,7 +240,7 @@ export function MoneyTracker() {
                 <p className="text-lg font-semibold">Record a New Entry</p>
                 <p className="text-sm text-muted-foreground">Everything you type is saved automatically.</p>
               </div>
-              <Badge className="bg-emerald-100 text-emerald-700">Autosave Enabled</Badge>
+              <Badge className="bg-secondary/10 text-secondary-foreground">Autosave Enabled</Badge>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">

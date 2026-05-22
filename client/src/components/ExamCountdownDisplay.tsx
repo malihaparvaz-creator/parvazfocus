@@ -46,10 +46,10 @@ export function ExamCountdownDisplay() {
 
   if (exams.length === 0) {
     return (
-      <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200/50 shadow-md">
+      <Card className="p-6 bg-secondary/10 dark:bg-secondary/20 border-border shadow-md">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-blue-600" />
+          <h3 className="font-semibold flex items-center gap-2 text-foreground">
+            <Calendar className="w-5 h-5 text-accent" />
             Exam Countdown
           </h3>
           <Dialog open={showAddExam} onOpenChange={setShowAddExam}>
@@ -96,7 +96,7 @@ export function ExamCountdownDisplay() {
           </Dialog>
         </div>
 
-        <p className="text-sm text-blue-800">
+        <p className="text-sm text-muted-foreground">
           No exams scheduled yet. Add your upcoming exams to get personalized study recommendations.
         </p>
       </Card>
@@ -109,20 +109,20 @@ export function ExamCountdownDisplay() {
     <div className="space-y-4">
       {/* Upcoming Exam Alert */}
       {upcomingExam && countdown.focusMode && (
-        <Card className="p-4 bg-red-50/50 border-red-200/50 shadow-md">
+        <Card className="p-4 bg-red-500/10 dark:bg-red-500/20 border-red-500/20 shadow-md">
           <div className="flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+            <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
             <div className="flex-1">
-              <p className="font-semibold text-red-900 mb-1">
+              <p className="font-semibold text-foreground dark:text-foreground mb-1">
                 {upcomingExam.subject} - {countdown.daysUntilNextExam} days away!
               </p>
-              <p className="text-sm text-red-800 mb-2">
+              <p className="text-sm text-muted-foreground mb-2">
                 {getExamFocusRecommendation(state)}
               </p>
               {upcomingExam.weakAreas.length > 0 && (
                 <div className="flex flex-wrap gap-1">
                   {upcomingExam.weakAreas.map(area => (
-                    <Badge key={area} variant="outline" className="bg-red-100 text-red-800 border-red-300">
+                    <Badge key={area} variant="outline" className="bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-100 border-red-300 dark:border-red-700">
                       {area}
                     </Badge>
                   ))}
@@ -190,8 +190,8 @@ export function ExamCountdownDisplay() {
               key={exam.id}
               className={`p-4 rounded-lg border-2 transition-all ${
                 exam.id === upcomingExam?.id
-                  ? 'bg-red-50/50 border-red-200/50'
-                  : 'bg-secondary/20 border-border/30'
+                  ? 'bg-red-500/10 dark:bg-red-500/20 border-red-500/20'
+                  : 'bg-secondary/10 dark:bg-secondary/20 border-border/30'
               }`}
             >
               <div className="flex items-start justify-between mb-2">
