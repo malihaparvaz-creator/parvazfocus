@@ -27,6 +27,9 @@ export default function ProjectMode() {
   const [newTodoProjectId, setNewTodoProjectId] = useState<string>('');
   const [editingTodoId, setEditingTodoId] = useState<string | null>(null);
   const [editingTodoTitle, setEditingTodoTitle] = useState('');
+  const [editingTodoDescription, setEditingTodoDescription] = useState('');
+  const [editingTodoPriority, setEditingTodoPriority] = useState<'LOW' | 'MEDIUM' | 'HIGH'>('MEDIUM');
+  const [editingTodoProjectId, setEditingTodoProjectId] = useState<string>('');
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [viewDetailsProjectId, setViewDetailsProjectId] = useState<string | null>(null);
   const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
@@ -74,6 +77,35 @@ export default function ProjectMode() {
 
   const getProjectIdeas = (projectId: string) => {
     return state.user.projects.flatMap(p => p.ideas).filter(i => (i as any).projectId === projectId) || [];
+  };
+
+  const handleOpenEditTodo = (todo: CreativeTodo) => {
+    setEditingTodoId(todo.id);
+    setEditingTodoTitle(todo.title);
+    setEditingTodoDescription(todo.description || '');
+    setEditingTodoPriority(todo.priority);
+    setEditingTodoProjectId(todo.projectId || '');
+  };
+
+  const handleSaveEditedTodo = () => {
+    if (!editingTodoId) return;
+    const nextState = { ...state };
+    if (nextState.creativeTodos) {
+      nextState.creativeTodos = nextState.creativeTodos.map(todo =>
+        todo.id === editingTodoId
+          ? {
+              ...todo,
+              title: editingTodoTitle,
+              description: editingTodoDescription,
+              priority: editingTodoPriority,
+              projectId: editingTodoProjectId || undefined,
+              updatedAt: new Date(),
+            }
+          : todo
+      );
+      updateState(nextState);
+    }
+    setEditingTodoId(null);
   };
 
   return (
@@ -220,15 +252,18 @@ export default function ProjectMode() {
                           onClick={() => {
                             const newState = { ...state };
                             if (newState.creativeTodos) {
-                              newState.creativeTodos = newState.creativeTodos.map((t: CreativeTodo) =>
-                                t.id === todo.id
-                                  ? {
-                                      ...t,
-                                      status: t.status === 'COMPLETED' ? 'TODO' : 'COMPLETED',
-                                      updatedAt: new Date(),
-                                    }
-                                  : t
-                              );
+                              const isCompleting = todo.status !== 'COMPLETED';
+                              newState.creativeTodos = newState.creativeTodos
+                                .map((t: CreativeTodo) =>
+                                  t.id === todo.id
+                                    ? {
+                                        ...t,
+                                        status: t.status === 'COMPLETED' ? 'TODO' : 'COMPLETED',
+                                        updatedAt: new Date(),
+                                      }
+                                    : t
+                                )
+                                .filter(t => !(t.id === todo.id && isCompleting));
                               updateState(newState);
                             }
                           }}
@@ -281,6 +316,12 @@ export default function ProjectMode() {
 
                       <div className="flex items-center gap-2">
                         <button
+                          onClick={() => handleOpenEditTodo(todo)}
+                          className="p-2 hover:bg-secondary/20 rounded-lg transition-colors"
+                        >
+                          <Edit2 className="w-4 h-4 text-foreground" />
+                        </button>
+                        <button
                           onClick={() => {
                             const newState = { ...state };
                             if (newState.creativeTodos) {
@@ -302,6 +343,55 @@ export default function ProjectMode() {
                 </div>
               )}
             </div>
+
+            <Dialog open={Boolean(editingTodoId)} onOpenChange={(isOpen) => !isOpen && setEditingTodoId(null)}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Edit Creative Task</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <Input
+                    placeholder="Task title"
+                    value={editingTodoTitle}
+                    onChange={(e) => setEditingTodoTitle(e.target.value)}
+                  />
+                  <Textarea
+                    placeholder="Description (optional)"
+                    value={editingTodoDescription}
+                    onChange={(e) => setEditingTodoDescription(e.target.value)}
+                    className="min-h-20"
+                  />
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Priority</label>
+                    <select
+                      value={editingTodoPriority}
+                      onChange={(e) => setEditingTodoPriority(e.target.value as 'LOW' | 'MEDIUM' | 'HIGH')}
+                      className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground"
+                    >
+                      <option value="LOW">Low</option>
+                      <option value="MEDIUM">Medium</option>
+                      <option value="HIGH">High</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Project</label>
+                    <select
+                      value={editingTodoProjectId}
+                      onChange={(e) => setEditingTodoProjectId(e.target.value)}
+                      className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground"
+                    >
+                      <option value="">No Project</option>
+                      {state.user.parvazProjects.map(p => (
+                        <option key={p.id} value={p.id}>{formatProjectName(p.name)}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <Button onClick={handleSaveEditedTodo} className="w-full btn-parvaz-primary">
+                    Save Changes
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </TabsContent>
 
           {/* Parvaz Dashboard with Project Management */}

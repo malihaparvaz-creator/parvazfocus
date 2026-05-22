@@ -191,24 +191,16 @@ export function updateLevel(state: AppState): AppState {
   const nextState = { ...state };
   const LEVEL_NAMES = ['Focused', 'Consistent', 'Disciplined', 'Relentless', 'Unstoppable', 'Legendary'];
   const MAX_LEVEL = LEVEL_NAMES.length;
-  
-  let level = nextState.user.stats.currentLevel.level;
-  let currentXP = nextState.user.stats.currentLevel.currentXP;
-  let nextLevelXP = nextState.user.stats.currentLevel.nextLevelXP;
-
-  // Keep leveling up while currentXP >= nextLevelXP and not at max level
-  while (currentXP >= nextLevelXP && level < MAX_LEVEL) {
-    currentXP -= nextLevelXP;
-    level += 1;
-    // Calculate next level XP: 100 * 1.5^(level-1)
-    nextLevelXP = Math.round(100 * Math.pow(1.5, level - 1));
-  }
+  const totalXP = nextState.user.stats.totalXP;
+  const level = Math.min(1 + Math.floor(totalXP / 500), MAX_LEVEL);
+  const currentXP = totalXP % 500;
+  const nextLevelXP = level >= MAX_LEVEL ? 0 : 500;
 
   nextState.user.stats.currentLevel = {
-    level: Math.min(level, MAX_LEVEL),
+    level,
     currentXP,
-    totalXP: nextState.user.stats.totalXP,
-    nextLevelXP: level >= MAX_LEVEL ? 0 : nextLevelXP,
+    totalXP,
+    nextLevelXP,
     levelName: LEVEL_NAMES[Math.min(level - 1, LEVEL_NAMES.length - 1)],
   };
 
@@ -224,7 +216,7 @@ export function resetCoreStats(state: AppState): AppState {
       level: 1,
       currentXP: 0,
       totalXP: 0,
-      nextLevelXP: 100,
+      nextLevelXP: 500,
       levelName: 'Focused',
     },
     streak: 0,

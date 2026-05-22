@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Plus, Trash2, AlertCircle, Target, Sparkles } from 'lucide-react';
+import { Plus, Trash2, Edit2, AlertCircle, Target, Sparkles } from 'lucide-react';
 import { Task } from '@/lib/types';
 import { nanoid } from 'nanoid';
 
@@ -33,6 +33,11 @@ export function EnhancedTaskCategories() {
   const [taskDescription, setTaskDescription] = useState('');
   const [taskTime, setTaskTime] = useState('25');
   const [taskSubject, setTaskSubject] = useState('');
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [editingTitle, setEditingTitle] = useState('');
+  const [editingDescription, setEditingDescription] = useState('');
+  const [editingTime, setEditingTime] = useState('25');
+  const [editingSubject, setEditingSubject] = useState('');
 
   const mission = state.today.mission;
 
@@ -90,6 +95,34 @@ export function EnhancedTaskCategories() {
     setTaskTime('25');
     setTaskSubject('');
     setShowAddTask(false);
+  };
+
+  const handleOpenEditTask = (task: Task) => {
+    setEditingTask(task);
+    setEditingTitle(task.title);
+    setEditingDescription(task.description || '');
+    setEditingTime(task.estimatedTime?.toString() || '25');
+    setEditingSubject(task.subject || '');
+  };
+
+  const handleUpdateTask = () => {
+    if (!editingTask) return;
+    updateState(prevState => {
+      const nextState = { ...prevState };
+      nextState.today.mission.tasks = nextState.today.mission.tasks.map(task =>
+        task.id === editingTask.id
+          ? {
+              ...task,
+              title: editingTitle,
+              description: editingDescription,
+              estimatedTime: parseInt(editingTime) || 25,
+              subject: editingSubject,
+            }
+          : task
+      );
+      return nextState;
+    });
+    setEditingTask(null);
   };
 
   return (
@@ -270,22 +303,75 @@ export function EnhancedTaskCategories() {
                     )}
                   </div>
                 </div>
-                <button
-                  onClick={() => {
-                    const newState = { ...state };
-                    newState.today.mission.tasks = newState.today.mission.tasks.filter(t => t.id !== task.id);
-                    updateState(newState);
-                  }}
-                  className="p-2 hover:bg-destructive/10 rounded-lg transition-colors"
-                >
-                  <Trash2 className="w-4 h-4 text-destructive" />
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleOpenEditTask(task)}
+                    className="p-2 hover:bg-secondary/20 rounded-lg transition-colors"
+                  >
+                    <Edit2 className="w-4 h-4 text-foreground" />
+                  </button>
+                  <button
+                    onClick={() => {
+                      const newState = { ...state };
+                      newState.today.mission.tasks = newState.today.mission.tasks.filter(t => t.id !== task.id);
+                      updateState(newState);
+                    }}
+                    className="p-2 hover:bg-destructive/10 rounded-lg transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4 text-destructive" />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
         )}
       </Card>
 
+      <Dialog open={Boolean(editingTask)} onOpenChange={open => !open && setEditingTask(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Task</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-semibold mb-1 block">Task Title *</label>
+              <Input
+                value={editingTitle}
+                onChange={e => setEditingTitle(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-semibold mb-1 block">Description</label>
+              <Input
+                value={editingDescription}
+                onChange={e => setEditingDescription(e.target.value)}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-semibold mb-1 block">Estimated Time (min)</label>
+                <Input
+                  type="number"
+                  min="5"
+                  max="180"
+                  value={editingTime}
+                  onChange={e => setEditingTime(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-semibold mb-1 block">Subject</label>
+                <Input
+                  value={editingSubject}
+                  onChange={e => setEditingSubject(e.target.value)}
+                />
+              </div>
+            </div>
+            <Button onClick={handleUpdateTask} className="w-full">
+              Save Changes
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
     </div>
   );

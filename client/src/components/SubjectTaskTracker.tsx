@@ -39,48 +39,40 @@ export function SubjectTaskTracker() {
   const subjects = state.user.subjectSettings.subjects;
   const tasks = state.today.mission.tasks;
 
-  // Count completed tasks per subject
   const chartData = useMemo(() => {
-    return subjects.map(subject => {
-      // Match tasks that belong to this subject (by subject field or by name match in task title)
-      const subjectTasks = tasks.filter(t => {
-        const subjectMatch = (t as any).subject?.toLowerCase() === subject.toLowerCase();
-        const titleMatch = t.title?.toLowerCase().includes(subject.toLowerCase());
-        return subjectMatch || titleMatch;
-      });
-      const completed = subjectTasks.filter(t => t.completed).length;
-      const total = subjectTasks.length;
-      return { subject, tasks: completed, total };
-    }).filter(d => d.total > 0 || subjects.length <= 8); // show all if few subjects
+    const buckets = subjects.filter(Boolean).map((subject, index) => ({
+      subject,
+      tasks: 0,
+      total: 0,
+      color: COLORS[index % COLORS.length],
+    }));
+
+    const otherBucket = {
+      subject: 'Other',
+      tasks: 0,
+      total: 0,
+      color: COLORS[buckets.length % COLORS.length],
+    };
+
+    tasks.forEach(task => {
+      const taskSubject = (task as any).subject?.trim() || '';
+      const matchedSubject = subjects.find(subject => subject.toLowerCase() === taskSubject.toLowerCase());
+      const bucket = matchedSubject
+        ? buckets.find(b => b.subject === matchedSubject)
+        : otherBucket;
+
+      if (bucket) {
+        bucket.total += 1;
+        if (task.completed) {
+          bucket.tasks += 1;
+        }
+      }
+    });
+
+    return buckets.concat(otherBucket.total > 0 ? [otherBucket] : []);
   }, [subjects, tasks]);
 
-  // Also count from subjectTracker if available
-  const trackerData = useMemo(() => {
-    const tracker = state.user.stats.subjectTracker;
-    if (!tracker?.subjects?.length) return [];
-    return tracker.subjects.map(s => ({
-      subject: s.subject,
-      tasks: s.tasksCompleted,
-      total: s.totalTasks,
-    }));
-  }, [state.user.stats]);
-
-  // Merge: prefer tracker data, fallback to task scan
-  const mergedData = useMemo(() => {
-    const base = subjects.map((subject, i) => {
-      const fromTracker = trackerData.find(t => t.subject === subject);
-      const fromTasks = chartData.find(t => t.subject === subject);
-      return {
-        subject,
-        tasks: fromTracker?.tasks ?? fromTasks?.tasks ?? 0,
-        total: fromTracker?.total ?? fromTasks?.total ?? 0,
-        color: COLORS[i % COLORS.length],
-      };
-    });
-    return base;
-  }, [subjects, trackerData, chartData]);
-
-  if (subjects.length === 0) {
+  if (subjects.length === 0 && chartData.length === 0) {
     return (
       <Card className="p-6 shadow-md">
         <div className="flex items-center gap-3 mb-4">
@@ -94,7 +86,7 @@ export function SubjectTaskTracker() {
     );
   }
 
-  const maxTasks = Math.max(...mergedData.map(d => d.tasks), 1);
+  const maxTasks = Math.max(...chartData.map(d => d.tasks), 1);
 
   return (
     <Card className="p-6 shadow-md">
@@ -133,7 +125,7 @@ export function SubjectTaskTracker() {
             />
             <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(167,139,250,0.06)' }} />
             <Bar dataKey="tasks" radius={[0, 6, 6, 0]} maxBarSize={28}>
-              {mergedData.map((entry, index) => (
+              {chartData.map((entry, index) => (
                 <Cell key={entry.subject} fill={entry.color} />
               ))}
             </Bar>
@@ -143,7 +135,7 @@ export function SubjectTaskTracker() {
 
       {/* Legend summary */}
       <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-2">
-        {mergedData.map((d, i) => (
+        {chartData.map((d, i) => (
           <div key={d.subject} className="flex items-center gap-2">
             <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: d.color }} />
             <span className="text-xs text-muted-foreground truncate">{d.subject}</span>

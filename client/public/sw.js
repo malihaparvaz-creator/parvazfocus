@@ -82,33 +82,48 @@ self.addEventListener('message', e => {
 
   switch (msg.type) {
 
-    // Pomodoro: schedule "break time!" after study phase
+    // Pomodoro: schedule notifications for each cycle
     case 'POMODORO_STARTED': {
-      const { studyMs, breakMs, cycleId } = msg;
-      // After study time → break notification
-      scheduleNotification(
-        `pomo_break_${cycleId}`,
-        studyMs,
-        '⏰ Pomodoro Complete!',
-        `25 mins done! Take your ${Math.round(breakMs/60000)}-minute break now. You earned it.`,
-        'pomodoro'
-      );
-      // After study + break → back to study
-      scheduleNotification(
-        `pomo_study_${cycleId}`,
-        studyMs + breakMs,
-        '📚 Break Over — Back to Work!',
-        'Your break is done. Lock in and start your next Pomodoro.',
-        'pomodoro-resume'
-      );
+      const { studyMs, breakMs, totalCycles, cycleId } = msg;
+      for (let cycle = 1; cycle <= totalCycles; cycle += 1) {
+        const studyOffset = (cycle - 1) * (studyMs + breakMs);
+        scheduleNotification(
+          `pomo_break_${cycleId}_${cycle}`,
+          studyOffset + studyMs,
+          '⏰ Pomodoro Study Complete!',
+          `Cycle ${cycle} done! Take your ${Math.round(breakMs / 60000)}-minute break now.`,
+          'pomodoro'
+        );
+        if (cycle < totalCycles) {
+          scheduleNotification(
+            `pomo_study_${cycleId}_${cycle}`,
+            studyOffset + studyMs + breakMs,
+            '📚 Break Over — Back to Work!',
+            `Cycle ${cycle + 1} begins now. Focus on your next study block.`,
+            'pomodoro-resume'
+          );
+        } else {
+          scheduleNotification(
+            `pomo_done_${cycleId}`,
+            studyOffset + studyMs + breakMs,
+            '🎉 Pomodoro Session Complete!',
+            'You finished all cycles. Great work!',
+            'pomodoro-complete'
+          );
+        }
+      }
       break;
     }
 
     // Pomodoro paused/stopped → cancel pending notifications
     case 'POMODORO_STOPPED': {
       const { cycleId } = msg;
-      cancelTimer(`pomo_break_${cycleId}`);
-      cancelTimer(`pomo_study_${cycleId}`);
+      activeTimers.forEach((timerId, id) => {
+        if (id.startsWith(`pomo_break_${cycleId}`) || id.startsWith(`pomo_study_${cycleId}`) || id === `pomo_done_${cycleId}`) {
+          clearTimeout(timerId);
+          activeTimers.delete(id);
+        }
+      });
       break;
     }
 

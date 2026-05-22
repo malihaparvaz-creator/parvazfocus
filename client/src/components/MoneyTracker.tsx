@@ -208,7 +208,7 @@ export function MoneyTracker() {
           <div className="flex items-center gap-3 mb-4">
             <Globe className="w-5 h-5 text-sky-600" />
             <div>
-              <p className="text-sm font-semibold text-foreground">Important Dates</p>
+              <p className="text-sm font-semibold text-foreground">Dates</p>
               <p className="text-xs text-muted-foreground">Save upcoming events, deadlines, and reminders.</p>
             </div>
           </div>

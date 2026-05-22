@@ -373,18 +373,17 @@ export function migrateAppState(state: AppState): AppState {
     }
   }
 
-  // Reset daily tasks if it's a new day
+  // Update mission date when a new day begins, but keep incomplete tasks
   const missionDate = state.today.mission.date ? new Date(state.today.mission.date) : null;
   if (missionDate) missionDate.setHours(0, 0, 0, 0);
   if (!missionDate || missionDate.getTime() !== today.getTime()) {
-    // Reset daily mission with new date
-    state.today.mission = {
-      id: `mission-${today.getTime()}`,
-      date: today,
-      tasks: [],
-      progressPercentage: 0,
-      completed: false,
-    };
+    state.today.mission.date = today;
+    if (!state.today.mission.id) {
+      state.today.mission.id = `mission-${today.getTime()}`;
+    }
+    if (!state.today.mission.tasks) {
+      state.today.mission.tasks = [];
+    }
     state.today.reflectionLocked = false;
   }
 

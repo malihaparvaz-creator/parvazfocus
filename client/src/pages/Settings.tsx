@@ -116,10 +116,12 @@ export default function Settings() {
   };
 
   const handleAddSubject = () => {
-    if (newSubject.trim()) {
+    const trimmedSubject = newSubject.trim();
+    if (trimmedSubject) {
       const newState = { ...state };
-      if (!newState.user.subjectSettings.subjects.includes(newSubject.trim())) {
-        newState.user.subjectSettings.subjects.push(newSubject.trim());
+      const existingSubjects = newState.user.subjectSettings.subjects.map(s => s.toLowerCase());
+      if (!existingSubjects.includes(trimmedSubject.toLowerCase())) {
+        newState.user.subjectSettings.subjects.push(trimmedSubject);
         newState.user.subjectSettings.lastUpdated = new Date();
         updateState(newState);
         setNewSubject('');
@@ -344,6 +346,18 @@ export default function Settings() {
   const subjects = state.user.subjectSettings.subjects;
   const reflections = state.user.reflectionHistory.reflections;
 
+  const subjectCounts = subjects.reduce<Record<string, number>>((acc, subject) => {
+    acc[subject] = 0;
+    return acc;
+  }, { Other: 0 });
+
+  state.today.mission.tasks.forEach(task => {
+    const taskSubject = task.subject?.trim() || '';
+    const matchedSubject = subjects.find(subject => subject.toLowerCase() === taskSubject.toLowerCase());
+    const bucket = matchedSubject || 'Other';
+    subjectCounts[bucket] = (subjectCounts[bucket] || 0) + 1;
+  });
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
@@ -458,7 +472,10 @@ export default function Settings() {
                         key={subject}
                         className="flex items-center justify-between p-4 bg-card border border-border/50 rounded-lg hover:border-accent/50 transition-all"
                       >
-                        <span className="font-medium">{subject}</span>
+                        <div>
+                          <p className="font-medium">{subject}</p>
+                          <p className="text-xs text-muted-foreground">{subjectCounts[subject] || 0} task(s)</p>
+                        </div>
                         <Button
                           variant="ghost"
                           size="sm"
@@ -469,6 +486,12 @@ export default function Settings() {
                         </Button>
                       </div>
                     ))}
+                    <div className="flex items-center justify-between p-4 bg-card border border-border/50 rounded-lg hover:border-accent/50 transition-all">
+                      <div>
+                        <p className="font-medium">Other</p>
+                        <p className="text-xs text-muted-foreground">{subjectCounts.Other || 0} task(s)</p>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>

@@ -54,8 +54,8 @@ export function showNotificationNow(title: string, body: string, tag = 'parvaz')
 
 // ── Pomodoro ────────────────────────────────────────────────────────────────
 
-export function schedulePomodoroNotifications(cycleId: string, studyMs: number, breakMs: number) {
-  sendToSW({ type: 'POMODORO_STARTED', studyMs, breakMs, cycleId });
+export function schedulePomodoroNotifications(cycleId: string, studyMs: number, breakMs: number, totalCycles: number) {
+  sendToSW({ type: 'POMODORO_STARTED', studyMs, breakMs, totalCycles, cycleId });
 }
 
 export function cancelPomodoroNotifications(cycleId: string) {

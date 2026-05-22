@@ -322,13 +322,12 @@ export default function Home() {
               <p className="text-muted-foreground">You've maintained a 30-day streak. Here's your reward:</p>
             </div>
             <div className="bg-accent/20 rounded-lg p-4 text-center">
-              <p className="text-sm text-muted-foreground mb-1">Bonus XP</p>
-              <p className="text-3xl font-bold text-accent">+50 XP</p>
+              <p className="text-sm text-muted-foreground mb-1">30-Day Streak Unlocked</p>
+              <p className="text-3xl font-bold text-accent">Keep your consistency going.</p>
             </div>
             <div className="flex gap-3">
               <Button
                 onClick={() => {
-                  addXPToUser(50);
                   setStreakRewardClaimed(true);
                   setShowStreakReward(false);
                 }}

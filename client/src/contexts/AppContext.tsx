@@ -118,30 +118,21 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setAndPersistState(prevState => {
       let newState = { ...prevState };
       const task = newState.today.mission.tasks.find(t => t.id === taskId);
-      if (task && !task.completed) {
-        task.completed = true;
-        task.completedAt = new Date();
-        
-        // Award XP based on priority
-        let xpReward = 0;
-        if (task.priority === 'MUST_DO') {
-          xpReward = 20;
-        } else if (task.priority === 'SHOULD_DO') {
-          xpReward = 15;
-        } else if (task.priority === 'BONUS') {
-          xpReward = 10;
-        }
-        
+      if (task) {
+        const xpReward = task.priority === 'MUST_DO' ? 20 : task.priority === 'SHOULD_DO' ? 15 : 10;
+        newState.today.mission.tasks = newState.today.mission.tasks.filter(t => t.id !== taskId);
+        newState.user.stats.totalTasksCompleted = (newState.user.stats.totalTasksCompleted || 0) + 1;
+
         if (xpReward > 0) {
           newState.user.stats.totalXP += xpReward;
           newState.user.stats.currentLevel.currentXP += xpReward;
         }
-        
-        // Track subject performance if subject is specified
-        if (task.subject) {
-          const focusDuration = task.estimatedTime || 25;
-          newState = updateSubjectPerformance(newState, task, xpReward, focusDuration);
-        }
+
+        const subjectName = task.subject?.trim() || 'Other';
+        const normalizedSubjects = newState.user.subjectSettings.subjects.map(s => s.toLowerCase());
+        const subjectForTracker = normalizedSubjects.includes(subjectName.toLowerCase()) ? subjectName : 'Other';
+        newState = updateSubjectPerformance(newState, { ...task, subject: subjectForTracker }, xpReward, task.estimatedTime || 25);
+        newState = updateLevel(newState);
       }
       return newState;
     });

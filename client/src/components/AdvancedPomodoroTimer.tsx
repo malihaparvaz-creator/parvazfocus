@@ -62,16 +62,16 @@ export function AdvancedPomodoroTimer() {
       return;
     }
 
-    let newState = createTimerSession(state, parseInt(durationInput), selectedApps);
-    updateState(newState);
+    const timerState = createTimerSession(state, parseInt(durationInput), selectedApps);
+    updateState(timerState);
     setShowStartDialog(false);
-    // Schedule background notifications
+    // Schedule background notifications for the full session
     requestNotificationPermission().then(() => {
-      const dur = parseInt(durationInput);
-      const studyMs = 25 * 60 * 1000;
-      const breakMs = 5 * 60 * 1000;
       const cycleId = `pomo_${Date.now()}`;
-      schedulePomodoroNotifications(cycleId, studyMs, breakMs);
+      const studyMinutes = timerState.currentTimerSession?.studyDuration ?? 25;
+      const breakMinutes = timerState.currentTimerSession?.breakDuration ?? 5;
+      const totalCycles = timerState.currentTimerSession?.totalCycles ?? 1;
+      schedulePomodoroNotifications(cycleId, studyMinutes * 60 * 1000, breakMinutes * 60 * 1000, totalCycles);
       sessionStorage.setItem('parvaz_pomo_cycle', cycleId);
     });
   };

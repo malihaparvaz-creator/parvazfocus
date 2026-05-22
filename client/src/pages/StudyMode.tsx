@@ -10,7 +10,7 @@ import { NightReflectionDialog } from '@/components/NightReflection';
 import { EmergencyMode } from '@/components/EmergencyMode';
 import { TrustScoreCard } from '@/components/TrustScoreCard';
 import { XPStore } from '@/components/XPStore';
-import { BankedDisciplineCard } from '@/components/BankedDiscipline';
+import { SubjectTaskTracker } from '@/components/SubjectTaskTracker';
 
 import { DistractionTracker } from '@/components/DistractionTracker';
 import { ExamCountdownDisplay } from '@/components/ExamCountdownDisplay';
@@ -123,8 +123,8 @@ export default function StudyMode() {
             {/* Trust Score and Focus Rank */}
             <TrustScoreCard />
 
-            {/* Banked Discipline and Bonus Days */}
-            <BankedDisciplineCard />
+            {/* Subject Task Progress */}
+            <SubjectTaskTracker />
 
             {/* XP Store */}
             <Card className="p-6 shadow-md">
