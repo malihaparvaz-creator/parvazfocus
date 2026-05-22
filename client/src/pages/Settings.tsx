@@ -352,10 +352,12 @@ export default function Settings() {
   }, { Other: 0 });
 
   state.today.mission.tasks.forEach(task => {
-    const taskSubject = task.subject?.trim() || '';
-    const matchedSubject = subjects.find(subject => subject.toLowerCase() === taskSubject.toLowerCase());
-    const bucket = matchedSubject || 'Other';
-    subjectCounts[bucket] = (subjectCounts[bucket] || 0) + 1;
+    if (task.completed) {
+      const taskSubject = task.subject?.trim() || '';
+      const matchedSubject = subjects.find(subject => subject.toLowerCase() === taskSubject.toLowerCase());
+      const bucket = matchedSubject || 'Other';
+      subjectCounts[bucket] = (subjectCounts[bucket] || 0) + 1;
+    }
   });
 
   return (

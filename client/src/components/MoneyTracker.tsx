@@ -175,45 +175,31 @@ export function MoneyTracker() {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="flex items-center gap-2 border-b border-border/50">
         <Button
           type="button"
           onClick={() => setSelectedSection('MONEY')}
-          className={`rounded-3xl border p-6 text-left transition-all ${
+          variant="ghost"
+          className={`px-6 py-3 rounded-none border-b-2 transition-all ${
             selectedSection === 'MONEY'
-              ? 'border-accent bg-accent/10 shadow-sm'
-              : 'border-border bg-card hover:border-accent'
+              ? 'border-accent text-foreground font-semibold'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
           }`}
         >
-          <div className="flex items-center gap-3 mb-4">
-            <CreditCard className="w-5 h-5 text-violet-600" />
-            <div>
-              <p className="text-sm font-semibold text-foreground">Money</p>
-              <p className="text-xs text-muted-foreground">Track income, expenses, and conversions.</p>
-            </div>
-          </div>
-          <p className="text-3xl font-bold text-foreground">₹{totals.totalInRupees.toFixed(2)}</p>
-          <p className="text-sm text-muted-foreground mt-2">{totals.count} entries logged</p>
+          MONEY
         </Button>
 
         <Button
           type="button"
           onClick={() => setSelectedSection('DATES')}
-          className={`rounded-3xl border p-6 text-left transition-all ${
+          variant="ghost"
+          className={`px-6 py-3 rounded-none border-b-2 transition-all ${
             selectedSection === 'DATES'
-              ? 'border-accent bg-accent/10 shadow-sm'
-              : 'border-border bg-card hover:border-accent'
+              ? 'border-accent text-foreground font-semibold'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
           }`}
         >
-          <div className="flex items-center gap-3 mb-4">
-            <Globe className="w-5 h-5 text-sky-600" />
-            <div>
-              <p className="text-sm font-semibold text-foreground">Dates</p>
-              <p className="text-xs text-muted-foreground">Save upcoming events, deadlines, and reminders.</p>
-            </div>
-          </div>
-          <p className="text-3xl font-bold text-foreground">{dateEntries.length} saved</p>
-          <p className="text-sm text-muted-foreground mt-2">{dateEntries.filter(entry => entry.type === 'FUTURE').length} upcoming</p>
+          DATES
         </Button>
       </div>
 
