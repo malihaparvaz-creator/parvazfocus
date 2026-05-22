@@ -131,7 +131,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         const subjectName = task.subject?.trim() || 'Other';
         const normalizedSubjects = newState.user.subjectSettings.subjects.map(s => s.toLowerCase());
         const subjectForTracker = normalizedSubjects.includes(subjectName.toLowerCase()) ? subjectName : 'Other';
-        newState = updateSubjectPerformance(newState, { ...task, subject: subjectForTracker }, xpReward, task.estimatedTime || 25);
+        newState = updateSubjectPerformance(newState, { ...task, subject: subjectForTracker, completed: true }, xpReward, task.estimatedTime || 25);
         newState = updateLevel(newState);
       }
       return newState;
