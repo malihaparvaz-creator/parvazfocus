@@ -128,10 +128,39 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           newState.user.stats.currentLevel.currentXP += xpReward;
         }
 
-        const subjectName = task.subject?.trim() || 'Other';
+        // Parse multiple subjects (comma-separated)
+        const subjectInput = task.subject?.trim() || '';
+        const subjectList = subjectInput
+          .split(',')
+          .map(s => s.trim())
+          .filter(Boolean);
+
+        // Normalize defined subjects for comparison
         const normalizedSubjects = newState.user.subjectSettings.subjects.map(s => s.toLowerCase());
-        const subjectForTracker = normalizedSubjects.includes(subjectName.toLowerCase()) ? subjectName : 'Other';
-        newState = updateSubjectPerformance(newState, { ...task, subject: subjectForTracker, completed: true }, xpReward, task.estimatedTime || 25);
+        const definedSubjects = newState.user.subjectSettings.subjects;
+
+        // Map each subject to its bucket (defined subject or 'Other')
+        const uniqueSubjects = new Set<string>();
+        const hasUnmappedSubject = subjectList.some(subj => {
+          const matchedSubject = definedSubjects.find(ds => ds.toLowerCase() === subj.toLowerCase());
+          if (matchedSubject) {
+            uniqueSubjects.add(matchedSubject);
+          } else {
+            uniqueSubjects.add('Other');
+          }
+          return !matchedSubject;
+        });
+
+        // If no subjects provided, add to Other
+        if (subjectList.length === 0) {
+          uniqueSubjects.add('Other');
+        }
+
+        // Update subject performance for each unique subject/bucket
+        uniqueSubjects.forEach(subject => {
+          newState = updateSubjectPerformance(newState, { ...task, subject, completed: true }, xpReward, task.estimatedTime || 25);
+        });
+
         newState = updateLevel(newState);
       }
       return newState;
