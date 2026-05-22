@@ -206,28 +206,28 @@ export function MoneyTracker() {
       {selectedSection === 'MONEY' ? (
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <Card className="p-6 bg-gradient-to-br from-violet-50 via-purple-50 to-fuchsia-50 border border-violet-200/80 shadow-sm">
+            <Card className="p-6 bg-gradient-to-br from-card to-card border border-border shadow-sm">
               <div className="flex items-center gap-3 mb-4">
-                <CreditCard className="w-5 h-5 text-violet-600" />
-                <p className="text-sm font-semibold text-violet-700">Money Dashboard</p>
+                <CreditCard className="w-5 h-5 text-accent" />
+                <p className="text-sm font-semibold text-foreground">Money Dashboard</p>
               </div>
               <p className="text-3xl font-bold text-foreground">₹{totals.totalInRupees.toFixed(2)}</p>
               <p className="text-sm text-muted-foreground mt-2">Total converted to Indian Rupees using current exchange rates.</p>
             </Card>
 
-            <Card className="p-6 bg-gradient-to-br from-sky-50 via-sky-100 to-cyan-50 border border-sky-200/80 shadow-sm">
+            <Card className="p-6 bg-gradient-to-br from-card to-card border border-border shadow-sm">
               <div className="flex items-center gap-3 mb-4">
-                <Globe className="w-5 h-5 text-sky-600" />
-                <p className="text-sm font-semibold text-sky-700">Online Payments</p>
+                <Globe className="w-5 h-5 text-accent" />
+                <p className="text-sm font-semibold text-foreground">Online Payments</p>
               </div>
               <p className="text-3xl font-bold text-foreground">₹{totals.onlineInRupees.toFixed(2)}</p>
               <p className="text-sm text-muted-foreground mt-2">Digital purchases, freelance pay, subscriptions.</p>
             </Card>
 
-            <Card className="p-6 bg-gradient-to-br from-rose-50 via-orange-50 to-amber-50 border border-rose-200/80 shadow-sm">
+            <Card className="p-6 bg-gradient-to-br from-card to-card border border-border shadow-sm">
               <div className="flex items-center gap-3 mb-4">
-                <DollarSign className="w-5 h-5 text-rose-600" />
-                <p className="text-sm font-semibold text-rose-700">Offline Cash</p>
+                <DollarSign className="w-5 h-5 text-accent" />
+                <p className="text-sm font-semibold text-foreground">Offline Cash</p>
               </div>
               <p className="text-3xl font-bold text-foreground">₹{totals.offlineInRupees.toFixed(2)}</p>
               <p className="text-sm text-muted-foreground mt-2">Cash, receipts, and in-person purchases.</p>
