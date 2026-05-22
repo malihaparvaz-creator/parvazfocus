@@ -69,13 +69,13 @@ export function updateExamCountdown(state: AppState): void {
 export function getExamPriorityColor(priority: string): string {
   switch (priority) {
     case 'critical':
-      return 'text-red-600 bg-red-50';
+      return 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/20';
     case 'high':
-      return 'text-orange-600 bg-orange-50';
+      return 'text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/20';
     case 'medium':
-      return 'text-yellow-600 bg-yellow-50';
+      return 'text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-950/20';
     default:
-      return 'text-gray-600 bg-gray-50';
+      return 'text-foreground bg-secondary/30';
   }
 }
 
