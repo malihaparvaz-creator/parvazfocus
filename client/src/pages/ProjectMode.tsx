@@ -270,7 +270,7 @@ export default function ProjectMode() {
                           className="flex-shrink-0 hover:opacity-80 transition-opacity mt-1"
                         >
                           {todo.status === 'COMPLETED' ? (
-                            <CheckCircle2 className="w-6 h-6 text-green-500" />
+                            <CheckCircle2 className="w-6 h-6 text-accent" />
                           ) : (
                             <Circle className="w-6 h-6 text-muted-foreground hover:text-accent" />
                           )}
@@ -297,10 +297,10 @@ export default function ProjectMode() {
                               variant="secondary"
                               className={`text-xs ${
                                 todo.priority === 'HIGH'
-                                  ? 'bg-red-500/20 text-red-700'
+                                  ? 'bg-destructive/20 text-destructive'
                                   : todo.priority === 'MEDIUM'
-                                    ? 'bg-yellow-500/20 text-yellow-700'
-                                    : 'bg-green-500/20 text-green-700'
+                                    ? 'bg-accent/20 text-accent'
+                                    : 'bg-secondary/20 text-secondary-foreground'
                               }`}
                             >
                               {todo.priority}

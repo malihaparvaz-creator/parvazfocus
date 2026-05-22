@@ -55,7 +55,7 @@ export function MiniMusicBar() {
       {/* Stop */}
       <button
         onClick={stopTrack}
-        className="p-1.5 rounded-lg text-muted-foreground hover:text-red-500 transition-colors"
+        className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive transition-colors"
         title="Stop music"
       >
         <Square className="w-4 h-4" />

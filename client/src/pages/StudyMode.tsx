@@ -252,7 +252,7 @@ function TaskRow({ task, onComplete }: { task: any; onComplete: () => void }) {
             : 'border-border hover:border-accent'
         }`}
       >
-        {task.completed && <div className="w-full h-full flex items-center justify-center text-white text-xs">✓</div>}
+        {task.completed && <div className="w-full h-full flex items-center justify-center text-accent-foreground text-xs">✓</div>}
       </div>
       <div className="flex-1">
         <p className={`font-medium ${task.completed ? 'line-through text-muted-foreground' : ''}`}>

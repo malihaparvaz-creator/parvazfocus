@@ -109,9 +109,9 @@ export function ExamCountdownDisplay() {
     <div className="space-y-4">
       {/* Upcoming Exam Alert */}
       {upcomingExam && countdown.focusMode && (
-        <Card className="p-4 bg-red-500/10 dark:bg-red-500/20 border-red-500/20 shadow-md">
+        <Card className="p-4 bg-destructive/10 dark:bg-destructive/20 border-destructive/20 shadow-md">
           <div className="flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
+            <AlertCircle className="w-5 h-5 text-destructive mt-0.5 flex-shrink-0" />
             <div className="flex-1">
               <p className="font-semibold text-foreground dark:text-foreground mb-1">
                 {upcomingExam.subject} - {countdown.daysUntilNextExam} days away!
@@ -122,7 +122,7 @@ export function ExamCountdownDisplay() {
               {upcomingExam.weakAreas.length > 0 && (
                 <div className="flex flex-wrap gap-1">
                   {upcomingExam.weakAreas.map(area => (
-                    <Badge key={area} variant="outline" className="bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-100 border-red-300 dark:border-red-700">
+                    <Badge key={area} variant="outline" className="bg-destructive/10 dark:bg-destructive/20 text-destructive-foreground border-transparent">
                       {area}
                     </Badge>
                   ))}
@@ -190,7 +190,7 @@ export function ExamCountdownDisplay() {
               key={exam.id}
               className={`p-4 rounded-lg border-2 transition-all ${
                 exam.id === upcomingExam?.id
-                  ? 'bg-red-500/10 dark:bg-red-500/20 border-red-500/20'
+                  ? 'bg-destructive/10 dark:bg-destructive/20 border-destructive/20'
                   : 'bg-secondary/10 dark:bg-secondary/20 border-border/30'
               }`}
             >

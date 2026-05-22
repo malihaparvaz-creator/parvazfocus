@@ -212,7 +212,7 @@ export function AdvancedPomodoroTimer() {
           <div className="mb-4">
             <Badge
               className={`${
-                cycleInfo.isStudyPhase ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
+                cycleInfo.isStudyPhase ? 'bg-accent/10 text-accent' : 'bg-secondary/10 text-secondary'
               }`}
             >
               {cycleInfo.phase} Phase - Cycle {cycleInfo.currentCycle}/{session.totalCycles}
@@ -270,7 +270,7 @@ export function AdvancedPomodoroTimer() {
                       <Zap className="w-3 h-3 inline mr-1" />
                       Cost: {getBreakCostInXP(parseInt(breakDuration))} XP
                       {state.user.stats.totalXP < getBreakCostInXP(parseInt(breakDuration)) && (
-                        <span className="text-red-600 ml-2">
+                        <span className="text-destructive ml-2">
                           (You have {state.user.stats.totalXP} XP)
                         </span>
                       )}

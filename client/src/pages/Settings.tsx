@@ -393,7 +393,7 @@ export default function Settings() {
           {/* Subject Task Progress Tab */}
           <TabsContent value="progress" className="space-y-6">
             <SubjectTaskTracker />
-            <Card className="p-4 border-orange-200 bg-orange-50/40">
+            <Card className="p-4 border-accent/20 bg-accent/5">
               <p className="text-sm font-semibold mb-2">Reset Progress Stats</p>
               <p className="text-xs text-muted-foreground mb-3">
                 Resets streak, focus hours, XP and base progress stats only.
@@ -401,7 +401,7 @@ export default function Settings() {
               <Button
                 size="sm"
                 variant="outline"
-                className="border-orange-300 text-orange-700 hover:bg-orange-100"
+                className="border-accent/20 text-accent hover:bg-accent/10"
                 onClick={handleResetStatsOnly}
               >
                 <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> Reset Progress
@@ -411,7 +411,7 @@ export default function Settings() {
 
           {/* Weekly Summary Tab */}
           <TabsContent value="weekly" className="space-y-6">
-            <Card className="p-4 border-orange-200 bg-orange-50/40">
+            <Card className="p-4 border-accent/20 bg-accent/5">
               <p className="text-sm font-semibold mb-2">Reset Weekly Data Only</p>
               <p className="text-xs text-muted-foreground mb-3">
                 Clears daily and weekly logs only. Today's totals remain.
@@ -419,7 +419,7 @@ export default function Settings() {
               <Button
                 size="sm"
                 variant="outline"
-                className="border-orange-300 text-orange-700 hover:bg-orange-100"
+                className="border-accent/20 text-accent hover:bg-accent/10"
                 onClick={handleResetWeekly}
               >
                 <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> Reset Weekly Data
@@ -618,7 +618,7 @@ export default function Settings() {
                   <p className="font-semibold text-sm">Focus Hours & Time Tracking</p>
                   <p className="text-xs text-muted-foreground">Resets totalFocusHours, study time, creative time, entertainment time.</p>
                   <Button size="sm" variant="outline"
-                    className="border-orange-200 text-orange-600 hover:bg-orange-50 w-full mt-1"
+                    className="border-accent/20 text-accent hover:bg-accent/10 w-full mt-1"
                     onClick={handleResetFocusHours}>
                     <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> Reset Focus Hours
                   </Button>
@@ -628,7 +628,7 @@ export default function Settings() {
                   <p className="font-semibold text-sm">Weekly & Daily Logs</p>
                   <p className="text-xs text-muted-foreground">Clears all daily and weekly study log history.</p>
                   <Button size="sm" variant="outline"
-                    className="border-orange-200 text-orange-600 hover:bg-orange-50 w-full mt-1"
+                    className="border-accent/20 text-accent hover:bg-accent/10 w-full mt-1"
                     onClick={handleResetWeekly}>
                     <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> Reset Weekly Log
                   </Button>
@@ -638,7 +638,7 @@ export default function Settings() {
                   <p className="font-semibold text-sm">XP & Level</p>
                   <p className="text-xs text-muted-foreground">Resets XP to 0 and level back to 1.</p>
                   <Button size="sm" variant="outline"
-                    className="border-orange-200 text-orange-600 hover:bg-orange-50 w-full mt-1"
+                    className="border-accent/20 text-accent hover:bg-accent/10 w-full mt-1"
                     onClick={handleResetXP}>
                     <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> Reset XP & Level
                   </Button>
@@ -648,7 +648,7 @@ export default function Settings() {
                   <p className="font-semibold text-sm">Streak</p>
                   <p className="text-xs text-muted-foreground">Resets your daily streak back to 0.</p>
                   <Button size="sm" variant="outline"
-                    className="border-orange-200 text-orange-600 hover:bg-orange-50 w-full mt-1"
+                    className="border-accent/20 text-accent hover:bg-accent/10 w-full mt-1"
                     onClick={handleResetStreak}>
                     <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> Reset Streak
                   </Button>
@@ -658,7 +658,7 @@ export default function Settings() {
                   <p className="font-semibold text-sm">Reflections</p>
                   <p className="text-xs text-muted-foreground">Clears all reflection history and unlocks reflection for today.</p>
                   <Button size="sm" variant="outline"
-                    className="border-orange-200 text-orange-600 hover:bg-orange-50 w-full mt-1"
+                    className="border-accent/20 text-accent hover:bg-accent/10 w-full mt-1"
                     onClick={handleResetReflections}>
                     <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> Reset Reflections
                   </Button>
@@ -668,7 +668,7 @@ export default function Settings() {
                   <p className="font-semibold text-sm">Creative Dump</p>
                   <p className="text-xs text-muted-foreground">Clears all creative dump entries only.</p>
                   <Button size="sm" variant="outline"
-                    className="border-orange-200 text-orange-600 hover:bg-orange-50 w-full mt-1"
+                    className="border-accent/20 text-accent hover:bg-accent/10 w-full mt-1"
                     onClick={handleResetCreativeDump}>
                     <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> Reset Dump
                   </Button>

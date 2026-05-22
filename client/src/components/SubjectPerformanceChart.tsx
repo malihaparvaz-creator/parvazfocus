@@ -138,11 +138,11 @@ export function SubjectPerformanceChart({ state }: SubjectPerformanceChartProps)
                   <p className="text-sm text-muted-foreground">{metrics.hours.toFixed(1)}h focused</p>
                 </div>
                 {metrics.trend === 'improving' ? (
-                  <TrendingUp className="w-5 h-5 text-green-500" />
+                  <TrendingUp className="w-5 h-5 text-accent" />
                 ) : metrics.trend === 'declining' ? (
-                  <TrendingDown className="w-5 h-5 text-red-500" />
+                  <TrendingDown className="w-5 h-5 text-destructive" />
                 ) : (
-                  <div className="w-5 h-5 text-yellow-500">→</div>
+                  <div className="w-5 h-5 text-muted-foreground">→</div>
                 )}
               </div>
 
@@ -156,10 +156,10 @@ export function SubjectPerformanceChart({ state }: SubjectPerformanceChartProps)
                   <div
                     className={`h-full rounded-full transition-all ${
                       metrics.score >= 80
-                        ? 'bg-green-400'
+                        ? 'bg-accent'
                         : metrics.score >= 60
-                        ? 'bg-yellow-400'
-                        : 'bg-red-400'
+                        ? 'bg-secondary'
+                        : 'bg-destructive'
                     }`}
                     style={{ width: `${metrics.score}%` }}
                   />

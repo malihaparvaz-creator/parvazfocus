@@ -140,10 +140,10 @@ export function calculateTrend(
  * Get performance color based on score
  */
 export function getPerformanceColor(score: number): string {
-  if (score >= 80) return 'text-green-600'; // Excellent
-  if (score >= 60) return 'text-blue-600'; // Good
-  if (score >= 40) return 'text-yellow-600'; // Fair
-  return 'text-red-600'; // Needs improvement
+  if (score >= 80) return 'text-accent'; // Excellent
+  if (score >= 60) return 'text-secondary'; // Good
+  if (score >= 40) return 'text-muted-foreground'; // Fair
+  return 'text-destructive'; // Needs improvement
 }
 
 /**

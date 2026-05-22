@@ -93,9 +93,9 @@ export function SubjectTracker() {
 
         {/* Recommendations */}
         {recommendations.length > 0 && (
-          <Card className="p-4 bg-yellow-50/50 border-yellow-200/50 shadow-md">
+          <Card className="p-4 bg-secondary/10 border-secondary/20 shadow-md">
             <h4 className="font-semibold mb-3 flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 text-yellow-600" />
+              <AlertCircle className="w-4 h-4 text-accent" />
               Study Recommendations
             </h4>
             <ul className="space-y-2">
@@ -111,9 +111,9 @@ export function SubjectTracker() {
 
       {/* Strongest Subjects Tab */}
       <TabsContent value="strongest" className="space-y-4">
-        <Card className="p-6 bg-green-50/50 border-green-200/50 shadow-md">
+        <Card className="p-6 bg-secondary/10 border-secondary/20 shadow-md">
           <div className="flex items-center gap-2 mb-4">
-            <Trophy className="w-5 h-5 text-green-600" />
+            <Trophy className="w-5 h-5 text-accent" />
             <h3 className="font-semibold">Your Strongest Subjects</h3>
           </div>
           <p className="text-sm text-muted-foreground mb-4">
@@ -147,9 +147,9 @@ export function SubjectTracker() {
 
       {/* Weakest Subjects Tab */}
       <TabsContent value="weakest" className="space-y-4">
-        <Card className="p-6 bg-red-50/50 border-red-200/50 shadow-md">
+        <Card className="p-6 bg-destructive/10 border-destructive/20 shadow-md">
           <div className="flex items-center gap-2 mb-4">
-            <AlertCircle className="w-5 h-5 text-red-600" />
+            <AlertCircle className="w-5 h-5 text-destructive" />
             <h3 className="font-semibold">Focus Areas for Improvement</h3>
           </div>
           <p className="text-sm text-muted-foreground mb-4">
@@ -231,11 +231,11 @@ function SubjectPerformanceBar({
   const getTrendIcon = (trend: string) => {
     switch (trend) {
       case 'improving':
-        return <TrendingUp className="w-4 h-4 text-green-600" />;
+        return <TrendingUp className="w-4 h-4 text-accent" />;
       case 'declining':
-        return <TrendingDown className="w-4 h-4 text-red-600" />;
+        return <TrendingDown className="w-4 h-4 text-destructive" />;
       default:
-        return <Minus className="w-4 h-4 text-yellow-600" />;
+        return <Minus className="w-4 h-4 text-muted-foreground" />;
     }
   };
 

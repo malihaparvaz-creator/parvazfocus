@@ -18,10 +18,10 @@ export function LiveTracker() {
   const creativeApps = state.creativeAppsSetup ?? [];
   const entertainmentApps = state.entertainmentAppsSetup ?? [];
 
-  const categories: { key: TrackingCategory; label: string; icon: typeof BookOpen; apps: string[]; sentinel: string; color: string }[] = [
-    { key: 'STUDY', label: 'Study', icon: BookOpen, apps: studyApps, sentinel: '__STUDY__', color: '#d8b4fe' },
-    { key: 'CREATIVE', label: 'Creative', icon: Palette, apps: creativeApps, sentinel: '__CREATIVE__', color: '#a78bfa' },
-    { key: 'ENTERTAINMENT', label: 'Entertainment', icon: Tv, apps: entertainmentApps, sentinel: '__ENTERTAINMENT__', color: '#fca5a5' },
+  const categories: { key: TrackingCategory; label: string; icon: typeof BookOpen; apps: string[]; sentinel: string; token: 'accent' | 'secondary' | 'destructive' }[] = [
+    { key: 'STUDY', label: 'Study', icon: BookOpen, apps: studyApps, sentinel: '__STUDY__', token: 'accent' },
+    { key: 'CREATIVE', label: 'Creative', icon: Palette, apps: creativeApps, sentinel: '__CREATIVE__', token: 'secondary' },
+    { key: 'ENTERTAINMENT', label: 'Entertainment', icon: Tv, apps: entertainmentApps, sentinel: '__ENTERTAINMENT__', token: 'destructive' },
   ];
 
   return (
@@ -33,14 +33,14 @@ export function LiveTracker() {
         </div>
         {isTracking && (
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse inline-block" />
+            <span className="w-2 h-2 rounded-full bg-accent animate-pulse inline-block" />
             <span className="text-xs text-muted-foreground">Tracking active</span>
           </div>
         )}
       </div>
 
       <div className="space-y-3">
-        {categories.map(({ key, label, icon: Icon, apps, sentinel, color }) => {
+        {categories.map(({ key, label, icon: Icon, apps, sentinel, token }) => {
           const isCategoryActive = isTracking && (activeCategories || []).includes(key);
           // Use first real app if available, otherwise use sentinel for direct category tracking
           const trackTarget = apps.length > 0 ? apps[0] : sentinel;
@@ -56,15 +56,11 @@ export function LiveTracker() {
           return (
             <div
               key={key}
-              className="flex items-center justify-between p-4 rounded-xl border transition-all duration-200"
-              style={{
-                backgroundColor: isCategoryActive ? `${color}15` : 'transparent',
-                borderColor: isCategoryActive ? `${color}60` : 'var(--border)',
-              }}
+              className={`flex items-center justify-between p-4 rounded-xl border transition-all duration-200 ${isCategoryActive ? `bg-${token}/10 border-${token}/20` : ''}`}
             >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${color}25` }}>
-                  <Icon className="w-4 h-4" style={{ color }} />
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isCategoryActive ? `bg-${token}/10` : ''}`}>
+                  <Icon className={`w-4 h-4 ${isCategoryActive ? `text-${token}` : ''}`} />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-foreground">{label}</p>
@@ -74,12 +70,7 @@ export function LiveTracker() {
 
               <button
                 onClick={handleToggle}
-                className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all duration-200"
-                style={{
-                  backgroundColor: isCategoryActive ? color : `${color}20`,
-                  color: isCategoryActive ? '#fff' : color,
-                }}
-              >
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all duration-200 ${isCategoryActive ? `bg-${token} text-${token}-foreground` : `bg-${token}/20 text-${token}`}`}>
                 {isCategoryActive
                   ? <><Square className="w-3 h-3" /> Stop</>
                   : <><Play className="w-3 h-3" /> Start</>

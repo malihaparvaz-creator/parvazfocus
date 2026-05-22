@@ -169,7 +169,7 @@ export function NeuroMusic() {
             </span>
             <span className="text-sm font-semibold text-accent flex-1">{playingTrack.name}</span>
             <Button onClick={stopTrack} size="sm"
-              className="h-7 px-3 text-xs bg-red-100 text-red-700 hover:bg-red-200 border border-red-200">
+              className="h-7 px-3 text-xs bg-destructive/10 text-destructive hover:bg-destructive/20 border border-destructive/20">
               <Square className="w-3 h-3 mr-1" /> Stop
             </Button>
           </div>
@@ -216,7 +216,7 @@ export function NeuroMusic() {
                 <div className="flex gap-1 ml-2">
                   {track.isCustom && (
                     <button onClick={() => handleDelete(track.id)}
-                      className="p-1.5 rounded-md text-muted-foreground hover:text-red-500 hover:bg-red-50 transition-colors">
+                      className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   )}
@@ -235,8 +235,8 @@ export function NeuroMusic() {
                 <Button onClick={() => isPlaying ? stopTrack() : playTrack(track)} size="sm"
                   className={`h-8 px-4 text-xs font-semibold gap-1.5 ${
                     isPlaying
-                      ? 'bg-red-100 text-red-700 hover:bg-red-200 border border-red-200'
-                      : 'bg-accent text-white hover:bg-accent/90'
+                      ? 'bg-destructive/10 text-destructive hover:bg-destructive/20 border border-destructive/20'
+                      : 'bg-accent text-accent-foreground hover:bg-accent/90'
                   }`}>
                   {isPlaying ? <><Square className="w-3 h-3" /> Stop</> : <><Play className="w-3 h-3" /> Play</>}
                 </Button>
@@ -261,7 +261,7 @@ export function NeuroMusic() {
             <Input placeholder="YouTube URL or video ID" value={newUrl} onChange={e => setNewUrl(e.target.value)} className="text-sm" />
             <Input placeholder="Description (optional)" value={newDesc} onChange={e => setNewDesc(e.target.value)} className="text-sm" />
             <Input placeholder="Best for... (optional)" value={newBestFor} onChange={e => setNewBestFor(e.target.value)} className="text-sm" />
-            {addError && <p className="text-xs text-red-500">{addError}</p>}
+            {addError && <p className="text-xs text-destructive">{addError}</p>}
             <div className="flex gap-2">
               <Button onClick={handleAdd} size="sm" className="bg-accent text-white hover:bg-accent/90">Add Track</Button>
               <Button onClick={() => { setShowAddForm(false); setAddError(''); }} size="sm" variant="outline">Cancel</Button>

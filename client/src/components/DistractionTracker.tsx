@@ -63,24 +63,24 @@ export function DistractionTracker() {
     <div className="space-y-6">
       {/* Roasting Message Toast */}
       {showRoast && tracker.lastDistraction && (
-        <Card className="p-4 bg-red-50/50 border-red-200/50 shadow-lg animate-in fade-in slide-in-from-top-4 duration-300">
+        <Card className="p-4 bg-destructive/10 border-destructive/20 shadow-lg animate-in fade-in slide-in-from-top-4 duration-300">
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
-              <p className="font-semibold text-red-900 mb-2">
+              <p className="font-semibold text-destructive mb-2">
                 {tracker.lastDistraction.app} Detected! 🚨
               </p>
-              <p className="text-sm text-red-800 mb-4">{roastMessage}</p>
+              <p className="text-sm text-destructive mb-4">{roastMessage}</p>
               <Button
                 onClick={handleAcknowledge}
                 size="sm"
-                className="bg-red-600 hover:bg-red-700 text-white"
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               >
                 I Hear You. Back to Work.
               </Button>
             </div>
             <button
               onClick={() => setShowRoast(false)}
-              className="text-red-600 hover:text-red-900"
+              className="text-destructive hover:text-destructive/90"
             >
               <X className="w-5 h-5" />
             </button>
@@ -137,12 +137,12 @@ export function DistractionTracker() {
               <Badge
                 className={`${
                   severity === 'excellent'
-                    ? 'bg-green-100 text-green-800'
+                    ? 'bg-accent/10 text-accent'
                     : severity === 'good'
-                    ? 'bg-blue-100 text-blue-800'
+                    ? 'bg-secondary/10 text-secondary'
                     : severity === 'fair'
-                    ? 'bg-yellow-100 text-yellow-800'
-                    : 'bg-red-100 text-red-800'
+                    ? 'bg-secondary/10 text-muted-foreground'
+                    : 'bg-destructive/10 text-destructive'
                 }`}
               >
                 {severity.charAt(0).toUpperCase() + severity.slice(1)}
@@ -187,8 +187,8 @@ export function DistractionTracker() {
           )}
 
           {/* Recommendation */}
-          <Card className="p-4 bg-blue-50/50 border-blue-200/50 shadow-md">
-            <p className="text-sm text-blue-900">
+          <Card className="p-4 bg-accent/5 border-accent/20 shadow-md">
+            <p className="text-sm text-accent">
               💡 <strong>Tip:</strong> {getDistractionRecommendation(state)}
             </p>
           </Card>
@@ -241,10 +241,10 @@ export function DistractionTracker() {
         {/* History Tab */}
         <TabsContent value="history" className="space-y-4">
           {todayDistractions.length === 0 ? (
-            <Card className="p-8 text-center bg-green-50/50 border-green-200/50 shadow-md">
-              <Zap className="w-12 h-12 mx-auto mb-4 text-green-600" />
-              <p className="text-lg font-semibold text-green-900">Perfect Focus Day!</p>
-              <p className="text-sm text-green-800">No distractions logged. Keep it up! 🔥</p>
+            <Card className="p-8 text-center bg-accent/10 border-accent/20 shadow-md">
+              <Zap className="w-12 h-12 mx-auto mb-4 text-accent" />
+              <p className="text-lg font-semibold text-accent">Perfect Focus Day!</p>
+              <p className="text-sm text-accent-foreground">No distractions logged. Keep it up! 🔥</p>
             </Card>
           ) : (
             <Card className="p-6 shadow-md">

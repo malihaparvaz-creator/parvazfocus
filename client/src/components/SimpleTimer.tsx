@@ -29,9 +29,9 @@ interface SimpleTimerSession {
 }
 
 const CATEGORY_CONFIG: Record<TimerCategory, { label: string; color: string; icon: typeof BookOpen }> = {
-  STUDY:         { label: 'Study',         color: '#d8b4fe', icon: BookOpen },
-  CREATIVE:      { label: 'Creative',      color: '#a78bfa', icon: Palette  },
-  ENTERTAINMENT: { label: 'Entertainment', color: '#fca5a5', icon: Tv       },
+  STUDY:         { label: 'Study',         color: 'var(--accent)', icon: BookOpen },
+  CREATIVE:      { label: 'Creative',      color: 'var(--secondary)', icon: Palette  },
+  ENTERTAINMENT: { label: 'Entertainment', color: 'var(--destructive)', icon: Tv       },
 };
 
 function pad(n: number) { return String(n).padStart(2, '0'); }
@@ -177,7 +177,7 @@ export function SimpleTimer() {
       {/* Add Timer */}
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
         <DialogTrigger asChild>
-          <Button className="gap-2 bg-accent text-white hover:bg-accent/90">
+          <Button className="gap-2 bg-accent text-accent-foreground hover:bg-accent/90">
             <Plus className="w-4 h-4" /> New Timer
           </Button>
         </DialogTrigger>
@@ -229,7 +229,7 @@ export function SimpleTimer() {
                 placeholder="e.g. Math revision"
               />
             </div>
-            <Button onClick={handleAddTimer} className="w-full bg-accent text-white hover:bg-accent/90">
+            <Button onClick={handleAddTimer} className="w-full bg-accent text-accent-foreground hover:bg-accent/90">
               Start Timer
             </Button>
           </div>
@@ -264,7 +264,7 @@ export function SimpleTimer() {
                 </div>
               </div>
               <button onClick={() => handleRemove(session.id)}
-                className="text-muted-foreground hover:text-red-500 transition-colors">
+                className="text-muted-foreground hover:text-destructive transition-colors">
                 <Trash2 className="w-4 h-4" />
               </button>
             </div>
@@ -294,7 +294,7 @@ export function SimpleTimer() {
                 </Button>
                 <Button onClick={() => handleStop(session.id)}
                   size="sm" variant="outline"
-                  className="flex-1 gap-1.5 border-red-200 text-red-600 hover:bg-red-50">
+                  className="flex-1 gap-1.5 border-destructive/20 text-destructive hover:bg-destructive/10">
                   <RotateCcw className="w-3.5 h-3.5" /> Stop
                 </Button>
               </div>
