@@ -345,20 +345,19 @@ export default function Settings() {
   };
   const subjects = state.user.subjectSettings.subjects;
   const reflections = state.user.reflectionHistory.reflections;
+  const subjectTracker = state.user.stats.subjectTracker;
 
   const subjectCounts = subjects.reduce<Record<string, number>>((acc, subject) => {
-    acc[subject] = 0;
+    const performance = subjectTracker.subjects.find(s => s.subject.toLowerCase() === subject.toLowerCase());
+    acc[subject] = performance?.tasksCompleted || 0;
     return acc;
-  }, { Other: 0 });
+  }, {});
 
-  state.today.mission.tasks.forEach(task => {
-    if (task.completed) {
-      const taskSubject = task.subject?.trim() || '';
-      const matchedSubject = subjects.find(subject => subject.toLowerCase() === taskSubject.toLowerCase());
-      const bucket = matchedSubject || 'Other';
-      subjectCounts[bucket] = (subjectCounts[bucket] || 0) + 1;
-    }
-  });
+  // Add Other count
+  const otherPerformance = subjectTracker.subjects.find(s => s.subject === 'Other');
+  if (otherPerformance && otherPerformance.tasksCompleted > 0) {
+    subjectCounts['Other'] = otherPerformance.tasksCompleted;
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">

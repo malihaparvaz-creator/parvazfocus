@@ -37,40 +37,30 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
 export function SubjectTaskTracker() {
   const { state } = useAppContext();
   const subjects = state.user.subjectSettings.subjects;
-  const tasks = state.today.mission.tasks;
+  const subjectTracker = state.user.stats.subjectTracker;
 
   const chartData = useMemo(() => {
-    const buckets = subjects.filter(Boolean).map((subject, index) => ({
-      subject,
-      tasks: 0,
-      total: 0,
-      color: COLORS[index % COLORS.length],
-    }));
-
-    const otherBucket = {
-      subject: 'Other',
-      tasks: 0,
-      total: 0,
-      color: COLORS[buckets.length % COLORS.length],
-    };
-
-    tasks.forEach(task => {
-      const taskSubject = (task as any).subject?.trim() || '';
-      const matchedSubject = subjects.find(subject => subject.toLowerCase() === taskSubject.toLowerCase());
-      const bucket = matchedSubject
-        ? buckets.find(b => b.subject === matchedSubject)
-        : otherBucket;
-
-      if (bucket) {
-        bucket.total += 1;
-        if (task.completed) {
-          bucket.tasks += 1;
-        }
-      }
+    const buckets = subjects.filter(Boolean).map((subject, index) => {
+      const performance = subjectTracker.subjects.find(s => s.subject.toLowerCase() === subject.toLowerCase());
+      return {
+        subject,
+        tasks: performance?.tasksCompleted || 0,
+        color: COLORS[index % COLORS.length],
+      };
     });
 
-    return buckets.concat(otherBucket.total > 0 ? [otherBucket] : []);
-  }, [subjects, tasks]);
+    // Find Other bucket (subjects not in the defined list)
+    const otherPerformance = subjectTracker.subjects.find(s => s.subject === 'Other');
+    const otherBucket = otherPerformance && otherPerformance.tasksCompleted > 0
+      ? {
+          subject: 'Other',
+          tasks: otherPerformance.tasksCompleted,
+          color: COLORS[buckets.length % COLORS.length],
+        }
+      : null;
+
+    return buckets.concat(otherBucket ? [otherBucket] : []);
+  }, [subjects, subjectTracker.subjects]);
 
   if (subjects.length === 0 && chartData.length === 0) {
     return (
