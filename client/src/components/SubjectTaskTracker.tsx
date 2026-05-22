@@ -102,7 +102,7 @@ export function SubjectTaskTracker() {
       <div className="w-full" style={{ height: Math.max(220, subjects.length * 44) }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
-            data={mergedData}
+            data={chartData}
             layout="vertical"
             margin={{ top: 0, right: 24, left: 8, bottom: 0 }}
             barCategoryGap="30%"

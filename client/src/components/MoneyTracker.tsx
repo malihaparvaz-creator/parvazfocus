@@ -367,7 +367,7 @@ export function MoneyTracker() {
                     <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                       <div className="space-y-2">
                         <div className="flex items-center gap-2">
-                          <Badge className="bg-slate-100 text-slate-700 border-transparent">{entry.method}</Badge>
+                          <Badge className="bg-secondary text-secondary-foreground border-transparent">{entry.method}</Badge>
                           <span className="text-sm text-muted-foreground">{entry.date}</span>
                         </div>
                         <p className="text-xl font-semibold">{entry.person}</p>
@@ -404,7 +404,7 @@ export function MoneyTracker() {
                 <p className="text-lg font-semibold">Important Dates</p>
                 <p className="text-sm text-muted-foreground">Record special dates and why they matter.</p>
               </div>
-              <Badge className="bg-slate-100 text-slate-700">Date Log</Badge>
+              <Badge className="bg-secondary text-secondary-foreground">Date Log</Badge>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
@@ -478,7 +478,7 @@ export function MoneyTracker() {
                     <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                       <div className="space-y-2">
                         <div className="flex items-center gap-2">
-                          <Badge className="bg-slate-100 text-slate-700 border-transparent">{entry.type === 'FUTURE' ? 'Upcoming' : 'Past'}</Badge>
+                          <Badge className="bg-secondary text-secondary-foreground border-transparent">{entry.type === 'FUTURE' ? 'Upcoming' : 'Past'}</Badge>
                           <span className="text-sm text-muted-foreground">{entry.date}</span>
                         </div>
                         <p className="text-xl font-semibold">{entry.title}</p>

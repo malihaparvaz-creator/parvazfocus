@@ -258,7 +258,7 @@ export default function ProjectMode() {
                                   t.id === todo.id
                                     ? {
                                         ...t,
-                                        status: t.status === 'COMPLETED' ? 'TODO' : 'COMPLETED',
+                                        status: (t.status === 'COMPLETED' ? 'TODO' : 'COMPLETED') as CreativeTodo['status'],
                                         updatedAt: new Date(),
                                       }
                                     : t
