@@ -5,23 +5,48 @@
 import { AppState, FocusRank, FOCUS_RANKS, XP_COSTS } from './types';
 
 /**
+ * Convert FocusRating to numeric score (0-100)
+ */
+function focusRatingToScore(rating: string | undefined): number {
+  if (rating === 'LOCKED_IN') return 100;
+  if (rating === 'DISTRACTED') return 50;
+  if (rating === 'SURVIVED') return 75;
+  return 0;
+}
+
+/**
+ * Calculate average focus rating from all sessions with ratings
+ */
+function calculateAverageFocusRating(state: AppState): number {
+  const sessionsWithRatings = state.sessions.filter(s => s.rating);
+  if (sessionsWithRatings.length === 0) return 0;
+  
+  const totalScore = sessionsWithRatings.reduce((sum, session) => {
+    return sum + focusRatingToScore(session.rating);
+  }, 0);
+  
+  return Math.round(totalScore / sessionsWithRatings.length);
+}
+
+/**
  * Calculate Trust Score (0-100)
- * Based on: consistency, promises kept, distractions overcome
+ * Based on: consistency, promises kept, focus quality
+ * Weighted to favor task completion for early users
  */
 export function calculateTrustScore(state: AppState): number {
   const stats = state.user.stats;
   
-  // Consistency: scaled to 40 points (30-day reference)
-  const consistencyScore = Math.min((stats.streak / 30) * 40, 40);
+  // Consistency: scaled to 30 points (30-day reference)
+  const consistencyScore = Math.min((stats.streak / 30) * 30, 30);
 
-  // Promises Kept: normalize completed tasks to a 0-30 scale (assume 100 tasks = full)
-  const promisesKeptScore = Math.min((Math.min(stats.totalTasksCompleted, 100) / 100) * 30, 30);
+  // Promises Kept: scaled generously for early users (50 tasks = full score)
+  const promisesKeptScore = Math.min((Math.min(stats.totalTasksCompleted, 50) / 50) * 40, 40);
 
-  // Focus Quality: average focus rating expected 0-100
+  // Focus Quality: average focus rating (0-100 scale, up to 30 points)
   const focusQualityScore = Math.min((stats.averageFocusRating / 100) * 30, 30);
   
   const total = Math.round(consistencyScore + promisesKeptScore + focusQualityScore);
-  return Math.max(0, Math.min(100, total));
+  return Math.max(30, Math.min(100, total)); // Minimum 30% to keep users motivated
 }
 
 /**
@@ -222,6 +247,11 @@ export function purchaseStoreItem(state: AppState, itemId: string): AppState {
  */
 export function updateTrustScore(state: AppState): AppState {
   const newState = { ...state };
+  
+  // First, recalculate average focus rating from all sessions
+  newState.user.stats.averageFocusRating = calculateAverageFocusRating(newState);
+  
+  // Then calculate trust percentage using updated rating
   const trustPercentage = calculateTrustScore(newState);
   
   newState.user.stats.trustScore.percentage = trustPercentage;
