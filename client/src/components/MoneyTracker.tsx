@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useAppContext } from '@/contexts/AppContext';
 import type { MoneyTrackerDateEntry, MoneyTrackerEntry, MoneyTrackerState } from '@/lib/types';
 import { Button } from '@/components/ui/button';
@@ -7,14 +7,16 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { CreditCard, DollarSign, Globe, Trash2 } from 'lucide-react';
+import { getExchangeRates } from '@/lib/currency-converter';
 
-const EXCHANGE_RATES_TO_INR: Record<'INR' | 'USD' | 'EUR' | 'GBP' | 'AED' | 'JPY', number> = {
+// Fallback rates (updated monthly) — used if real-time fetch fails
+const FALLBACK_RATES: Record<'INR' | 'USD' | 'EUR' | 'GBP' | 'AED' | 'JPY', number> = {
   INR: 1,
-  USD: 83.5,
-  EUR: 90.2,
-  GBP: 103.8,
-  AED: 22.8,
-  JPY: 0.55,
+  USD: 83.42,
+  EUR: 91.35,
+  GBP: 105.28,
+  AED: 22.70,
+  JPY: 0.558,
 };
 
 const DEFAULT_MONEY_DRAFT = {
@@ -42,19 +44,53 @@ export function MoneyTracker() {
   const entries = tracker?.entries || [];
   const dateEntries = tracker?.dateEntries || [];
 
+  // ── REAL-TIME EXCHANGE RATES ──────────────────────────────────────────────
+  const [exchangeRates, setExchangeRates] =
+    useState<Record<string, number>>(FALLBACK_RATES);
+  const [ratesLoading, setRatesLoading] = useState(true);
+  const [ratesError, setRatesError] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    setRatesLoading(true);
+    setRatesError(false);
+
+    getExchangeRates()
+      .then((rates) => {
+        if (!cancelled && rates) {
+          // getExchangeRates is expected to return rates relative to INR (base = INR)
+          setExchangeRates({ ...FALLBACK_RATES, ...rates });
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setRatesError(true);
+      })
+      .finally(() => {
+        if (!cancelled) setRatesLoading(false);
+      });
+
+    return () => { cancelled = true; };
+  }, []);
+
+  // Helper: convert any supported currency amount → INR
+  const toINR = (amount: number, currency: string): number => {
+    const rate = exchangeRates[currency as keyof typeof exchangeRates] ?? 1;
+    return amount * rate;
+  };
+  // ─────────────────────────────────────────────────────────────────────────
+
   const totals = useMemo(() => {
     const totalInRupees = entries.reduce((sum, entry) => {
-      const rate = EXCHANGE_RATES_TO_INR[entry.currency] ?? 1;
-      return sum + entry.amount * rate;
+      return sum + toINR(entry.amount, entry.currency);
     }, 0);
 
     const onlineInRupees = entries
       .filter(entry => entry.method === 'ONLINE')
-      .reduce((sum, entry) => sum + entry.amount * (EXCHANGE_RATES_TO_INR[entry.currency] ?? 1), 0);
+      .reduce((sum, entry) => sum + toINR(entry.amount, entry.currency), 0);
 
     const offlineInRupees = entries
       .filter(entry => entry.method === 'OFFLINE')
-      .reduce((sum, entry) => sum + entry.amount * (EXCHANGE_RATES_TO_INR[entry.currency] ?? 1), 0);
+      .reduce((sum, entry) => sum + toINR(entry.amount, entry.currency), 0);
 
     return {
       totalInRupees,
@@ -62,7 +98,7 @@ export function MoneyTracker() {
       offlineInRupees,
       count: entries.length,
     };
-  }, [entries]);
+  }, [entries, exchangeRates]); // re-compute when rates update
 
   const [selectedSection, setSelectedSection] = useState<'MONEY' | 'DATES'>('MONEY');
 
@@ -201,6 +237,15 @@ export function MoneyTracker() {
         >
           DATES
         </Button>
+
+        {/* Rates status indicator — minimal, unobtrusive */}
+        <span className="ml-auto text-xs text-muted-foreground pr-2">
+          {ratesLoading
+            ? 'Fetching live rates…'
+            : ratesError
+            ? 'Using fallback rates'
+            : 'Live rates ✓'}
+        </span>
       </div>
 
       {selectedSection === 'MONEY' ? (
@@ -365,7 +410,7 @@ export function MoneyTracker() {
                         <div className="text-right">
                           <p className="text-2xl font-bold text-foreground">{entry.currency} {entry.amount.toFixed(2)}</p>
                           <p className="text-xs text-muted-foreground">Recorded</p>
-                          <p className="text-xs text-muted-foreground mt-1">₹{(entry.amount * (EXCHANGE_RATES_TO_INR[entry.currency] ?? 1)).toFixed(2)} in INR</p>
+                          <p className="text-xs text-muted-foreground mt-1">₹{toINR(entry.amount, entry.currency).toFixed(2)} in INR</p>
                         </div>
                         <Button
                           variant="outline"
@@ -491,4 +536,3 @@ export function MoneyTracker() {
     </div>
   );
 }
-
