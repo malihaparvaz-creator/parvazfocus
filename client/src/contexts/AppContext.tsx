@@ -4,6 +4,7 @@ import { loadAppState, saveAppState, saveAppStateWithSync, migrateAppState } fro
 import { subscribeToFirestoreState } from '@/lib/firebase';
 import { updateSubjectPerformance } from '@/lib/subject-tracker';
 import { updateStreak, updateLevel } from '@/lib/time-aggregation';
+import { updateTrustScore, updateFocusRank } from '@/lib/xp-system';
 
 interface AppContextType {
   state: AppState;
@@ -162,6 +163,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         });
 
         newState = updateLevel(newState);
+        newState = updateTrustScore(newState);
+        newState = updateFocusRank(newState);
       }
       return newState;
     });
@@ -178,6 +181,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       
       // Update level based on new currentXP
       newState = updateLevel(newState);
+      
+      // Update trust score and focus rank based on new stats
+      newState = updateTrustScore(newState);
+      newState = updateFocusRank(newState);
       
       return newState;
     });
