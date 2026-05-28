@@ -11,7 +11,9 @@ function startOfToday(): Date {
 
 function startOfWeek(day: Date): Date {
   const weekStart = new Date(day);
-  weekStart.setDate(day.getDate() - day.getDay());
+  const dayOfWeek = weekStart.getDay();
+  const offset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+  weekStart.setDate(weekStart.getDate() + offset);
   weekStart.setHours(0, 0, 0, 0);
   return weekStart;
 }

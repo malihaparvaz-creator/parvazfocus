@@ -29,10 +29,34 @@ export function WeeklySummary({ state }: WeeklySummaryProps) {
     return `${mins}m`;
   };
 
-  // Calculate totals from TODAY's tracking (real-time data from Pomodoro sessions)
-  const totalStudyTime = timeTracking.studyTime || 0;
-  const totalCreativeTime = timeTracking.creativeTime || 0;
-  const totalEntertainmentTime = Object.values(timeTracking.entertainmentTime || {}).reduce((a, b) => a + b, 0);
+  const getCurrentWeekStart = (day: Date) => {
+    const weekStart = new Date(day);
+    const dayOfWeek = weekStart.getDay();
+    const offset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    weekStart.setDate(weekStart.getDate() + offset);
+    weekStart.setHours(0, 0, 0, 0);
+    return weekStart;
+  };
+
+  const currentWeekStart = getCurrentWeekStart(new Date()).getTime();
+  const currentWeeklyEntry = (timeTracking.weeklyStudyLog || []).find(
+    (entry) => new Date(entry.weekStart).setHours(0, 0, 0, 0) === currentWeekStart
+  ) || {
+    weekStart: getCurrentWeekStart(new Date()),
+    weekEnd: new Date(),
+    totalStudyTime: 0,
+    totalCreativeTime: 0,
+    totalEntertainmentTime: 0,
+    subjectFocus: {},
+    topSubject: '',
+    leastSubject: '',
+    averageDailyStudy: 0,
+    taskCompletion: 0,
+  };
+
+  const totalStudyTime = currentWeeklyEntry.totalStudyTime;
+  const totalCreativeTime = currentWeeklyEntry.totalCreativeTime;
+  const totalEntertainmentTime = currentWeeklyEntry.totalEntertainmentTime;
   const totalTime = totalStudyTime + totalCreativeTime + totalEntertainmentTime;
 
   // Prepare pie chart data
@@ -77,7 +101,7 @@ export function WeeklySummary({ state }: WeeklySummaryProps) {
           <div className="flex-1">
             <h3 className="text-xl font-bold mb-2">{insight.title}</h3>
             <p className="text-foreground/80">{insight.message}</p>
-            <p className="text-xs text-muted-foreground mt-2">Real-time tracking from today's Pomodoro sessions</p>
+            <p className="text-xs text-muted-foreground mt-2">Weekly totals are refreshed at Sunday 11:59pm and represent the current Monday–Sunday period.</p>
           </div>
         </div>
       </Card>
