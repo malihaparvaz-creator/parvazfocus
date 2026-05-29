@@ -12,11 +12,11 @@ import { getExchangeRates } from '@/lib/currency-converter';
 // Fallback rates (updated monthly) — used if real-time fetch fails
 const FALLBACK_RATES: Record<'INR' | 'USD' | 'EUR' | 'GBP' | 'AED' | 'JPY', number> = {
   INR: 1,
-  USD: 83.42,
-  EUR: 91.35,
-  GBP: 105.28,
-  AED: 22.70,
-  JPY: 0.558,
+  USD: 95.7,
+  EUR: 108.9,
+  GBP: 128.7,
+  AED: 25.87,
+  JPY: 0.67,
 };
 
 const DEFAULT_MONEY_DRAFT = {

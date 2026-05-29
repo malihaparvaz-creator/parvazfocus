@@ -124,11 +124,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         newState.today.mission.tasks = newState.today.mission.tasks.filter(t => t.id !== taskId);
         newState.user.stats.totalTasksCompleted = (newState.user.stats.totalTasksCompleted || 0) + 1;
 
-        if (xpReward > 0) {
-          newState.user.stats.totalXP += xpReward;
-          newState.user.stats.currentLevel.currentXP += xpReward;
-        }
-
         // Parse multiple subjects (comma-separated)
         const subjectInput = task.subject?.trim() || '';
         const subjectList = subjectInput
@@ -136,30 +131,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           .map(s => s.trim())
           .filter(Boolean);
 
-        // Normalize defined subjects for comparison
-        const normalizedSubjects = newState.user.subjectSettings.subjects.map(s => s.toLowerCase());
-        const definedSubjects = newState.user.subjectSettings.subjects;
+        // If no subjects provided, treat as single 'Other'
+        const subjectsToProcess = subjectList.length > 0 ? subjectList : ['Other'];
 
-        // Map each subject to its bucket (defined subject or 'Other')
-        const uniqueSubjects = new Set<string>();
-        const hasUnmappedSubject = subjectList.some(subj => {
-          const matchedSubject = definedSubjects.find(ds => ds.toLowerCase() === subj.toLowerCase());
-          if (matchedSubject) {
-            uniqueSubjects.add(matchedSubject);
-          } else {
-            uniqueSubjects.add('Other');
-          }
-          return !matchedSubject;
-        });
-
-        // If no subjects provided, add to Other
-        if (subjectList.length === 0) {
-          uniqueSubjects.add('Other');
+        // Total XP is awarded per subject occurrence
+        const totalXP = xpReward * subjectsToProcess.length;
+        if (totalXP > 0) {
+          newState.user.stats.totalXP += totalXP;
+          newState.user.stats.currentLevel.currentXP += totalXP;
         }
 
-        // Update subject performance for each unique subject/bucket
-        uniqueSubjects.forEach(subject => {
-          newState = updateSubjectPerformance(newState, { ...task, subject, completed: true }, xpReward, task.estimatedTime || 25);
+        // Normalize defined subjects for comparison
+        const definedSubjects = newState.user.subjectSettings.subjects;
+
+        // Update subject performance for each subject occurrence
+        subjectsToProcess.forEach(subjRaw => {
+          const matchedSubject = definedSubjects.find(ds => ds.toLowerCase() === subjRaw.toLowerCase());
+          const bucket = matchedSubject || 'Other';
+          newState = updateSubjectPerformance(newState, { ...task, subject: bucket, completed: true }, xpReward, task.estimatedTime || 25);
         });
 
         newState = updateLevel(newState);

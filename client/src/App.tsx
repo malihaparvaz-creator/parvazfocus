@@ -1,4 +1,5 @@
 import { Toaster } from "@/components/ui/sonner";
+import { useEffect } from 'react';
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
@@ -14,6 +15,7 @@ import ProjectMode from "./pages/ProjectMode";
 import Money from "./pages/Money";
 import Settings from "./pages/Settings";
 import { TimeReminders, useNotificationPermission } from "./components/TimeReminders";
+import { reschedulePendingTimers } from './lib/notifications';
 import { MiniMusicBar } from "./components/MiniMusicBar";
 
 function Router() {
@@ -32,6 +34,8 @@ function Router() {
 
 function InnerApp() {
   useNotificationPermission();
+  // Resend any pending timers to the service worker (recover after reload/SW restart)
+  useEffect(() => { reschedulePendingTimers(); }, []);
   return (
     <>
       <TimeReminders />

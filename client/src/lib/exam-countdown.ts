@@ -44,23 +44,27 @@ export function updateExamCountdown(state: AppState): void {
   
   // Sort by date
   exams.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-
-  // Get upcoming exam
+  // Recompute daysUntil and priority for each exam so values stay fresh across days
   const now = new Date();
-  const upcomingExam = exams.find(e => new Date(e.date) > now);
+  exams.forEach(exam => {
+    const days = Math.ceil((new Date(exam.date).getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    exam.daysUntil = days;
+    exam.priority = days <= 7 ? 'critical' : days <= 14 ? 'high' : 'medium';
+  });
 
-  state.examCountdown.upcomingExam = upcomingExam;
+  // Get upcoming exam (first future date)
+  const upcomingExam = exams.find(e => new Date(e.date).getTime() > now.getTime());
+
+  state.examCountdown.upcomingExam = upcomingExam || null;
   state.examCountdown.daysUntilNextExam = upcomingExam 
-    ? Math.ceil((new Date(upcomingExam.date).getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+    ? Math.max(0, Math.ceil((new Date(upcomingExam.date).getTime() - now.getTime()) / (1000 * 60 * 60 * 24)))
     : 0;
 
   // Enable focus mode if exam is within 14 days
   state.examCountdown.focusMode = state.examCountdown.daysUntilNextExam <= 14 && state.examCountdown.daysUntilNextExam > 0;
 
   // Set weak subjects focus
-  if (upcomingExam) {
-    state.examCountdown.weakSubjectsFocus = upcomingExam.weakAreas;
-  }
+  state.examCountdown.weakSubjectsFocus = upcomingExam ? upcomingExam.weakAreas : [];
 }
 
 /**
@@ -69,11 +73,11 @@ export function updateExamCountdown(state: AppState): void {
 export function getExamPriorityColor(priority: string): string {
   switch (priority) {
     case 'critical':
-      return 'text-destructive bg-destructive/10 dark:bg-destructive/20 border-destructive/20';
+      return 'text-foreground bg-destructive/12 dark:bg-destructive/22 border-destructive/30';
     case 'high':
-      return 'text-accent bg-accent/10 dark:bg-accent/20 border-accent/20';
+      return 'text-foreground bg-accent/12 dark:bg-accent/22 border-accent/30';
     case 'medium':
-      return 'text-secondary bg-secondary/10 dark:bg-secondary/20 border-secondary/20';
+      return 'text-foreground bg-secondary/12 dark:bg-secondary/22 border-secondary/30';
     default:
       return 'text-foreground bg-secondary/30';
   }

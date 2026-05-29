@@ -112,17 +112,17 @@ export function ExamCountdownDisplay() {
         <Card className="p-4 bg-destructive/10 dark:bg-destructive/20 border-destructive/20 shadow-md">
           <div className="flex items-start gap-3">
             <AlertCircle className="w-5 h-5 text-destructive mt-0.5 flex-shrink-0" />
-            <div className="flex-1">
-              <p className="font-semibold text-foreground dark:text-foreground mb-1">
-                {upcomingExam.subject} - {countdown.daysUntilNextExam} days away!
-              </p>
+              <div className="flex-1">
+                <p className="font-semibold text-foreground mb-1">
+                  {upcomingExam.subject} - {countdown.daysUntilNextExam} days away!
+                </p>
               <p className="text-sm text-muted-foreground mb-2">
                 {getExamFocusRecommendation(state)}
               </p>
               {upcomingExam.weakAreas.length > 0 && (
                 <div className="flex flex-wrap gap-1">
                   {upcomingExam.weakAreas.map(area => (
-                    <Badge key={area} variant="outline" className="bg-destructive/10 dark:bg-destructive/20 text-destructive-foreground border-transparent">
+                    <Badge key={area} className="text-foreground bg-destructive/12 dark:bg-destructive/22 border-destructive/30">
                       {area}
                     </Badge>
                   ))}

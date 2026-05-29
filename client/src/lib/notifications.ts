@@ -52,6 +52,50 @@ export function showNotificationNow(title: string, body: string, tag = 'parvaz')
   });
 }
 
+// Persisted pending timers storage key
+const PENDING_TIMERS_KEY = 'parvaz_pending_timers';
+
+function readPendingTimers() {
+  try { return JSON.parse(localStorage.getItem(PENDING_TIMERS_KEY) || '[]'); } catch { return []; }
+}
+
+function writePendingTimers(arr: any[]) {
+  try { localStorage.setItem(PENDING_TIMERS_KEY, JSON.stringify(arr)); } catch {}
+}
+
+export function scheduleTimerNotification(timerId: string, durationMs: number, label: string) {
+  // Save pending timer so app can re-schedule after reload / SW restart
+  const fireAt = Date.now() + durationMs;
+  const pending = readPendingTimers();
+  const entry = { timerId, durationMs, label, fireAt };
+  const filtered = pending.filter((p: any) => p.timerId !== timerId).concat(entry);
+  writePendingTimers(filtered);
+
+  sendToSW({ type: 'TIMER_STARTED', timerId, durationMs, label });
+}
+
+export function cancelTimerNotification(timerId: string) {
+  const pending = readPendingTimers().filter((p: any) => p.timerId !== timerId);
+  writePendingTimers(pending);
+  sendToSW({ type: 'TIMER_STOPPED', timerId });
+}
+
+// Called on app startup to re-send pending timers to service worker (recover after reload)
+export function reschedulePendingTimers() {
+  if (!('serviceWorker' in navigator)) return;
+  const now = Date.now();
+  const pending = readPendingTimers();
+  pending.forEach((p: any) => {
+    const remaining = Math.max(0, p.fireAt - now);
+    // If remaining is very small, fire immediately via notification
+    if (remaining <= 1000) {
+      showNotificationNow('Parvaz Focus — Timer Done! ⏱️', `${p.label || 'Timer'} complete!`, 'timer-complete');
+    } else {
+      sendToSW({ type: 'TIMER_STARTED', timerId: p.timerId, durationMs: remaining, label: p.label });
+    }
+  });
+}
+
 // ── Pomodoro ────────────────────────────────────────────────────────────────
 
 export function schedulePomodoroNotifications(cycleId: string, studyMs: number, breakMs: number, totalCycles: number) {
@@ -62,15 +106,7 @@ export function cancelPomodoroNotifications(cycleId: string) {
   sendToSW({ type: 'POMODORO_STOPPED', cycleId });
 }
 
-// ── Simple Timer ─────────────────────────────────────────────────────────────
-
-export function scheduleTimerNotification(timerId: string, durationMs: number, label: string) {
-  sendToSW({ type: 'TIMER_STARTED', timerId, durationMs, label });
-}
-
-export function cancelTimerNotification(timerId: string) {
-  sendToSW({ type: 'TIMER_STOPPED', timerId });
-}
+// ── Simple Timer (handled above with persistence) ─────────────────────────────
 
 // ── Water Reminder ───────────────────────────────────────────────────────────
 

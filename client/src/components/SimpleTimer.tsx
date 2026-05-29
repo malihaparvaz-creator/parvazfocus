@@ -10,7 +10,8 @@ import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Play, Pause, RotateCcw, Trash2, Plus, Clock, BookOpen, Palette, Tv } from 'lucide-react';
 import { useAppContext } from '@/contexts/AppContext';
-import { scheduleTimerNotification, cancelTimerNotification, requestNotificationPermission } from '@/lib/notifications';
+import { scheduleTimerNotification, cancelTimerNotification, requestNotificationPermission, showNotificationNow } from '@/lib/notifications';
+import { toast } from 'sonner';
 import { addTrackedDuration } from '@/lib/time-aggregation';
 
 type TimerCategory = 'STUDY' | 'CREATIVE' | 'ENTERTAINMENT';
@@ -78,16 +79,14 @@ export function SimpleTimer() {
           updateState(newAppState);
           cancelTimerNotification(s.id);
 
-          if ('Notification' in window && Notification.permission === 'granted') {
-            navigator.serviceWorker.ready.then(reg => {
-              reg.showNotification('Parvaz Focus — Timer Done! ⏱️', {
-                body: `${finished.label || Math.floor(finished.duration/60)+' min timer'} complete! Great work.`,
-                icon: '/icon192x192.png',
-                tag: 'timer-complete',
-              });
-            }).catch(() => {
-              new Notification('Timer Done!', { body: 'Your timer is complete.' });
-            });
+          // Try system notification (via service worker) first, otherwise fall back to alert
+          const title = 'Parvaz Focus — Timer Done! ⏱️';
+          const body = `${finished.label || Math.floor(finished.duration/60)+' min timer'} complete! Great work.`;
+          try {
+            showNotificationNow(title, body, 'timer-complete');
+          } catch (e) {
+            // Fallback: use in-app toast so it's styled and visible
+            try { toast(`${title} — ${body}`); } catch { try { window.alert(`${title}\n\n${body}`); } catch {} }
           }
 
           return finished;
