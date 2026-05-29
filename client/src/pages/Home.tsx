@@ -44,6 +44,11 @@ export default function Home() {
   const timeTracking = state.user.timeTracking;
   const { categoryTotals, formatTime: formatTrackTime } = useTracking();
 
+  const creativeHours = ((timeTracking?.creativeTime || 0) / 60).toFixed(2);
+  const entertainmentHours = (
+    Object.values(timeTracking?.entertainmentTime || {}).reduce((sum, minutes) => sum + minutes, 0) / 60
+  ).toFixed(2);
+
   // Calculate mission progress
   const completedTasks = mission.tasks.filter(t => t.completed).length;
   const totalTasks = mission.tasks.length;
@@ -130,7 +135,11 @@ export default function Home() {
               <BookOpen className="w-4 h-4 text-accent" />
             </div>
             <p className="text-4xl font-bold text-accent">{stats.totalFocusHours.toFixed(2)}h</p>
-            <p className="text-xs text-muted-foreground mt-2">Total Invested</p>
+            <div className="mt-4 space-y-1 text-xs text-muted-foreground">
+              <p className="leading-tight">Creative Time: {creativeHours}h</p>
+              <p className="leading-tight">Entertainment Time: {entertainmentHours}h</p>
+            </div>
+            <p className="text-xs text-muted-foreground mt-3">Total Invested</p>
           </Card>
         </div>
 
