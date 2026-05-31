@@ -14,7 +14,6 @@ import { LiveTracker } from '@/components/LiveTracker';
 import { useTracking } from '@/contexts/TrackingContext';
 import { addTrackedDuration, resetTodaysActivity, TimeCategory } from '@/lib/time-aggregation';
 import { ProfileAvatar } from '@/components/ProfileAvatar';
-import { ActiveUnlocksBar } from '@/components/ActiveUnlocksBar';
 import { getStreakEffectClass } from '@/lib/store-unlocks';
 
 export default function Home() {
@@ -92,9 +91,6 @@ export default function Home() {
           <div>
             <h1 className="text-3xl font-bold">Parvaz Focus</h1>
             <p className="text-sm text-muted-foreground mt-1">{dateString}</p>
-            <div className="mt-3">
-              <ActiveUnlocksBar />
-            </div>
           </div>
           <ProfileAvatar size="md" />
         </div>

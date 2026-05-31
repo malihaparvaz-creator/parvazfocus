@@ -5,7 +5,6 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { activateStoreItem } from '@/lib/store-unlocks';
 import { ProfileAvatar } from '@/components/ProfileAvatar';
-import { ActiveUnlocksBar } from '@/components/ActiveUnlocksBar';
 import { toast } from 'sonner';
 import { Sparkles } from 'lucide-react';
 
@@ -40,7 +39,6 @@ export function StoreLoadout() {
         </div>
         <ProfileAvatar size="lg" />
       </div>
-      <ActiveUnlocksBar />
       <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
         {activatable.map(item => (
           <Button

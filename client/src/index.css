@@ -91,6 +91,7 @@
   --sidebar-border: #E8D5F2;
   --sidebar-ring: #D8A8E8;
 }
+html.theme-dark,
 .theme-dark {
   --background: #111827;
   --foreground: #F3F4F6;
@@ -117,6 +118,7 @@
   --sidebar-ring: #6366F1;
 }
 
+html.theme-forest,
 .theme-forest {
   --background: #EDF7EF;
   --foreground: #1F363D;
@@ -143,6 +145,7 @@
   --sidebar-ring: #68D391;
 }
 
+html.theme-ocean,
 .theme-ocean {
   --background: #E8F5FF;
   --foreground: #0F1F3D;
@@ -169,6 +172,7 @@
   --sidebar-ring: #60A5FA;
 }
 
+html.theme-solar,
 .theme-solar {
   --background: #FFF7ED;
   --foreground: #4A2511;
@@ -195,6 +199,7 @@
   --sidebar-ring: #FB923C;
 }
 
+html.theme-mint,
 .theme-mint {
   --background: #F2FEF7;
   --foreground: #11403B;
@@ -221,6 +226,7 @@
   --sidebar-ring: #6EE7B7;
 }
 
+html.theme-twilight,
 .theme-twilight {
   --background: #101827;
   --foreground: #E2E8F0;
@@ -247,6 +253,7 @@
   --sidebar-ring: #A78BFA;
 }
 
+html.theme-aurora,
 .theme-aurora {
   --background: #0B1F35;
   --foreground: #E9F8FF;
@@ -273,6 +280,7 @@
   --sidebar-ring: #8AB3FF;
 }
 
+html.theme-midnight,
 .theme-midnight {
   --background: #070812;
   --foreground: #E6EEF7;
@@ -299,6 +307,7 @@
   --sidebar-ring: #00B4D8;
 }
 
+html.theme-crystal,
 .theme-crystal {
   --background: #F7FBFF;
   --foreground: #0B2840;
@@ -325,6 +334,7 @@
   --sidebar-ring: #56CCF2;
 }
 
+html.theme-lavender,
 .theme-lavender {
   --background: #F8F4FF;
   --foreground: #24173A;
@@ -351,6 +361,7 @@
   --sidebar-ring: #A78BFA;
 }
 
+html.theme-ember,
 .theme-ember {
   --background: #1A1210;
   --foreground: #F8ECE6;
@@ -377,6 +388,7 @@
   --sidebar-ring: #FB923C;
 }
 
+html.theme-neon,
 .theme-neon {
   --background: #080B16;
   --foreground: #E4F7FF;
@@ -403,6 +415,7 @@
   --sidebar-ring: #00E5FF;
 }
 
+html.theme-obsidian,
 .theme-obsidian {
   --background: #0B0F17;
   --foreground: #E6EDF7;
@@ -429,6 +442,7 @@
   --sidebar-ring: #22D3EE;
 }
 
+html.theme-sakura,
 .theme-sakura {
   --background: #FFF6FA;
   --foreground: #3A1F2D;
@@ -455,6 +469,7 @@
   --sidebar-ring: #EC4899;
 }
 
+html.theme-arctic,
 .theme-arctic {
   --background: #F6FBFF;
   --foreground: #10263F;
@@ -481,6 +496,7 @@
   --sidebar-ring: #38BDF8;
 }
 
+html.theme-volcano,
 .theme-volcano {
   --background: #1A0F10;
   --foreground: #FFE8E4;
@@ -507,6 +523,7 @@
   --sidebar-ring: #FB923C;
 }
 
+html.theme-retro,
 .theme-retro {
   --background: #07110A;
   --foreground: #B9FFB0;

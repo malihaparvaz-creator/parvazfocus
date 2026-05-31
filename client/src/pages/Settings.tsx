@@ -13,31 +13,6 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Plus, Trash2, RotateCcw, Calendar, MessageSquare, BookOpen, Palette, X } from 'lucide-react';
 import { WeeklySummary } from '@/components/WeeklySummary';
-import { useTheme } from '@/contexts/ThemeContext';
-// Small selector component to switch between purchased themes
-function ThemeSelector({ state }: { state: any }) {
-  const { theme, applyTheme } = useTheme();
-  const purchased = state.user.stats.xpStore.purchasedItems || [];
-  const themeItems = state.user.stats.xpStore.items.filter((i: any) => i.type === 'THEME' && purchased.includes(i.id));
-
-  if (!themeItems || themeItems.length === 0) return null;
-
-  return (
-    <div className="flex items-center gap-2">
-      <label className="text-xs text-muted-foreground">Theme</label>
-      <select
-        className="px-2 py-1 border rounded"
-        value={theme}
-        onChange={(e) => applyTheme && applyTheme(e.target.value)}
-      >
-        <option value="light">Light</option>
-        {themeItems.map((t: any) => (
-          <option key={t.id} value={t.id.replace('theme_', '')}>{t.name}</option>
-        ))}
-      </select>
-    </div>
-  );
-}
 
 import { SubjectTaskTracker } from '@/components/SubjectTaskTracker';
 import { getOtherTasksCompleted, getSubjectTasksCompleted } from '@/lib/subject-utils';
@@ -385,12 +360,6 @@ export default function Settings() {
             <div>
               <h1 className="text-3xl font-bold">Settings</h1>
               <p className="text-sm text-muted-foreground mt-1">Manage your subjects, view reflections, and reset your progress</p>
-            </div>
-            <div className="flex items-center gap-3">
-              {/* Theme selector: available after purchase */}
-              {state.user.stats.xpStore.purchasedItems && (
-                <ThemeSelector state={state} />
-              )}
             </div>
           </div>
         </div>

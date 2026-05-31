@@ -28,7 +28,6 @@ import { NeuroMusic } from '@/components/NeuroMusic';
 import { getReflectionStatus, isReflectionFromToday } from '@/lib/reflection-lock';
 import { getQuoteForState, getStreakEffectClass } from '@/lib/store-unlocks';
 import { ProfileAvatar } from '@/components/ProfileAvatar';
-import { ActiveUnlocksBar } from '@/components/ActiveUnlocksBar';
 
 export default function StudyMode() {
   const { state, completeTaskById, addXPToUser, toggleEmergencyMode, updateState } = useAppContext();
@@ -59,9 +58,6 @@ export default function StudyMode() {
           <div className="flex items-start justify-between mb-4 gap-4">
             <div>
               <h1 className="text-3xl font-bold">Study Mode</h1>
-              <div className="mt-2">
-                <ActiveUnlocksBar />
-              </div>
             </div>
             <ProfileAvatar size="md" />
           </div>
