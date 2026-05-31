@@ -23,6 +23,31 @@ export function LiveTracker() {
     { key: 'CREATIVE', label: 'Creative', icon: Palette, apps: creativeApps, sentinel: '__CREATIVE__', token: 'secondary' },
     { key: 'ENTERTAINMENT', label: 'Entertainment', icon: Tv, apps: entertainmentApps, sentinel: '__ENTERTAINMENT__', token: 'destructive' },
   ];
+  const activeRowClass: Record<'accent' | 'secondary' | 'destructive', string> = {
+    accent: 'bg-accent/10 border-accent/20',
+    secondary: 'bg-secondary/40 border-secondary/50',
+    destructive: 'bg-destructive/10 border-destructive/20',
+  };
+  const activeIconWrapClass: Record<'accent' | 'secondary' | 'destructive', string> = {
+    accent: 'bg-accent/10',
+    secondary: 'bg-secondary/50',
+    destructive: 'bg-destructive/10',
+  };
+  const activeIconClass: Record<'accent' | 'secondary' | 'destructive', string> = {
+    accent: 'text-accent',
+    secondary: 'text-secondary-foreground',
+    destructive: 'text-destructive',
+  };
+  const activeButtonClass: Record<'accent' | 'secondary' | 'destructive', string> = {
+    accent: 'bg-accent text-accent-foreground',
+    secondary: 'bg-secondary text-secondary-foreground',
+    destructive: 'bg-destructive text-destructive-foreground',
+  };
+  const idleButtonClass: Record<'accent' | 'secondary' | 'destructive', string> = {
+    accent: 'bg-accent/20 text-accent',
+    secondary: 'bg-secondary text-secondary-foreground',
+    destructive: 'bg-destructive/20 text-destructive',
+  };
 
   return (
     <Card className="p-6 shadow-md">
@@ -56,11 +81,11 @@ export function LiveTracker() {
           return (
             <div
               key={key}
-              className={`flex items-center justify-between p-4 rounded-xl border transition-all duration-200 ${isCategoryActive ? `bg-${token}/10 border-${token}/20` : ''}`}
+              className={`flex items-center justify-between p-4 rounded-xl border transition-all duration-200 ${isCategoryActive ? activeRowClass[token] : ''}`}
             >
               <div className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isCategoryActive ? `bg-${token}/10` : ''}`}>
-                  <Icon className={`w-4 h-4 ${isCategoryActive ? `text-${token}` : ''}`} />
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isCategoryActive ? activeIconWrapClass[token] : ''}`}>
+                  <Icon className={`w-4 h-4 ${isCategoryActive ? activeIconClass[token] : ''}`} />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-foreground">{label}</p>
@@ -70,7 +95,7 @@ export function LiveTracker() {
 
               <button
                 onClick={handleToggle}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all duration-200 ${isCategoryActive ? `bg-${token} text-${token}-foreground` : `bg-${token}/20 text-${token}`}`}>
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all duration-200 ${isCategoryActive ? activeButtonClass[token] : idleButtonClass[token]}`}>
                 {isCategoryActive
                   ? <><Square className="w-3 h-3" /> Stop</>
                   : <><Play className="w-3 h-3" /> Start</>

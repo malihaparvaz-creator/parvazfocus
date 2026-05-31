@@ -73,17 +73,10 @@ export function TimeReminders() {
 
   const dismiss = (id: string) => setReminders(prev => prev.filter(r => r.id !== id));
 
-  const isSmart = (id: string): boolean => {
-    return id.startsWith('smart_');
-  };
-
   const addReminder = (r: Reminder) => {
     setReminders(prev => [...prev.filter(x => x.id !== r.id), r]);
-    
-    // Send system notifications for non-smart reminders
-    if (!isSmart(r.id)) {
-      showNotificationNow(r.title, r.message);
-    }
+    // Always send as a system notification so it can pop on device.
+    showNotificationNow(r.title, r.message, r.id);
   };
 
   // Check reminders every 30s
@@ -103,6 +96,7 @@ export function TimeReminders() {
       const subjectData = state.user.stats.subjectTracker.subjects || [];
       const biology = subjectData.find(s => s.subject.toLowerCase() === 'biology');
       if (biology?.lastStudiedAt && daysSince(new Date(biology.lastStudiedAt)) >= 3) {
+        const missedDays = daysSince(new Date(biology.lastStudiedAt));
         const id = 'smart_biology_3d';
         if (!shownRef.current.has(id)) {
           shownRef.current.add(id);
@@ -110,8 +104,8 @@ export function TimeReminders() {
           addReminder({
             id,
             type: 'warning',
-            title: "You haven't studied Biology in 3 days",
-            message: 'Do one focused Biology block today to protect retention.',
+            title: `Biology gap: ${missedDays} days`,
+            message: `Add one 25-45 min Biology block now to recover memory before it drops further.`,
             icon: 'warning',
           });
         }
@@ -128,7 +122,7 @@ export function TimeReminders() {
             id,
             type: 'info',
             title: `${weakest} was your weakest subject last week`,
-            message: `Start today with ${weakest} to improve your weekly trend.`,
+            message: `Do ${weakest} first today (at least 30 min) to improve your trend this week.`,
             icon: 'clock',
           });
         }
@@ -145,7 +139,7 @@ export function TimeReminders() {
             id,
             type: 'info',
             title: "You haven't logged any Creative time today",
-            message: 'A short 20-30 minute creative block keeps momentum alive.',
+            message: 'Run a 20-minute creative sprint now to keep your creative streak alive.',
             icon: 'clock',
           });
         }
@@ -180,7 +174,6 @@ export function TimeReminders() {
     };
 
     const check = () => {
-      if (document.visibilityState !== 'visible') return;
       const now = Date.now();
       if (now - lastWaterRef.current >= WATER_INTERVAL) {
         lastWaterRef.current = now;

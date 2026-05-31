@@ -23,6 +23,8 @@ export function initializeAppState(): AppState {
         totalFocusHours: 0,
         totalTasksCompleted: 0,
         averageFocusRating: 0,
+        totalCreativeHours: 0,
+        totalEntertainmentHours: 0,
         focusRank: 'DISTRACTED',
         trustScore: {
           percentage: 50,
@@ -186,6 +188,12 @@ export function migrateAppState(state: AppState): AppState {
   
   if (!state.user.stats.focusRank) {
     state.user.stats.focusRank = 'DISTRACTED';
+  }
+  if (typeof state.user.stats.totalCreativeHours !== 'number') {
+    state.user.stats.totalCreativeHours = 0;
+  }
+  if (typeof state.user.stats.totalEntertainmentHours !== 'number') {
+    state.user.stats.totalEntertainmentHours = 0;
   }
   
   if (!state.user.stats.trustScore) {

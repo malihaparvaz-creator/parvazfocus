@@ -324,6 +324,84 @@
   --sidebar-border: #DDEFF7;
   --sidebar-ring: #56CCF2;
 }
+
+.theme-lavender {
+  --background: #F8F4FF;
+  --foreground: #24173A;
+  --card: #FFFFFF;
+  --card-foreground: #24173A;
+  --popover: #FFFFFF;
+  --popover-foreground: #24173A;
+  --secondary: #E7D9FF;
+  --secondary-foreground: #3C2370;
+  --muted: #F1EAFE;
+  --muted-foreground: #5B4B77;
+  --accent: #8B5CF6;
+  --accent-foreground: #FFFFFF;
+  --destructive: #E45757;
+  --destructive-foreground: #FFFFFF;
+  --border: #E5D8FF;
+  --input: #FBF8FF;
+  --ring: #A78BFA;
+  --sidebar: #F8F4FF;
+  --sidebar-foreground: #24173A;
+  --sidebar-accent: #DDD6FE;
+  --sidebar-accent-foreground: #24173A;
+  --sidebar-border: #E5D8FF;
+  --sidebar-ring: #A78BFA;
+}
+
+.theme-ember {
+  --background: #1A1210;
+  --foreground: #F8ECE6;
+  --card: #241916;
+  --card-foreground: #F8ECE6;
+  --popover: #241916;
+  --popover-foreground: #F8ECE6;
+  --secondary: #3A2622;
+  --secondary-foreground: #FFD7C5;
+  --muted: #2A1C18;
+  --muted-foreground: #D9B7AA;
+  --accent: #F97316;
+  --accent-foreground: #2A1200;
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+  --border: #4A2D27;
+  --input: #221714;
+  --ring: #FB923C;
+  --sidebar: #19110F;
+  --sidebar-foreground: #F8ECE6;
+  --sidebar-accent: #F97316;
+  --sidebar-accent-foreground: #2A1200;
+  --sidebar-border: #4A2D27;
+  --sidebar-ring: #FB923C;
+}
+
+.theme-neon {
+  --background: #080B16;
+  --foreground: #E4F7FF;
+  --card: #10182B;
+  --card-foreground: #E4F7FF;
+  --popover: #10182B;
+  --popover-foreground: #E4F7FF;
+  --secondary: #1C2A44;
+  --secondary-foreground: #CFEBFF;
+  --muted: #13213A;
+  --muted-foreground: #A5C3DE;
+  --accent: #00E5FF;
+  --accent-foreground: #03131C;
+  --destructive: #FF5A7A;
+  --destructive-foreground: #19040A;
+  --border: #1D3653;
+  --input: #0C1527;
+  --ring: #00E5FF;
+  --sidebar: #0A1324;
+  --sidebar-foreground: #E4F7FF;
+  --sidebar-accent: #00E5FF;
+  --sidebar-accent-foreground: #03131C;
+  --sidebar-border: #1D3653;
+  --sidebar-ring: #00E5FF;
+}
 @layer base {
   * {
     @apply border-border outline-ring/50;

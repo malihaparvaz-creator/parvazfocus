@@ -41,13 +41,10 @@ export default function Home() {
 
   const stats = state.user.stats;
   const mission = state.today.mission;
-  const timeTracking = state.user.timeTracking;
   const { categoryTotals, formatTime: formatTrackTime } = useTracking();
 
-  const creativeHours = ((timeTracking?.creativeTime || 0) / 60).toFixed(2);
-  const entertainmentHours = (
-    Object.values(timeTracking?.entertainmentTime || {}).reduce((sum, minutes) => sum + minutes, 0) / 60
-  ).toFixed(2);
+  const creativeHours = (stats.totalCreativeHours || 0).toFixed(2);
+  const entertainmentHours = (stats.totalEntertainmentHours || 0).toFixed(2);
 
   // Calculate mission progress
   const completedTasks = mission.tasks.filter(t => t.completed).length;

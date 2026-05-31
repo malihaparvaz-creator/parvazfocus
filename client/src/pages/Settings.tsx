@@ -154,6 +154,8 @@ export default function Settings() {
       totalFocusHours: 0,
       totalTasksCompleted: 0,
       averageFocusRating: 0,
+      totalCreativeHours: 0,
+      totalEntertainmentHours: 0,
       focusRank: 'DISTRACTED',
       trustScore: {
         percentage: 50,
@@ -237,6 +239,8 @@ export default function Settings() {
 
     const ns = { ...state };
     ns.user.stats.totalFocusHours = 0;
+    ns.user.stats.totalCreativeHours = 0;
+    ns.user.stats.totalEntertainmentHours = 0;
     ns.user.timeTracking = {
       ...ns.user.timeTracking,
       studyTime: 0,

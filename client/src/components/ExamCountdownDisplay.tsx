@@ -2,40 +2,52 @@
    Show upcoming exams and focus on weak subjects
 */
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAppContext } from '@/contexts/AppContext';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { AlertCircle, Calendar, Target, Plus, X } from 'lucide-react';
-import { addExam, getExamFocusRecommendation, getExamPriorityColor, getExamPriorityLabel, removeExam } from '@/lib/exam-countdown';
+import { AlertCircle, Calendar, Plus, X } from 'lucide-react';
+import { addExam, getExamFocusRecommendation, getExamPriorityColor, getExamPriorityLabel, removeExam, updateExamCountdown } from '@/lib/exam-countdown';
 
 export function ExamCountdownDisplay() {
   const { state, updateState } = useAppContext();
   const [showAddExam, setShowAddExam] = useState(false);
-  const [subject, setSubject] = useState('');
+  const [examName, setExamName] = useState('');
   const [examDate, setExamDate] = useState('');
-  const [weakAreas, setWeakAreas] = useState('');
+
+  useEffect(() => {
+    updateState((prev) => {
+      const next = { ...prev };
+      updateExamCountdown(next);
+      return next;
+    });
+    const interval = setInterval(() => {
+      updateState((prev) => {
+        const next = { ...prev };
+        updateExamCountdown(next);
+        return next;
+      });
+    }, 60000);
+    return () => clearInterval(interval);
+  }, [updateState]);
 
   const countdown = state.examCountdown;
-  const exams = countdown.exams.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  const exams = useMemo(
+    () => [...countdown.exams].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()),
+    [countdown.exams]
+  );
 
   const handleAddExam = () => {
-    if (!subject || !examDate) return;
+    if (!examName || !examDate) return;
 
-    const weakAreasList = weakAreas
-      .split(',')
-      .map(a => a.trim())
-      .filter(a => a);
-
-    const newState = addExam(state, subject, new Date(examDate), weakAreasList);
+    const newState = addExam(state, examName.trim(), new Date(examDate), []);
     updateState(newState);
 
-    setSubject('');
+    setExamName('');
     setExamDate('');
-    setWeakAreas('');
     setShowAddExam(false);
   };
 
@@ -65,11 +77,11 @@ export function ExamCountdownDisplay() {
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-semibold mb-1 block">Subject</label>
+                  <label className="text-sm font-semibold mb-1 block">Exam</label>
                   <Input
-                    placeholder="e.g., Mathematics, Biology"
-                    value={subject}
-                    onChange={e => setSubject(e.target.value)}
+                    placeholder="e.g., Biology, Mathematics"
+                    value={examName}
+                    onChange={e => setExamName(e.target.value)}
                   />
                 </div>
                 <div>
@@ -78,14 +90,6 @@ export function ExamCountdownDisplay() {
                     type="date"
                     value={examDate}
                     onChange={e => setExamDate(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-semibold mb-1 block">Weak Areas (comma-separated)</label>
-                  <Input
-                    placeholder="e.g., Calculus, Organic Chemistry"
-                    value={weakAreas}
-                    onChange={e => setWeakAreas(e.target.value)}
                   />
                 </div>
                 <Button onClick={handleAddExam} className="w-full">
@@ -112,22 +116,13 @@ export function ExamCountdownDisplay() {
         <Card className="p-4 bg-destructive/10 dark:bg-destructive/20 border-destructive/20 shadow-md">
           <div className="flex items-start gap-3">
             <AlertCircle className="w-5 h-5 text-destructive mt-0.5 flex-shrink-0" />
-              <div className="flex-1">
+            <div className="flex-1">
                 <p className="font-semibold text-foreground mb-1">
                   {upcomingExam.subject} - {countdown.daysUntilNextExam} days away!
                 </p>
               <p className="text-sm text-muted-foreground mb-2">
                 {getExamFocusRecommendation(state)}
               </p>
-              {upcomingExam.weakAreas.length > 0 && (
-                <div className="flex flex-wrap gap-1">
-                  {upcomingExam.weakAreas.map(area => (
-                    <Badge key={area} className="text-foreground bg-destructive/12 dark:bg-destructive/22 border-destructive/30">
-                      {area}
-                    </Badge>
-                  ))}
-                </div>
-              )}
             </div>
           </div>
         </Card>
@@ -153,11 +148,11 @@ export function ExamCountdownDisplay() {
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-semibold mb-1 block">Subject</label>
+                  <label className="text-sm font-semibold mb-1 block">Exam</label>
                   <Input
-                    placeholder="e.g., Mathematics, Biology"
-                    value={subject}
-                    onChange={e => setSubject(e.target.value)}
+                    placeholder="e.g., Physics, Chemistry"
+                    value={examName}
+                    onChange={e => setExamName(e.target.value)}
                   />
                 </div>
                 <div>
@@ -166,14 +161,6 @@ export function ExamCountdownDisplay() {
                     type="date"
                     value={examDate}
                     onChange={e => setExamDate(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-semibold mb-1 block">Weak Areas (comma-separated)</label>
-                  <Input
-                    placeholder="e.g., Calculus, Organic Chemistry"
-                    value={weakAreas}
-                    onChange={e => setWeakAreas(e.target.value)}
                   />
                 </div>
                 <Button onClick={handleAddExam} className="w-full">
@@ -185,7 +172,7 @@ export function ExamCountdownDisplay() {
         </div>
 
         <div className="space-y-3">
-          {exams.map((exam, index) => (
+          {exams.map((exam) => (
             <div
               key={exam.id}
               className={`p-4 rounded-lg border-2 transition-all ${
@@ -194,38 +181,31 @@ export function ExamCountdownDisplay() {
                   : 'bg-secondary/10 dark:bg-secondary/20 border-border/30'
               }`}
             >
-              <div className="flex items-start justify-between mb-2">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <p className="font-semibold">{exam.subject}</p>
-                    <Badge className={getExamPriorityColor(exam.priority)}>
-                      {getExamPriorityLabel(exam.priority)}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    {new Date(exam.date).toLocaleDateString()} • {exam.daysUntil} days away
-                  </p>
+              <div className="grid grid-cols-12 items-center gap-2">
+                <div className="col-span-4 text-sm text-muted-foreground">
+                  {new Date(exam.date).toLocaleDateString()}
                 </div>
-                <button
-                  onClick={() => handleRemoveExam(exam.id)}
-                  className="text-muted-foreground hover:text-destructive transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </button>
+                <div className="col-span-5 font-semibold">
+                  {exam.subject}
+                </div>
+                <div className="col-span-2">
+                  <Badge className={getExamPriorityColor(exam.priority)}>
+                    {exam.daysUntil <= 0 ? 'Today' : `${exam.daysUntil}d`}
+                  </Badge>
+                </div>
+                <div className="col-span-1 flex justify-end">
+                  <button
+                    onClick={() => handleRemoveExam(exam.id)}
+                    className="text-muted-foreground hover:text-destructive transition-colors"
+                    aria-label={`Remove ${exam.subject} exam`}
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
-
-              {exam.weakAreas.length > 0 && (
-                <div className="flex items-start gap-2">
-                  <Target className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
-                  <div className="flex flex-wrap gap-1">
-                    {exam.weakAreas.map(area => (
-                      <Badge key={area} variant="secondary" className="text-xs">
-                        {area}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
+              <p className="mt-2 text-xs text-muted-foreground">
+                {getExamPriorityLabel(exam.priority)}
+              </p>
             </div>
           ))}
         </div>

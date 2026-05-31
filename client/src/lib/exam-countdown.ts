@@ -5,6 +5,12 @@
 import { AppState, Exam } from './types';
 import { nanoid } from 'nanoid';
 
+function toStartOfDay(date: Date): Date {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
 /**
  * Add an exam to the countdown
  */
@@ -15,14 +21,16 @@ export function addExam(
   weakAreas: string[] = []
 ): AppState {
   const newState = { ...state };
-  const daysUntil = Math.ceil((new Date(date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+  const normalizedDate = toStartOfDay(date);
+  const now = toStartOfDay(new Date());
+  const daysUntil = Math.ceil((normalizedDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
   
   const priority = daysUntil <= 7 ? 'critical' : daysUntil <= 14 ? 'high' : 'medium';
 
   const exam: Exam = {
     id: nanoid(),
     subject,
-    date,
+    date: normalizedDate,
     daysUntil,
     priority,
     weakAreas,
@@ -45,9 +53,9 @@ export function updateExamCountdown(state: AppState): void {
   // Sort by date
   exams.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   // Recompute daysUntil and priority for each exam so values stay fresh across days
-  const now = new Date();
+  const now = toStartOfDay(new Date());
   exams.forEach(exam => {
-    const days = Math.ceil((new Date(exam.date).getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    const days = Math.ceil((toStartOfDay(new Date(exam.date)).getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
     exam.daysUntil = days;
     exam.priority = days <= 7 ? 'critical' : days <= 14 ? 'high' : 'medium';
   });

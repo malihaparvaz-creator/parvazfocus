@@ -4,8 +4,6 @@
 */
 
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
-import { showNotificationNow } from '@/lib/notifications';
-import { toast } from 'sonner';
 import {
   RealTimeTrackingState,
   TrackingCategory,
@@ -87,41 +85,10 @@ export function TrackingProvider({ children }: { children: React.ReactNode }) {
     const handleSave = () => saveTrackingState(latestTrackingStateRef.current);
 
     const handleVisibilityChange = () => {
-      // When app is hidden (device closed/suspended), auto-pause active live tracker
+      // Persist current session state whenever tab visibility changes.
+      // Do not auto-stop tracking: session continues and catches up on next open.
       if (document.visibilityState === 'hidden') {
-        const latest = latestTrackingStateRef.current;
-        if (latest.activeApp) {
-          // store paused info so we can notify on resume
-          try {
-            sessionStorage.setItem('parvaz_livetracker_autopaused', JSON.stringify({
-              app: latest.activeApp,
-              categories: latest.activeCategories || [],
-              timestamp: Date.now(),
-            }));
-          } catch {}
-
-          // call stopApp if available (use ref to avoid stale closure)
-          if (stopAppRef.current) stopAppRef.current();
-        }
-
-        // Always persist state when hidden
         saveTrackingState(latestTrackingStateRef.current);
-      }
-
-      // When app becomes visible again, notify user if we auto-paused
-      if (document.visibilityState === 'visible') {
-        try {
-          const raw = sessionStorage.getItem('parvaz_livetracker_autopaused');
-          if (raw) {
-            const info = JSON.parse(raw);
-            sessionStorage.removeItem('parvaz_livetracker_autopaused');
-            const title = 'Live Tracker Paused While Away';
-            const body = info && info.app
-              ? `Your live tracker (${info.app}) was paused while your device was closed. Open the app to resume.`
-              : 'Your live tracker was paused while your device was closed. Open the app to resume.';
-            try { showNotificationNow(title, body, 'livetracker-resume'); } catch { try { toast(`${title} — ${body}`); } catch {} }
-          }
-        } catch {}
       }
     };
 
@@ -133,9 +100,6 @@ export function TrackingProvider({ children }: { children: React.ReactNode }) {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
-
-  // Keep a ref to stopApp so visibility handler can call it without stale closures
-  const stopAppRef = useRef<() => void | null>(null);
 
   // Computed values (re-computed each tick for live display)
   const categoryTotals = getCategoryTotals(trackingState);
@@ -180,8 +144,6 @@ export function TrackingProvider({ children }: { children: React.ReactNode }) {
       return next;
     });
   }, [updateAppState]);
-
-  useEffect(() => { stopAppRef.current = stopApp; }, [stopApp]);
 
   const getAppSeconds = useCallback((appName: string) => {
     return getAppTodaySeconds(trackingState, appName);

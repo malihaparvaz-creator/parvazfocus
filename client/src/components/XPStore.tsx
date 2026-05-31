@@ -35,6 +35,7 @@ export function XPStore() {
   const themes = state.user.stats.xpStore.items.filter(i => i.type === 'THEME');
   const soundtracks = state.user.stats.xpStore.items.filter(i => i.type === 'SOUNDTRACK');
   const bonusTime = state.user.stats.xpStore.items.filter(i => i.type === 'BONUS_PROJECT_TIME');
+  const extras = state.user.stats.xpStore.items.filter(i => i.type === 'FOCUS_ROOM' || i.type === 'QUOTE_PACK');
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -63,7 +64,7 @@ export function XPStore() {
         </div>
 
         <Tabs defaultValue="themes" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="themes" className="gap-2">
               <Palette className="w-4 h-4" />
               Themes
@@ -75,6 +76,10 @@ export function XPStore() {
             <TabsTrigger value="bonus" className="gap-2">
               <Clock className="w-4 h-4" />
               Bonus Time
+            </TabsTrigger>
+            <TabsTrigger value="extras" className="gap-2">
+              <Sparkles className="w-4 h-4" />
+              Extras
             </TabsTrigger>
           </TabsList>
 
@@ -118,6 +123,21 @@ export function XPStore() {
               <p className="text-center text-muted-foreground py-8">No bonus time available yet</p>
             ) : (
               bonusTime.map(item => (
+                <StoreItemCard
+                  key={item.id}
+                  item={item}
+                  isPurchased={isPurchased(item.id)}
+                  canAfford={canAfford(item.cost)}
+                  onPurchase={() => handlePurchase(item.id)}
+                />
+              ))
+            )}
+          </TabsContent>
+          <TabsContent value="extras" className="space-y-3">
+            {extras.length === 0 ? (
+              <p className="text-center text-muted-foreground py-8">No extras available yet</p>
+            ) : (
+              extras.map(item => (
                 <StoreItemCard
                   key={item.id}
                   item={item}

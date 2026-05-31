@@ -270,6 +270,8 @@ export interface ExamCountdown {
 }
 
 export interface EnhancedUserStats extends UserStats {
+  totalCreativeHours: number;
+  totalEntertainmentHours: number;
   focusRank: FocusRank;
   trustScore: TrustScore;
   bankedDiscipline: BankedDiscipline;
@@ -519,6 +521,27 @@ export const STORE_ITEMS: StoreItemData[] = [
     description: 'Luminous glass-like UI with soft glows and elegant highlights',
   },
   {
+    id: 'theme_lavender',
+    name: 'Lavender Glow',
+    type: 'THEME',
+    cost: 950,
+    description: 'Soft lavender contrast palette for calm long study blocks',
+  },
+  {
+    id: 'theme_ember',
+    name: 'Ember Night',
+    type: 'THEME',
+    cost: 980,
+    description: 'Warm ember accents on a deep dark backdrop for late sessions',
+  },
+  {
+    id: 'theme_neon',
+    name: 'Neon Focus',
+    type: 'THEME',
+    cost: 1200,
+    description: 'High-energy cyber colorway with bold contrast and bright accents',
+  },
+  {
     id: 'soundtrack_focus',
     name: 'Deep Focus Soundtrack',
     type: 'SOUNDTRACK',
@@ -588,6 +611,20 @@ export const STORE_ITEMS: StoreItemData[] = [
     cost: 340,
     description: 'Relaxing garden ambience for steady focus',
   },
+  {
+    id: 'room_mountain',
+    name: 'Mountain Focus Room',
+    type: 'FOCUS_ROOM',
+    cost: 360,
+    description: 'Clean mountain air ambience for distraction-free deep work',
+  },
+  {
+    id: 'room_night_city',
+    name: 'Night City Focus Room',
+    type: 'FOCUS_ROOM',
+    cost: 420,
+    description: 'Quiet city-at-night visuals for focused momentum',
+  },
   // Bonus project time / unlocks
   {
     id: 'bonus_30min',
@@ -623,6 +660,20 @@ export const STORE_ITEMS: StoreItemData[] = [
     type: 'BONUS_PROJECT_TIME',
     cost: 350,
     description: 'Unlock an extra focused session for high-priority work',
+  },
+  {
+    id: 'bonus_120min',
+    name: '120m Bonus Project Time',
+    type: 'BONUS_PROJECT_TIME',
+    cost: 520,
+    description: 'Add two full bonus hours for a major project sprint',
+  },
+  {
+    id: 'bonus_weekend',
+    name: 'Weekend Bonus Unlock',
+    type: 'BONUS_PROJECT_TIME',
+    cost: 650,
+    description: 'Unlock an additional weekend project window',
   },
 ];
 

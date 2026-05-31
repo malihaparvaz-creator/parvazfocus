@@ -127,8 +127,10 @@ export function addTrackedDuration(
     nextState.user.stats.totalFocusHours = (nextState.user.stats.totalFocusHours || 0) + hours;
     tracking.studyTime = (tracking.studyTime || 0) + minutes;
   } else if (category === 'CREATIVE') {
+    nextState.user.stats.totalCreativeHours = (nextState.user.stats.totalCreativeHours || 0) + hours;
     tracking.creativeTime = (tracking.creativeTime || 0) + minutes;
   } else {
+    nextState.user.stats.totalEntertainmentHours = (nextState.user.stats.totalEntertainmentHours || 0) + hours;
     tracking.entertainmentTime = { ...(tracking.entertainmentTime || {}) };
     tracking.entertainmentTime[entertainmentSource] =
       (tracking.entertainmentTime[entertainmentSource] || 0) + minutes;
@@ -224,6 +226,8 @@ export function resetCoreStats(state: AppState): AppState {
     streak: 0,
     totalFocusHours: 0,
     totalXPSpent: 0,
+    totalCreativeHours: 0,
+    totalEntertainmentHours: 0,
   };
   return nextState;
 }
