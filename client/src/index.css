@@ -693,27 +693,153 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* XP Store — Focus room ambience (subtle background overlays) */
+/* XP Store — Focus rooms (override theme tokens so bg-background / cards all shift) */
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+.focus-room-ambience {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
 html.focus-room-library {
-  background-image: linear-gradient(180deg, color-mix(in srgb, var(--background) 92%, #8B7355 8%) 0%, var(--background) 40%);
+  --background: #F3EBDD;
+  --foreground: #3A2F22;
+  --card: #FAF5EC;
+  --card-foreground: #3A2F22;
+  --secondary: #E6D6C0;
+  --secondary-foreground: #4A3A28;
+  --muted: #E9DFD0;
+  --muted-foreground: #6B5A45;
+  --accent: #9A7B4F;
+  --accent-foreground: #FFFAF2;
+  --border: #D9C9B3;
+  --sidebar: #EDE4D6;
+  --sidebar-foreground: #3A2F22;
 }
+html.focus-room-library .focus-room-ambience {
+  background: radial-gradient(ellipse 120% 80% at 50% -20%, rgba(154, 123, 79, 0.35), transparent 55%);
+}
+
 html.focus-room-cafe {
-  background-image: linear-gradient(180deg, color-mix(in srgb, var(--background) 90%, #C4A574 10%) 0%, var(--background) 45%);
+  --background: #FFF6EB;
+  --foreground: #4A2C12;
+  --card: #FFFBF4;
+  --card-foreground: #4A2C12;
+  --secondary: #FFE4C7;
+  --secondary-foreground: #7C3D12;
+  --muted: #FFEDD5;
+  --muted-foreground: #8B5A2B;
+  --accent: #EA580C;
+  --accent-foreground: #FFFFFF;
+  --border: #FCD9B6;
+  --sidebar: #FFF0DE;
+  --sidebar-foreground: #4A2C12;
 }
+html.focus-room-cafe .focus-room-ambience {
+  background: radial-gradient(ellipse 100% 70% at 80% 0%, rgba(234, 88, 12, 0.2), transparent 50%);
+}
+
 html.focus-room-garden {
-  background-image: linear-gradient(180deg, color-mix(in srgb, var(--background) 88%, #6EE7B7 12%) 0%, var(--background) 50%);
+  --background: #EDFAF3;
+  --foreground: #14532D;
+  --card: #F4FFF8;
+  --card-foreground: #14532D;
+  --secondary: #BBF7D0;
+  --secondary-foreground: #166534;
+  --muted: #D1FAE5;
+  --muted-foreground: #15803D;
+  --accent: #16A34A;
+  --accent-foreground: #FFFFFF;
+  --border: #86EFAC;
+  --sidebar: #DCFCE7;
+  --sidebar-foreground: #14532D;
 }
+html.focus-room-garden .focus-room-ambience {
+  background: radial-gradient(ellipse 90% 60% at 20% 0%, rgba(22, 163, 74, 0.22), transparent 55%);
+}
+
 html.focus-room-mountain {
-  background-image: linear-gradient(180deg, color-mix(in srgb, var(--background) 90%, #93C5FD 10%) 0%, var(--background) 50%);
+  --background: #E8F4FC;
+  --foreground: #0C4A6E;
+  --card: #F0F9FF;
+  --card-foreground: #0C4A6E;
+  --secondary: #BAE6FD;
+  --secondary-foreground: #075985;
+  --muted: #E0F2FE;
+  --muted-foreground: #0369A1;
+  --accent: #0284C7;
+  --accent-foreground: #FFFFFF;
+  --border: #7DD3FC;
+  --sidebar: #DBEAFE;
+  --sidebar-foreground: #0C4A6E;
 }
+html.focus-room-mountain .focus-room-ambience {
+  background: linear-gradient(180deg, rgba(2, 132, 199, 0.15) 0%, transparent 45%);
+}
+
 html.focus-room-night_city {
-  background-image: linear-gradient(180deg, color-mix(in srgb, var(--background) 85%, #6366F1 15%) 0%, var(--background) 55%);
+  --background: #1E1B4B;
+  --foreground: #E0E7FF;
+  --card: #312E81;
+  --card-foreground: #E0E7FF;
+  --secondary: #4338CA;
+  --secondary-foreground: #C7D2FE;
+  --muted: #3730A3;
+  --muted-foreground: #A5B4FC;
+  --accent: #818CF8;
+  --accent-foreground: #1E1B4B;
+  --border: #4F46E5;
+  --sidebar: #1E1B4B;
+  --sidebar-foreground: #E0E7FF;
 }
+html.focus-room-night_city .focus-room-ambience {
+  background: radial-gradient(ellipse 80% 50% at 50% 100%, rgba(129, 140, 248, 0.35), transparent 60%);
+}
+
 html.focus-room-space_station {
-  background-image: linear-gradient(135deg, color-mix(in srgb, var(--background) 80%, #0EA5E9 20%) 0%, var(--background) 60%);
+  --background: #0B1220;
+  --foreground: #E0F2FE;
+  --card: #111827;
+  --card-foreground: #E0F2FE;
+  --secondary: #1E3A5F;
+  --secondary-foreground: #BAE6FD;
+  --muted: #172554;
+  --muted-foreground: #7DD3FC;
+  --accent: #38BDF8;
+  --accent-foreground: #0B1220;
+  --border: #1D4ED8;
+  --sidebar: #0F172A;
+  --sidebar-foreground: #E0F2FE;
 }
+html.focus-room-space_station .focus-room-ambience {
+  background:
+    radial-gradient(circle at 20% 30%, rgba(56, 189, 248, 0.2) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(99, 102, 241, 0.15) 0%, transparent 45%);
+}
+
 html.focus-room-monk {
-  background-image: linear-gradient(180deg, color-mix(in srgb, var(--background) 95%, #78716C 5%) 0%, var(--background) 70%);
+  --background: #F5F5F4;
+  --foreground: #292524;
+  --card: #FAFAF9;
+  --card-foreground: #292524;
+  --secondary: #E7E5E4;
+  --secondary-foreground: #44403C;
+  --muted: #EDEDEC;
+  --muted-foreground: #57534E;
+  --accent: #78716C;
+  --accent-foreground: #FAFAF9;
+  --border: #D6D3D1;
+  --sidebar: #EDEDEC;
+  --sidebar-foreground: #292524;
+}
+html.focus-room-monk .focus-room-ambience {
+  background: linear-gradient(180deg, rgba(120, 113, 108, 0.12) 0%, transparent 50%);
 }
 
 /* XP Store — Streak & avatar cosmetics */
@@ -726,12 +852,105 @@ html.focus-room-monk {
   border-radius: 0.5rem;
   animation: pulse-soft 2s ease-in-out infinite;
 }
+/* Profile avatar frames */
+.profile-avatar {
+  background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 60%, var(--secondary)));
+  color: var(--accent-foreground);
+  border: 2px solid var(--border);
+}
+.avatar-frame-default {
+  border-color: var(--border);
+}
 .avatar-frame-shadow {
-  outline: 2px solid color-mix(in srgb, var(--foreground) 30%, transparent);
-  border-radius: 9999px;
+  border: 3px solid #4B5563;
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.35);
+  background: linear-gradient(135deg, #374151, #1F2937);
+  color: #F9FAFB;
 }
 .avatar-frame-gold {
-  outline: 2px solid #EAB308;
-  box-shadow: 0 0 8px color-mix(in srgb, #EAB308 60%, transparent);
-  border-radius: 9999px;
+  border: 3px solid #EAB308;
+  box-shadow: 0 0 20px rgba(234, 179, 8, 0.55);
+  background: linear-gradient(135deg, #FDE047, #CA8A04);
+  color: #422006;
+}
+.avatar-frame-crystal {
+  border: 3px solid #38BDF8;
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.5);
+  background: linear-gradient(135deg, #E0F2FE, #7DD3FC);
+  color: #0C4A6E;
+}
+.avatar-frame-flame {
+  border: 3px solid #F97316;
+  box-shadow: 0 0 18px rgba(249, 115, 22, 0.5);
+  background: linear-gradient(135deg, #FDBA74, #EA580C);
+  color: #431407;
+}
+.avatar-frame-neon {
+  border: 3px solid #00E5FF;
+  box-shadow: 0 0 22px rgba(0, 229, 255, 0.55);
+  background: linear-gradient(135deg, #0F172A, #164E63);
+  color: #67E8F9;
+}
+.avatar-frame-royal {
+  border: 3px solid #A78BFA;
+  box-shadow: 0 0 20px rgba(167, 139, 250, 0.5);
+  background: linear-gradient(135deg, #4C1D95, #7C3AED);
+  color: #EDE9FE;
+}
+.avatar-frame-aurora {
+  border: 3px solid #34D399;
+  box-shadow: 0 0 22px rgba(52, 211, 153, 0.45), 0 0 28px rgba(129, 140, 248, 0.35);
+  background: linear-gradient(135deg, #064E3B, #312E81, #4C1D95);
+  color: #A7F3D0;
+}
+
+body.streak-effect-fire .store-streak-display {
+  box-shadow: 0 0 16px color-mix(in srgb, #F97316 50%, transparent);
+  border: 1px solid color-mix(in srgb, #F97316 40%, var(--border));
+}
+body.streak-effect-electric .store-streak-display {
+  box-shadow: 0 0 18px color-mix(in srgb, #22D3EE 50%, transparent);
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+body.streak-effect-cosmic .store-streak-display {
+  box-shadow: 0 0 20px color-mix(in srgb, #A78BFA 45%, transparent);
+  background: color-mix(in srgb, var(--card) 85%, #6366F1 15%);
+}
+body.streak-effect-ice .store-streak-display {
+  box-shadow: 0 0 16px color-mix(in srgb, #38BDF8 45%, transparent);
+  border: 1px solid color-mix(in srgb, #38BDF8 35%, var(--border));
+}
+body.streak-effect-rainbow .store-streak-display {
+  box-shadow: 0 0 20px color-mix(in srgb, #F472B6 40%, transparent);
+  border: 2px solid transparent;
+  background: linear-gradient(var(--card), var(--card)) padding-box,
+    linear-gradient(90deg, #F472B6, #FBBF24, #34D399, #60A5FA, #A78BFA) border-box;
+  animation: pulse-soft 3s ease-in-out infinite;
+}
+
+/* Timer skins */
+.timer-skin-root .timer-display-card {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--card) 90%, var(--accent) 10%), var(--card));
+}
+body.timer-skin-minimal .timer-skin-root .timer-display-card {
+  background: var(--card);
+  border: 2px solid var(--border);
+}
+body.timer-skin-neon .timer-skin-root .timer-display-card {
+  background: linear-gradient(135deg, #0F172A, #164E63);
+  border: 2px solid #00E5FF;
+  color: #E0F2FE;
+}
+body.timer-skin-sunset .timer-skin-root .timer-display-card {
+  background: linear-gradient(135deg, #FFF7ED, #FFEDD5);
+  border: 2px solid #FB923C;
+}
+body.timer-skin-zen .timer-skin-root .timer-display-card {
+  background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
+  border: 2px solid #34D399;
+}
+body.timer-skin-retro .timer-skin-root .timer-display-card {
+  background: linear-gradient(135deg, #1E1B4B, #4C1D95);
+  border: 2px solid #E879F9;
+  color: #F5D0FE;
 }

@@ -245,6 +245,15 @@ export function migrateAppState(state: AppState): AppState {
       state.user.stats.xpStore.items = STORE_ITEMS;
     }
   }
+
+  if (!state.user.stats.xpStore.active) {
+    state.user.stats.xpStore.active = { ...DEFAULT_STORE_ACTIVE };
+  } else {
+    state.user.stats.xpStore.active = {
+      ...DEFAULT_STORE_ACTIVE,
+      ...state.user.stats.xpStore.active,
+    };
+  }
   
   if (!state.user.stats.totalXPSpent) {
     state.user.stats.totalXPSpent = 0;

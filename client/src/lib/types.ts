@@ -5,7 +5,17 @@ export type TaskCategory = 'TOP_PRIORITY' | 'PRIORITY' | 'BONUS';
 export type FocusMode = 'DEEP_FOCUS' | 'REVISION_SPRINT' | 'QUICK_SESSION';
 export type FocusRating = 'LOCKED_IN' | 'DISTRACTED' | 'SURVIVED';
 export type FocusRank = 'DISTRACTED' | 'STABLE' | 'FOCUSED' | 'CONSISTENT' | 'RELENTLESS' | 'LOCKED_IN' | 'ELITE_DISCIPLINE';
-export type StoreItem = 'THEME' | 'SOUNDTRACK' | 'QUOTE_PACK' | 'FOCUS_ROOM' | 'BONUS_PROJECT_TIME' | 'AVATAR_STYLE' | 'STREAK_EFFECT' | 'MYSTERY_BOX';
+export type StoreItem =
+  | 'THEME'
+  | 'SOUNDTRACK'
+  | 'QUOTE_PACK'
+  | 'FOCUS_ROOM'
+  | 'BONUS_PROJECT_TIME'
+  | 'AVATAR_STYLE'
+  | 'STREAK_EFFECT'
+  | 'PROFILE_TITLE'
+  | 'TIMER_SKIN'
+  | 'MYSTERY_BOX';
 export type ProjectPlatform = 'YOUTUBE' | 'INSTAGRAM' | 'DIGITAL_PRODUCT' | 'WEBSITE' | 'MERCH' | 'BUSINESS' | 'OTHER';
 export type EntertainmentApp = 'YOUTUBE' | 'INSTAGRAM' | 'TIKTOK' | 'TWITTER' | 'REDDIT' | 'DISCORD' | 'GAMING' | 'OTHER';
 export type AppCategory = 'STUDY' | 'CREATIVE' | 'ENTERTAINMENT';
@@ -189,6 +199,8 @@ export interface XPStoreActive {
   soundtrackId: string | null;
   avatarStyleId: string | null;
   streakEffectId: string | null;
+  profileTitleId: string | null;
+  timerSkinId: string | null;
   bonusProjectMinutes: number;
 }
 
@@ -650,6 +662,13 @@ export const STORE_ITEMS: StoreItemData[] = [
     description: 'Startup and creator mindset prompts for execution mode',
   },
   {
+    id: 'quotes_exam',
+    name: 'Exam Crunch Pack',
+    type: 'QUOTE_PACK',
+    cost: 175,
+    description: 'Exam-week quotes shown in Study Mode header',
+  },
+  {
     id: 'room_library',
     name: 'Library Focus Room',
     type: 'FOCUS_ROOM',
@@ -760,7 +779,35 @@ export const STORE_ITEMS: StoreItemData[] = [
     name: 'Gold Discipline Frame',
     type: 'AVATAR_STYLE',
     cost: 540,
-    description: 'Premium golden frame for high-consistency users',
+    description: 'Premium golden frame — shows on profile avatar in nav & headers',
+  },
+  {
+    id: 'avatar_crystal',
+    name: 'Crystal Avatar Frame',
+    type: 'AVATAR_STYLE',
+    cost: 420,
+    description: 'Icy crystal ring around your profile avatar',
+  },
+  {
+    id: 'avatar_flame',
+    name: 'Flame Avatar Frame',
+    type: 'AVATAR_STYLE',
+    cost: 380,
+    description: 'Burning orange frame for high-energy sessions',
+  },
+  {
+    id: 'avatar_neon',
+    name: 'Neon Avatar Frame',
+    type: 'AVATAR_STYLE',
+    cost: 460,
+    description: 'Cyber neon glow on your profile avatar',
+  },
+  {
+    id: 'avatar_royal',
+    name: 'Royal Avatar Frame',
+    type: 'AVATAR_STYLE',
+    cost: 720,
+    description: 'Elite purple-gold royal frame on profile avatar',
   },
   {
     id: 'streak_fire',
@@ -774,7 +821,126 @@ export const STORE_ITEMS: StoreItemData[] = [
     name: 'Electric Streak Effect',
     type: 'STREAK_EFFECT',
     cost: 480,
-    description: 'Adds electric pulse animation style to streak cards',
+    description: 'Electric pulse on streak displays (Home & Study)',
+  },
+  {
+    id: 'streak_cosmic',
+    name: 'Cosmic Streak Effect',
+    type: 'STREAK_EFFECT',
+    cost: 550,
+    description: 'Galaxy shimmer around your streak counter',
+  },
+  {
+    id: 'streak_ice',
+    name: 'Ice Streak Effect',
+    type: 'STREAK_EFFECT',
+    cost: 400,
+    description: 'Cool frost glow on streak displays',
+  },
+  {
+    id: 'title_rookie',
+    name: 'Title: Focus Rookie',
+    type: 'PROFILE_TITLE',
+    cost: 120,
+    description: 'Shows under your profile avatar',
+  },
+  {
+    id: 'title_grinder',
+    name: 'Title: Daily Grinder',
+    type: 'PROFILE_TITLE',
+    cost: 220,
+    description: 'Shows under your profile avatar',
+  },
+  {
+    id: 'title_scholar',
+    name: 'Title: Night Scholar',
+    type: 'PROFILE_TITLE',
+    cost: 280,
+    description: 'Shows under your profile avatar',
+  },
+  {
+    id: 'title_elite',
+    name: 'Title: Elite Discipline',
+    type: 'PROFILE_TITLE',
+    cost: 450,
+    description: 'Shows under your profile avatar',
+  },
+  {
+    id: 'title_legend',
+    name: 'Title: Parvaz Legend',
+    type: 'PROFILE_TITLE',
+    cost: 800,
+    description: 'Legendary title under your profile avatar',
+  },
+  {
+    id: 'timer_skin_minimal',
+    name: 'Minimal Timer Skin',
+    type: 'TIMER_SKIN',
+    cost: 200,
+    description: 'Clean monochrome Pomodoro & timer styling',
+  },
+  {
+    id: 'timer_skin_neon',
+    name: 'Neon Timer Skin',
+    type: 'TIMER_SKIN',
+    cost: 320,
+    description: 'Neon-accent timer and Pomodoro cards',
+  },
+  {
+    id: 'timer_skin_sunset',
+    name: 'Sunset Timer Skin',
+    type: 'TIMER_SKIN',
+    cost: 280,
+    description: 'Warm sunset gradient on timer UI',
+  },
+  {
+    id: 'timer_skin_zen',
+    name: 'Zen Timer Skin',
+    type: 'TIMER_SKIN',
+    cost: 250,
+    description: 'Calm green zen styling for timers',
+  },
+  {
+    id: 'timer_skin_retro',
+    name: 'Retro Timer Skin',
+    type: 'TIMER_SKIN',
+    cost: 300,
+    description: '80s synthwave styling on timer cards',
+  },
+  {
+    id: 'quotes_mindful',
+    name: 'Mindful Quote Pack',
+    type: 'QUOTE_PACK',
+    cost: 280,
+    description: 'Calm mindfulness lines in Study Mode header',
+  },
+  {
+    id: 'soundtrack_ocean',
+    name: 'Ocean Waves Soundtrack',
+    type: 'SOUNDTRACK',
+    cost: 340,
+    description: 'Gentle ocean ambience — unlocks in Music tab',
+  },
+  {
+    id: 'avatar_aurora',
+    name: 'Aurora Avatar Frame',
+    type: 'AVATAR_STYLE',
+    cost: 520,
+    description: 'Northern-lights gradient frame on profile avatar',
+  },
+  {
+    id: 'streak_rainbow',
+    name: 'Rainbow Streak Effect',
+    type: 'STREAK_EFFECT',
+    cost: 620,
+    description: 'Animated rainbow glow on streak displays',
+  },
+  {
+    id: 'boost_xp_small',
+    name: 'Instant XP Boost (+50)',
+    type: 'BONUS_PROJECT_TIME',
+    cost: 150,
+    description: 'Instant +50 XP reward (consumable)',
   },
   {
     id: 'mystery_box_basic',

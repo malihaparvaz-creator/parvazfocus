@@ -27,6 +27,8 @@ import { AlertCircle, BarChart3, Calendar, Zap, AlertTriangle, Music } from 'luc
 import { NeuroMusic } from '@/components/NeuroMusic';
 import { getReflectionStatus, isReflectionFromToday } from '@/lib/reflection-lock';
 import { getQuoteForState, getStreakEffectClass } from '@/lib/store-unlocks';
+import { ProfileAvatar } from '@/components/ProfileAvatar';
+import { ActiveUnlocksBar } from '@/components/ActiveUnlocksBar';
 
 export default function StudyMode() {
   const { state, completeTaskById, addXPToUser, toggleEmergencyMode, updateState } = useAppContext();
@@ -54,8 +56,16 @@ export default function StudyMode() {
       {/* Header */}
       <header className="border-b border-border/50 bg-card sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-4 py-6">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-3xl font-bold">Study Mode</h1>
+          <div className="flex items-start justify-between mb-4 gap-4">
+            <div>
+              <h1 className="text-3xl font-bold">Study Mode</h1>
+              <div className="mt-2">
+                <ActiveUnlocksBar />
+              </div>
+            </div>
+            <ProfileAvatar size="md" />
+          </div>
+          <div className="flex justify-end mb-4">
             <Button
               onClick={toggleEmergencyMode}
               variant="outline"
@@ -91,7 +101,7 @@ export default function StudyMode() {
               <p className="text-xs text-muted-foreground mb-1">Total XP</p>
               <p className="text-2xl font-bold">{state.user.stats.totalXP}</p>
             </div>
-            <div className={streakEffectClass ? `rounded-lg p-1 ${streakEffectClass}` : ''}>
+            <div className={streakEffectClass ? `rounded-lg p-1 store-streak-display ${streakEffectClass}` : 'store-streak-display'}>
               <p className="text-xs text-muted-foreground mb-1">Streak</p>
               <p className="text-2xl font-bold text-accent">{state.user.stats.streak}</p>
             </div>

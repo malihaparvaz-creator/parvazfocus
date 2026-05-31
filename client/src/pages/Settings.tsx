@@ -40,6 +40,7 @@ function ThemeSelector({ state }: { state: any }) {
 }
 
 import { SubjectTaskTracker } from '@/components/SubjectTaskTracker';
+import { StoreLoadout } from '@/components/StoreLoadout';
 import { resetCoreStats, resetWeeklyTracking, resetTodaysActivity } from '@/lib/time-aggregation';
 
 export default function Settings() {
@@ -384,7 +385,8 @@ export default function Settings() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-4 py-8">
+      <main className="max-w-6xl mx-auto px-4 py-8 space-y-6">
+        <StoreLoadout />
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="progress">Progress</TabsTrigger>

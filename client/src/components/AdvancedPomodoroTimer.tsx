@@ -29,6 +29,7 @@ import { logTimerSessionToApps } from '@/lib/timer-logging';
 import { schedulePomodoroNotifications, cancelPomodoroNotifications, requestNotificationPermission } from '@/lib/notifications';
 import { getRemainingSeconds } from '@/lib/advanced-timer';
 import { addTrackedDuration } from '@/lib/time-aggregation';
+import { getTimerSkinClass } from '@/lib/store-unlocks';
 
 export function AdvancedPomodoroTimer() {
   const { state, updateState } = useAppContext();
@@ -43,6 +44,7 @@ export function AdvancedPomodoroTimer() {
   // app blocker removed for Pomodoro flow
 
   const session = state.currentTimerSession;
+  const timerSkinClass = getTimerSkinClass(state);
 
   useEffect(() => {
     if (!session || !session.isActive) return;
@@ -205,9 +207,9 @@ export function AdvancedPomodoroTimer() {
   const motivation = getTimerMotivation(session);
 
   return (
-    <div className="space-y-6">
+    <div className={`space-y-6 timer-skin-root ${timerSkinClass || ''}`}>
       {/* Timer Display */}
-      <Card className="p-8 shadow-md bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200/50">
+      <Card className="p-8 shadow-md timer-display-card border-border/50">
         <div className="text-center">
           <div className="mb-4">
             <Badge

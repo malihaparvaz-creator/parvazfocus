@@ -13,6 +13,7 @@ import { useAppContext } from '@/contexts/AppContext';
 import { scheduleTimerNotification, cancelTimerNotification, requestNotificationPermission, showNotificationNow } from '@/lib/notifications';
 import { toast } from 'sonner';
 import { addTrackedDuration } from '@/lib/time-aggregation';
+import { getTimerSkinClass } from '@/lib/store-unlocks';
 
 type TimerCategory = 'STUDY' | 'CREATIVE' | 'ENTERTAINMENT';
 
@@ -45,6 +46,7 @@ function formatTime(s: number) {
 
 export function SimpleTimer() {
   const { state, updateState } = useAppContext();
+  const timerSkinClass = getTimerSkinClass(state);
   const [sessions, setSessions] = useState<SimpleTimerSession[]>([]);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [timerMinutes, setTimerMinutes] = useState('25');
@@ -172,7 +174,7 @@ export function SimpleTimer() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className={`space-y-4 timer-skin-root ${timerSkinClass || ''}`}>
       {/* Add Timer */}
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
         <DialogTrigger asChild>

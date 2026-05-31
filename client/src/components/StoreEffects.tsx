@@ -1,28 +1,49 @@
-/* Applies purchased XP store unlocks globally (focus room ambience, etc.) */
+/* Applies all XP store cosmetics globally */
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useAppContext } from '@/contexts/AppContext';
-import { getFocusRoomClass } from '@/lib/store-unlocks';
-
-const FOCUS_ROOM_CLASSES = [
-  'focus-room-library',
-  'focus-room-cafe',
-  'focus-room-garden',
-  'focus-room-mountain',
-  'focus-room-night_city',
-  'focus-room-space_station',
-  'focus-room-monk',
-];
+import { FOCUS_ROOM_LABELS, getFocusRoomClass, syncAllStoreCosmetics } from '@/lib/store-unlocks';
 
 export function StoreEffects() {
   const { state } = useAppContext();
+  const active = state.user.stats.xpStore.active;
+  const roomClass = useMemo(() => getFocusRoomClass(state), [active?.focusRoomId]);
 
   useEffect(() => {
-    const root = document.documentElement;
-    FOCUS_ROOM_CLASSES.forEach(c => root.classList.remove(c));
-    const roomClass = getFocusRoomClass(state);
-    if (roomClass) root.classList.add(roomClass);
-  }, [state.user.stats.xpStore.active?.focusRoomId, state]);
+    syncAllStoreCosmetics(state);
+  }, [
+    active?.focusRoomId,
+    active?.avatarStyleId,
+    active?.streakEffectId,
+    active?.quotePackId,
+    active?.soundtrackId,
+    active?.profileTitleId,
+    active?.timerSkinId,
+    state,
+  ]);
 
-  return null;
+  useEffect(() => {
+    const refresh = () => syncAllStoreCosmetics(state);
+    window.addEventListener('storeCosmeticsChange', refresh);
+    window.addEventListener('focusRoomChange', refresh);
+    window.addEventListener('themeChange', refresh);
+    return () => {
+      window.removeEventListener('storeCosmeticsChange', refresh);
+      window.removeEventListener('focusRoomChange', refresh);
+      window.removeEventListener('themeChange', refresh);
+    };
+  }, [state]);
+
+  const roomLabel = active?.focusRoomId ? FOCUS_ROOM_LABELS[active.focusRoomId] : null;
+
+  return (
+    <>
+      {roomClass && <div className={`focus-room-ambience ${roomClass}`} aria-hidden />}
+      {roomLabel && (
+        <div className="fixed bottom-20 lg:bottom-4 left-4 z-[35] px-3 py-1.5 rounded-full text-xs font-semibold bg-card/95 border border-border shadow-lg pointer-events-none">
+          Room: {roomLabel}
+        </div>
+      )}
+    </>
+  );
 }

@@ -91,6 +91,7 @@ const TAG_COLORS: Record<string, string> = {
   'Lo-Fi':  '#fde68a',
   Classical:'#fcd34d',
   Custom:   '#e5e7eb',
+  Store:    '#f9a8d4',
 };
 
 const CUSTOM_KEY = 'parvaz-custom-music';
@@ -206,6 +207,9 @@ export function NeuroMusic() {
                       style={{ backgroundColor: 'transparent', color: tagColor, border: `1px solid ${tagColor}` }}>
                       {track.tag}
                     </Badge>
+                    {track.tag === 'Store' && (
+                      <Badge className="text-[10px] bg-accent/15 text-accent border-accent/30">XP Store</Badge>
+                    )}
                     {isPlaying && (
                       <span className="flex gap-0.5 items-end h-4">
                         {[1,2,3].map(i => (

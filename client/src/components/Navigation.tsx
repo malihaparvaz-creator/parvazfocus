@@ -5,6 +5,7 @@
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Home, BookOpen, Zap, Settings, DollarSign } from 'lucide-react';
+import { ProfileAvatar } from '@/components/ProfileAvatar';
 
 export function Navigation() {
   const [location, navigate] = useLocation();
@@ -35,6 +36,8 @@ export function Navigation() {
         ))}
 
         <div className="flex-1" />
+
+        <ProfileAvatar size="sm" showTitle={false} className="mb-2" />
 
         <Button
           onClick={() => navigate('/settings')}

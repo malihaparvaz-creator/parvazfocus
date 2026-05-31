@@ -13,6 +13,9 @@ import { BookOpen, Zap, Clock, Target, Gift, X, RotateCcw } from 'lucide-react';
 import { LiveTracker } from '@/components/LiveTracker';
 import { useTracking } from '@/contexts/TrackingContext';
 import { addTrackedDuration, resetTodaysActivity, TimeCategory } from '@/lib/time-aggregation';
+import { ProfileAvatar } from '@/components/ProfileAvatar';
+import { ActiveUnlocksBar } from '@/components/ActiveUnlocksBar';
+import { getStreakEffectClass } from '@/lib/store-unlocks';
 
 export default function Home() {
   const { state, addXPToUser, updateState } = useAppContext();
@@ -85,9 +88,15 @@ export default function Home() {
     <div className="min-h-screen bg-background text-foreground">
       {/* Header with Date */}
       <header className="border-b border-border/50 bg-card sticky top-0 z-40">
-        <div className="max-w-6xl mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold">Parvaz Focus</h1>
-          <p className="text-sm text-muted-foreground mt-1">{dateString}</p>
+        <div className="max-w-6xl mx-auto px-4 py-6 flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold">Parvaz Focus</h1>
+            <p className="text-sm text-muted-foreground mt-1">{dateString}</p>
+            <div className="mt-3">
+              <ActiveUnlocksBar />
+            </div>
+          </div>
+          <ProfileAvatar size="md" />
         </div>
       </header>
 
@@ -116,7 +125,7 @@ export default function Home() {
           </Card>
 
           {/* Streak Card */}
-          <Card className="p-6 shadow-md hover:shadow-lg transition-shadow">
+          <Card className={`p-6 shadow-md hover:shadow-lg transition-shadow store-streak-display ${getStreakEffectClass(state) || ''}`}>
             <div className="flex items-center justify-between mb-4">
               <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Streak</p>
               <Clock className="w-4 h-4 text-accent" />
