@@ -53,10 +53,10 @@ export default function StudyMode() {
 
       {/* Header */}
       <header className="border-b border-border/50 bg-card sticky top-0 z-40">
-        <div className="max-w-6xl mx-auto px-4 py-4" style={{ paddingTop: 'calc(1rem + 5px)' }}>
-          <div className="flex items-center justify-between" style={{ gap: '5px', marginBottom: '5px' }}>
+        <div className="max-w-6xl mx-auto px-4 py-4" style={{ paddingTop: 'calc(1rem + 10px)' }}>
+          <div className="flex items-center justify-between" style={{ gap: '10px', marginBottom: '10px' }}>
             <h1 className="text-4xl font-bold">Study Mode</h1>
-            <div className="flex items-center" style={{ gap: '5px' }}>
+            <div className="flex items-center" style={{ gap: '10px' }}>
               <Button
                 onClick={toggleEmergencyMode}
                 variant="outline"
