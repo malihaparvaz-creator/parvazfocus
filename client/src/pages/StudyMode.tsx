@@ -71,7 +71,7 @@ export default function StudyMode() {
           </div>
 
           {(dailyQuote || bonusMinutes > 0) && (
-            <div style={{ marginBottom: '5px' }}>
+            <div style={{ marginBottom: '25px' }}>
               {dailyQuote && (
                 <p className="text-base italic text-muted-foreground border-l-2 border-accent pl-3">
                   "{dailyQuote}"
