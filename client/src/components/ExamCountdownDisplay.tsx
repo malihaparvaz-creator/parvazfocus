@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AlertCircle, Calendar, Plus, X } from 'lucide-react';
-import { addExam, getExamFocusRecommendation, getExamPriorityColor, getExamPriorityLabel, removeExam, updateExamCountdown } from '@/lib/exam-countdown';
+import { addExam, getExamFocusRecommendation, getExamPriorityColor, getExamPriorityLabel, parseExamDateInput, removeExam, updateExamCountdown } from '@/lib/exam-countdown';
 
 export function ExamCountdownDisplay() {
   const { state, updateState } = useAppContext();
@@ -41,10 +41,9 @@ export function ExamCountdownDisplay() {
   );
 
   const handleAddExam = () => {
-    if (!examName || !examDate) return;
+    if (!examName.trim() || !examDate) return;
 
-    const newState = addExam(state, examName.trim(), new Date(examDate), []);
-    updateState(newState);
+    updateState(prev => addExam(prev, examName.trim(), parseExamDateInput(examDate), []));
 
     setExamName('');
     setExamDate('');
@@ -52,8 +51,7 @@ export function ExamCountdownDisplay() {
   };
 
   const handleRemoveExam = (examId: string) => {
-    const newState = removeExam(state, examId);
-    updateState(newState);
+    updateState(prev => removeExam(prev, examId));
   };
 
   if (exams.length === 0) {
@@ -111,6 +109,18 @@ export function ExamCountdownDisplay() {
 
   return (
     <div className="space-y-4">
+      {upcomingExam && (
+        <Card className="p-4 border-accent/30 bg-accent/10 shadow-md">
+          <p className="text-sm text-muted-foreground">Next exam</p>
+          <p className="text-lg font-bold text-foreground">
+            {upcomingExam.subject} — {countdown.daysUntilNextExam === 0 ? 'Today' : `${countdown.daysUntilNextExam} day(s) left`}
+          </p>
+          <p className="text-xs text-muted-foreground mt-1">
+            {new Date(upcomingExam.date).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+          </p>
+        </Card>
+      )}
+
       {/* Upcoming Exam Alert */}
       {upcomingExam && countdown.focusMode && (
         <Card className="p-4 bg-destructive/10 dark:bg-destructive/20 border-destructive/20 shadow-md">

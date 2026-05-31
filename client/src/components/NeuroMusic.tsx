@@ -4,7 +4,9 @@
   Music only stops when user explicitly presses Stop.
 */
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { useAppContext } from '@/contexts/AppContext';
+import { getUnlockedStoreTracks } from '@/lib/store-unlocks';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -109,6 +111,7 @@ function extractYtId(url: string): string | null {
 }
 
 export function NeuroMusic() {
+  const { state } = useAppContext();
   const { playingTrack, volume, isMuted, playTrack, stopTrack, setVolume, toggleMute } = useMusic();
   const [customTracks, setCustomTracks] = useState<MusicTrack[]>(loadCustom);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -118,7 +121,8 @@ export function NeuroMusic() {
   const [newBestFor, setNewBestFor] = useState('');
   const [addError, setAddError] = useState('');
 
-  const allTracks = [...DEFAULT_TRACKS, ...customTracks];
+  const storeTracks = useMemo(() => getUnlockedStoreTracks(state), [state.user.stats.xpStore.purchasedItems]);
+  const allTracks = [...DEFAULT_TRACKS, ...storeTracks, ...customTracks];
 
   const handleAdd = () => {
     setAddError('');

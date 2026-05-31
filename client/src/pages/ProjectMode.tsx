@@ -55,7 +55,9 @@ export default function ProjectMode() {
   const priorityTasks = state.today.mission.tasks.filter(t => t.priority === 'MUST_DO' || t.priority === 'SHOULD_DO');
   const hasPriorityTasks = priorityTasks.length > 0;
   const allPriorityTasksCompleted = priorityTasks.every(t => t.completed);
-  const shouldLock = hasPriorityTasks && !allPriorityTasksCompleted;
+  const bonusMinutes = state.user.stats.xpStore.active?.bonusProjectMinutes ?? 0;
+  const hasBonusUnlock = state.today.bonusDayActive || bonusMinutes > 0;
+  const shouldLock = hasPriorityTasks && !allPriorityTasksCompleted && !hasBonusUnlock;
 
   if (shouldLock) {
     return (
@@ -66,6 +68,11 @@ export default function ProjectMode() {
           <p className="text-muted-foreground">
             Complete your MUST DO tasks first to unlock the creative zone.
           </p>
+          {bonusMinutes > 0 && (
+            <p className="text-xs text-accent mt-3">
+              You have {bonusMinutes} bonus minutes banked — buy or use a Bonus Time item in the XP Store to unlock early.
+            </p>
+          )}
         </Card>
       </div>
     );

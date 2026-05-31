@@ -17,6 +17,7 @@ import Settings from "./pages/Settings";
 import { TimeReminders, useNotificationPermission } from "./components/TimeReminders";
 import { reschedulePendingTimers } from './lib/notifications';
 import { MiniMusicBar } from "./components/MiniMusicBar";
+import { StoreEffects } from "./components/StoreEffects";
 
 function Router() {
   return (
@@ -39,6 +40,7 @@ function InnerApp() {
   return (
     <>
       <TimeReminders />
+      <StoreEffects />
       <MiniMusicBar />
       <div className="flex min-h-screen">
         <Navigation />

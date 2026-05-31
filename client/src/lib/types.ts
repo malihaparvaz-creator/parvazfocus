@@ -5,7 +5,7 @@ export type TaskCategory = 'TOP_PRIORITY' | 'PRIORITY' | 'BONUS';
 export type FocusMode = 'DEEP_FOCUS' | 'REVISION_SPRINT' | 'QUICK_SESSION';
 export type FocusRating = 'LOCKED_IN' | 'DISTRACTED' | 'SURVIVED';
 export type FocusRank = 'DISTRACTED' | 'STABLE' | 'FOCUSED' | 'CONSISTENT' | 'RELENTLESS' | 'LOCKED_IN' | 'ELITE_DISCIPLINE';
-export type StoreItem = 'THEME' | 'SOUNDTRACK' | 'QUOTE_PACK' | 'FOCUS_ROOM' | 'BONUS_PROJECT_TIME';
+export type StoreItem = 'THEME' | 'SOUNDTRACK' | 'QUOTE_PACK' | 'FOCUS_ROOM' | 'BONUS_PROJECT_TIME' | 'AVATAR_STYLE' | 'STREAK_EFFECT' | 'MYSTERY_BOX';
 export type ProjectPlatform = 'YOUTUBE' | 'INSTAGRAM' | 'DIGITAL_PRODUCT' | 'WEBSITE' | 'MERCH' | 'BUSINESS' | 'OTHER';
 export type EntertainmentApp = 'YOUTUBE' | 'INSTAGRAM' | 'TIKTOK' | 'TWITTER' | 'REDDIT' | 'DISCORD' | 'GAMING' | 'OTHER';
 export type AppCategory = 'STUDY' | 'CREATIVE' | 'ENTERTAINMENT';
@@ -183,9 +183,19 @@ export interface StoreItemData {
   description: string;
 }
 
+export interface XPStoreActive {
+  focusRoomId: string | null;
+  quotePackId: string | null;
+  soundtrackId: string | null;
+  avatarStyleId: string | null;
+  streakEffectId: string | null;
+  bonusProjectMinutes: number;
+}
+
 export interface XPStore {
   items: StoreItemData[];
   purchasedItems: string[];
+  active?: XPStoreActive;
 }
 
 export interface SubjectPerformance {
@@ -542,6 +552,41 @@ export const STORE_ITEMS: StoreItemData[] = [
     description: 'High-energy cyber colorway with bold contrast and bright accents',
   },
   {
+    id: 'theme_obsidian',
+    name: 'Obsidian Core',
+    type: 'THEME',
+    cost: 850,
+    description: 'Dark graphite interface with crisp cyan accents for pure focus',
+  },
+  {
+    id: 'theme_sakura',
+    name: 'Sakura Bloom',
+    type: 'THEME',
+    cost: 700,
+    description: 'Bright floral pink palette with soft contrast and clean readability',
+  },
+  {
+    id: 'theme_arctic',
+    name: 'Arctic Ice',
+    type: 'THEME',
+    cost: 930,
+    description: 'Cool icy whites and steel blues for minimal distraction',
+  },
+  {
+    id: 'theme_volcano',
+    name: 'Volcano Forge',
+    type: 'THEME',
+    cost: 1100,
+    description: 'Deep lava reds and charcoals for bold high-energy sessions',
+  },
+  {
+    id: 'theme_retro',
+    name: 'Retro Terminal',
+    type: 'THEME',
+    cost: 1350,
+    description: 'Legendary neon-green terminal style with elite contrast',
+  },
+  {
     id: 'soundtrack_focus',
     name: 'Deep Focus Soundtrack',
     type: 'SOUNDTRACK',
@@ -591,6 +636,20 @@ export const STORE_ITEMS: StoreItemData[] = [
     description: 'Ancient wisdom for modern discipline',
   },
   {
+    id: 'quotes_warrior',
+    name: 'Warrior Mindset Pack',
+    type: 'QUOTE_PACK',
+    cost: 160,
+    description: 'Hard-hitting focus lines for difficult grind days',
+  },
+  {
+    id: 'quotes_founder',
+    name: 'Founder Mode Pack',
+    type: 'QUOTE_PACK',
+    cost: 190,
+    description: 'Startup and creator mindset prompts for execution mode',
+  },
+  {
     id: 'room_library',
     name: 'Library Focus Room',
     type: 'FOCUS_ROOM',
@@ -624,6 +683,20 @@ export const STORE_ITEMS: StoreItemData[] = [
     type: 'FOCUS_ROOM',
     cost: 420,
     description: 'Quiet city-at-night visuals for focused momentum',
+  },
+  {
+    id: 'room_space_station',
+    name: 'Space Station Room',
+    type: 'FOCUS_ROOM',
+    cost: 500,
+    description: 'Sci-fi cockpit atmosphere with deep-work vibes',
+  },
+  {
+    id: 'room_monk',
+    name: 'Monk Cell Room',
+    type: 'FOCUS_ROOM',
+    cost: 460,
+    description: 'Ultra-minimal room for zero-distraction study sessions',
   },
   // Bonus project time / unlocks
   {
@@ -674,6 +747,48 @@ export const STORE_ITEMS: StoreItemData[] = [
     type: 'BONUS_PROJECT_TIME',
     cost: 650,
     description: 'Unlock an additional weekend project window',
+  },
+  {
+    id: 'avatar_shadow',
+    name: 'Shadow Avatar Frame',
+    type: 'AVATAR_STYLE',
+    cost: 240,
+    description: 'Unlock a sleek dark profile frame style',
+  },
+  {
+    id: 'avatar_gold',
+    name: 'Gold Discipline Frame',
+    type: 'AVATAR_STYLE',
+    cost: 540,
+    description: 'Premium golden frame for high-consistency users',
+  },
+  {
+    id: 'streak_fire',
+    name: 'Fire Streak Effect',
+    type: 'STREAK_EFFECT',
+    cost: 320,
+    description: 'Adds a fiery visual effect to streak status',
+  },
+  {
+    id: 'streak_electric',
+    name: 'Electric Streak Effect',
+    type: 'STREAK_EFFECT',
+    cost: 480,
+    description: 'Adds electric pulse animation style to streak cards',
+  },
+  {
+    id: 'mystery_box_basic',
+    name: 'Mystery Box (Basic)',
+    type: 'MYSTERY_BOX',
+    cost: 210,
+    description: 'Fun surprise unlock token for future collectible drops',
+  },
+  {
+    id: 'mystery_box_elite',
+    name: 'Mystery Box (Elite)',
+    type: 'MYSTERY_BOX',
+    cost: 780,
+    description: 'High-tier surprise unlock token for premium drops',
   },
 ];
 

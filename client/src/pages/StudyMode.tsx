@@ -26,6 +26,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { AlertCircle, BarChart3, Calendar, Zap, AlertTriangle, Music } from 'lucide-react';
 import { NeuroMusic } from '@/components/NeuroMusic';
 import { getReflectionStatus, isReflectionFromToday } from '@/lib/reflection-lock';
+import { getQuoteForState, getStreakEffectClass } from '@/lib/store-unlocks';
 
 export default function StudyMode() {
   const { state, completeTaskById, addXPToUser, toggleEmergencyMode, updateState } = useAppContext();
@@ -37,6 +38,9 @@ export default function StudyMode() {
 
   const totalTasksCompleted = state.today.mission.tasks.filter(t => t.completed).length;
   const totalTasks = state.today.mission.tasks.length;
+  const dailyQuote = getQuoteForState(state);
+  const streakEffectClass = getStreakEffectClass(state);
+  const bonusMinutes = state.user.stats.xpStore.active?.bonusProjectMinutes ?? 0;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -62,6 +66,21 @@ export default function StudyMode() {
             </Button>
           </div>
 
+          {(dailyQuote || bonusMinutes > 0) && (
+            <div className="mb-4 space-y-2">
+              {dailyQuote && (
+                <p className="text-sm italic text-muted-foreground border-l-2 border-accent pl-3">
+                  “{dailyQuote}”
+                </p>
+              )}
+              {bonusMinutes > 0 && (
+                <p className="text-xs font-medium text-accent">
+                  Bonus project time banked: {bonusMinutes} minutes (Projects unlocked while active)
+                </p>
+              )}
+            </div>
+          )}
+
           {/* Quick Stats */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
@@ -72,7 +91,7 @@ export default function StudyMode() {
               <p className="text-xs text-muted-foreground mb-1">Total XP</p>
               <p className="text-2xl font-bold">{state.user.stats.totalXP}</p>
             </div>
-            <div>
+            <div className={streakEffectClass ? `rounded-lg p-1 ${streakEffectClass}` : ''}>
               <p className="text-xs text-muted-foreground mb-1">Streak</p>
               <p className="text-2xl font-bold text-accent">{state.user.stats.streak}</p>
             </div>

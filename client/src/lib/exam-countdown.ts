@@ -4,6 +4,7 @@
 
 import { AppState, Exam } from './types';
 import { nanoid } from 'nanoid';
+import { parseLocalDateInput } from './store-unlocks';
 
 function toStartOfDay(date: Date): Date {
   const d = new Date(date);
@@ -20,7 +21,13 @@ export function addExam(
   date: Date,
   weakAreas: string[] = []
 ): AppState {
-  const newState = { ...state };
+  const newState = {
+    ...state,
+    examCountdown: {
+      ...state.examCountdown,
+      exams: [...state.examCountdown.exams],
+    },
+  };
   const normalizedDate = toStartOfDay(date);
   const now = toStartOfDay(new Date());
   const daysUntil = Math.ceil((normalizedDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
@@ -60,16 +67,17 @@ export function updateExamCountdown(state: AppState): void {
     exam.priority = days <= 7 ? 'critical' : days <= 14 ? 'high' : 'medium';
   });
 
-  // Get upcoming exam (first future date)
-  const upcomingExam = exams.find(e => new Date(e.date).getTime() > now.getTime());
+  // Next exam today or in the future (calendar day)
+  const upcomingExam = exams.find(e => toStartOfDay(new Date(e.date)).getTime() >= now.getTime());
 
   state.examCountdown.upcomingExam = upcomingExam || null;
-  state.examCountdown.daysUntilNextExam = upcomingExam 
-    ? Math.max(0, Math.ceil((new Date(upcomingExam.date).getTime() - now.getTime()) / (1000 * 60 * 60 * 24)))
+  state.examCountdown.daysUntilNextExam = upcomingExam
+    ? Math.max(0, Math.ceil((toStartOfDay(new Date(upcomingExam.date)).getTime() - now.getTime()) / (1000 * 60 * 60 * 24)))
     : 0;
 
-  // Enable focus mode if exam is within 14 days
-  state.examCountdown.focusMode = state.examCountdown.daysUntilNextExam <= 14 && state.examCountdown.daysUntilNextExam > 0;
+  // Focus mode when next exam is within 14 days (including today)
+  state.examCountdown.focusMode =
+    state.examCountdown.daysUntilNextExam <= 14 && state.examCountdown.daysUntilNextExam >= 0 && !!upcomingExam;
 
   // Set weak subjects focus
   state.examCountdown.weakSubjectsFocus = upcomingExam ? upcomingExam.weakAreas : [];
@@ -165,10 +173,20 @@ export function updateExamWeakAreas(
  * Remove an exam
  */
 export function removeExam(state: AppState, examId: string): AppState {
-  const newState = { ...state };
-  newState.examCountdown.exams = newState.examCountdown.exams.filter(e => e.id !== examId);
+  const newState = {
+    ...state,
+    examCountdown: {
+      ...state.examCountdown,
+      exams: state.examCountdown.exams.filter(e => e.id !== examId),
+    },
+  };
   updateExamCountdown(newState);
   return newState;
+}
+
+/** Parse YYYY-MM-DD from date input without timezone shift */
+export function parseExamDateInput(dateStr: string): Date {
+  return parseLocalDateInput(dateStr);
 }
 
 /**

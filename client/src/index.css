@@ -402,6 +402,136 @@
   --sidebar-border: #1D3653;
   --sidebar-ring: #00E5FF;
 }
+
+.theme-obsidian {
+  --background: #0B0F17;
+  --foreground: #E6EDF7;
+  --card: #111827;
+  --card-foreground: #E6EDF7;
+  --popover: #111827;
+  --popover-foreground: #E6EDF7;
+  --secondary: #1F2937;
+  --secondary-foreground: #D1D9E6;
+  --muted: #0F172A;
+  --muted-foreground: #A7B3C7;
+  --accent: #22D3EE;
+  --accent-foreground: #04202A;
+  --destructive: #F87171;
+  --destructive-foreground: #140304;
+  --border: #243244;
+  --input: #0F172A;
+  --ring: #22D3EE;
+  --sidebar: #0F172A;
+  --sidebar-foreground: #E6EDF7;
+  --sidebar-accent: #22D3EE;
+  --sidebar-accent-foreground: #04202A;
+  --sidebar-border: #243244;
+  --sidebar-ring: #22D3EE;
+}
+
+.theme-sakura {
+  --background: #FFF6FA;
+  --foreground: #3A1F2D;
+  --card: #FFFFFF;
+  --card-foreground: #3A1F2D;
+  --popover: #FFFFFF;
+  --popover-foreground: #3A1F2D;
+  --secondary: #FFDCEB;
+  --secondary-foreground: #6B2147;
+  --muted: #FFEAF3;
+  --muted-foreground: #7A4760;
+  --accent: #EC4899;
+  --accent-foreground: #FFFFFF;
+  --destructive: #DC2626;
+  --destructive-foreground: #FFFFFF;
+  --border: #FFCFE4;
+  --input: #FFF8FC;
+  --ring: #EC4899;
+  --sidebar: #FFF6FA;
+  --sidebar-foreground: #3A1F2D;
+  --sidebar-accent: #F9A8D4;
+  --sidebar-accent-foreground: #3A1F2D;
+  --sidebar-border: #FFCFE4;
+  --sidebar-ring: #EC4899;
+}
+
+.theme-arctic {
+  --background: #F6FBFF;
+  --foreground: #10263F;
+  --card: #FFFFFF;
+  --card-foreground: #10263F;
+  --popover: #FFFFFF;
+  --popover-foreground: #10263F;
+  --secondary: #DDEFFF;
+  --secondary-foreground: #12406B;
+  --muted: #EAF4FF;
+  --muted-foreground: #4C6A85;
+  --accent: #0EA5E9;
+  --accent-foreground: #FFFFFF;
+  --destructive: #DC2626;
+  --destructive-foreground: #FFFFFF;
+  --border: #D5E8FA;
+  --input: #F7FBFF;
+  --ring: #38BDF8;
+  --sidebar: #F1F8FF;
+  --sidebar-foreground: #10263F;
+  --sidebar-accent: #BAE6FD;
+  --sidebar-accent-foreground: #10263F;
+  --sidebar-border: #D5E8FA;
+  --sidebar-ring: #38BDF8;
+}
+
+.theme-volcano {
+  --background: #1A0F10;
+  --foreground: #FFE8E4;
+  --card: #261516;
+  --card-foreground: #FFE8E4;
+  --popover: #261516;
+  --popover-foreground: #FFE8E4;
+  --secondary: #3B1F20;
+  --secondary-foreground: #FFCFC7;
+  --muted: #2D1718;
+  --muted-foreground: #D7A7A0;
+  --accent: #F97316;
+  --accent-foreground: #2A1200;
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+  --border: #4C2426;
+  --input: #221112;
+  --ring: #FB923C;
+  --sidebar: #180E0F;
+  --sidebar-foreground: #FFE8E4;
+  --sidebar-accent: #EA580C;
+  --sidebar-accent-foreground: #220F00;
+  --sidebar-border: #4C2426;
+  --sidebar-ring: #FB923C;
+}
+
+.theme-retro {
+  --background: #07110A;
+  --foreground: #B9FFB0;
+  --card: #0A1A0D;
+  --card-foreground: #C7FFC0;
+  --popover: #0A1A0D;
+  --popover-foreground: #C7FFC0;
+  --secondary: #123018;
+  --secondary-foreground: #B9FFB0;
+  --muted: #0D2412;
+  --muted-foreground: #8DDC87;
+  --accent: #6BFF6B;
+  --accent-foreground: #062006;
+  --destructive: #FF7A7A;
+  --destructive-foreground: #240707;
+  --border: #1E4B24;
+  --input: #0A180C;
+  --ring: #6BFF6B;
+  --sidebar: #08160B;
+  --sidebar-foreground: #B9FFB0;
+  --sidebar-accent: #6BFF6B;
+  --sidebar-accent-foreground: #062006;
+  --sidebar-border: #1E4B24;
+  --sidebar-ring: #6BFF6B;
+}
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -561,4 +691,47 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+
+/* XP Store — Focus room ambience (subtle background overlays) */
+html.focus-room-library {
+  background-image: linear-gradient(180deg, color-mix(in srgb, var(--background) 92%, #8B7355 8%) 0%, var(--background) 40%);
+}
+html.focus-room-cafe {
+  background-image: linear-gradient(180deg, color-mix(in srgb, var(--background) 90%, #C4A574 10%) 0%, var(--background) 45%);
+}
+html.focus-room-garden {
+  background-image: linear-gradient(180deg, color-mix(in srgb, var(--background) 88%, #6EE7B7 12%) 0%, var(--background) 50%);
+}
+html.focus-room-mountain {
+  background-image: linear-gradient(180deg, color-mix(in srgb, var(--background) 90%, #93C5FD 10%) 0%, var(--background) 50%);
+}
+html.focus-room-night_city {
+  background-image: linear-gradient(180deg, color-mix(in srgb, var(--background) 85%, #6366F1 15%) 0%, var(--background) 55%);
+}
+html.focus-room-space_station {
+  background-image: linear-gradient(135deg, color-mix(in srgb, var(--background) 80%, #0EA5E9 20%) 0%, var(--background) 60%);
+}
+html.focus-room-monk {
+  background-image: linear-gradient(180deg, color-mix(in srgb, var(--background) 95%, #78716C 5%) 0%, var(--background) 70%);
+}
+
+/* XP Store — Streak & avatar cosmetics */
+.streak-effect-fire {
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 50%, #F97316 50%);
+  border-radius: 0.5rem;
+}
+.streak-effect-electric {
+  box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 40%, #22D3EE 60%);
+  border-radius: 0.5rem;
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+.avatar-frame-shadow {
+  outline: 2px solid color-mix(in srgb, var(--foreground) 30%, transparent);
+  border-radius: 9999px;
+}
+.avatar-frame-gold {
+  outline: 2px solid #EAB308;
+  box-shadow: 0 0 8px color-mix(in srgb, #EAB308 60%, transparent);
+  border-radius: 9999px;
 }

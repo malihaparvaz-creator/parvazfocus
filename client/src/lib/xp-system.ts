@@ -3,6 +3,7 @@
 */
 
 import { AppState, FocusRank, FOCUS_RANKS, XP_COSTS } from './types';
+import { applyStorePurchase, DEFAULT_STORE_ACTIVE } from './store-unlocks';
 
 /**
  * Convert FocusRating to numeric score (0-100)
@@ -220,26 +221,34 @@ export function useSkipToken(state: AppState, tokenId: string): AppState {
  * Purchase item from XP Store
  */
 export function purchaseStoreItem(state: AppState, itemId: string): AppState {
-  const newState = { ...state };
-  
-  const item = newState.user.stats.xpStore.items.find(i => i.id === itemId);
-  if (item && newState.user.stats.totalXP >= item.cost) {
-    newState.user.stats.totalXP -= item.cost;
-    newState.user.stats.totalXPSpent += item.cost;
-    newState.user.stats.xpStore.purchasedItems.push(itemId);
-    // If theme purchased, persist selection to localStorage and notify ThemeProvider
-    if (item.type === 'THEME') {
-      try {
-        // Store a short theme key (e.g., 'dark', 'forest', 'ocean', 'solar')
-        const key = item.id.replace('theme_', '');
-        localStorage.setItem('theme', key);
-        window.dispatchEvent(new CustomEvent('themeChange', { detail: { theme: key } }));
-      } catch (e) {}
-    }
-    return newState;
-  }
-  
-  return state;
+  const item = state.user.stats.xpStore.items.find(i => i.id === itemId);
+  if (!item || state.user.stats.totalXP < item.cost) return state;
+
+  const isConsumable = item.type === 'BONUS_PROJECT_TIME' || item.type === 'MYSTERY_BOX';
+  if (!isConsumable && state.user.stats.xpStore.purchasedItems.includes(itemId)) return state;
+
+  const purchasedItems = [...state.user.stats.xpStore.purchasedItems];
+  if (!purchasedItems.includes(itemId)) purchasedItems.push(itemId);
+
+  const newState = {
+    ...state,
+    user: {
+      ...state.user,
+      stats: {
+        ...state.user.stats,
+        totalXP: state.user.stats.totalXP - item.cost,
+        totalXPSpent: (state.user.stats.totalXPSpent || 0) + item.cost,
+        xpStore: {
+          ...state.user.stats.xpStore,
+          purchasedItems,
+          active: { ...(state.user.stats.xpStore.active ?? DEFAULT_STORE_ACTIVE) },
+        },
+      },
+    },
+    today: { ...state.today, brief: { ...state.today.brief } },
+  };
+
+  return applyStorePurchase(newState, item);
 }
 
 /**

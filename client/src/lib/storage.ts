@@ -1,5 +1,7 @@
 import { AppState, LEVEL_NAMES, STORE_ITEMS, MoneyTrackerDraft } from './types';
 import { updateStreak } from './time-aggregation';
+import { DEFAULT_STORE_ACTIVE, migrateStoreActive } from './store-unlocks';
+import { updateExamCountdown } from './exam-countdown';
 
 const STORAGE_KEY = 'parvaz-focus-state';
 const STORAGE_BACKUP_KEY = 'parvaz-focus-state-backup';
@@ -42,6 +44,7 @@ export function initializeAppState(): AppState {
         xpStore: {
           items: STORE_ITEMS,
           purchasedItems: [],
+          active: { ...DEFAULT_STORE_ACTIVE },
         },
         totalXPSpent: 0,
         subjectTracker: {
@@ -276,7 +279,11 @@ export function migrateAppState(state: AppState): AppState {
       focusMode: false,
       weakSubjectsFocus: [],
     };
+  } else {
+    updateExamCountdown(state);
   }
+
+  migrateStoreActive(state);
   
   if (!state.user.subjectSettings) {
     state.user.subjectSettings = {
