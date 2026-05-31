@@ -55,7 +55,7 @@ export default function StudyMode() {
       {/* Header */}
       <header className="border-b border-border/50 bg-card sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-4 py-6">
-          <div className="flex items-start justify-between mb-4 gap-4">
+          <div className="flex items-start justify-between gap-4">
             <div>
               <h1 className="text-3xl font-bold">Study Mode</h1>
             </div>
@@ -73,7 +73,7 @@ export default function StudyMode() {
           </div>
 
           {(dailyQuote || bonusMinutes > 0) && (
-            <div className="mb-4 space-y-2">
+            <div className="mt-4 space-y-2">
               {dailyQuote && (
                 <p className="text-sm italic text-muted-foreground border-l-2 border-accent pl-3">
                   “{dailyQuote}”

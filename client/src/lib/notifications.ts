@@ -85,15 +85,18 @@ export function reschedulePendingTimers() {
   if (!('serviceWorker' in navigator)) return;
   const now = Date.now();
   const pending = readPendingTimers();
+  const validPending: any[] = [];
   pending.forEach((p: any) => {
     const remaining = Math.max(0, p.fireAt - now);
-    // If remaining is very small, fire immediately via notification
-    if (remaining <= 1000) {
-      showNotificationNow('Parvaz Focus — Timer Done! ⏱️', `${p.label || 'Timer'} complete!`, 'timer-complete');
-    } else {
+    // Only reschedule if remaining time is reasonable (more than 1 minute)
+    // This prevents old/expired timers from firing repeatedly
+    if (remaining > 60000) {
+      validPending.push(p);
       sendToSW({ type: 'TIMER_STARTED', timerId: p.timerId, durationMs: remaining, label: p.label });
     }
   });
+  // Update localStorage with only valid pending timers
+  writePendingTimers(validPending);
 }
 
 // ── Pomodoro ────────────────────────────────────────────────────────────────

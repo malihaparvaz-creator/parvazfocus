@@ -33,28 +33,35 @@ export function StoreLoadout() {
     updateState(prev => {
       const newState = { ...prev };
       const active = newState.user.stats.xpStore.active || { ...DEFAULT_STORE_ACTIVE };
-      
+
       switch (item.type) {
         case 'AVATAR_STYLE':
           active.avatarStyleId = null;
+          try { localStorage.removeItem('parvaz_avatar'); } catch {}
           break;
         case 'STREAK_EFFECT':
           active.streakEffectId = null;
+          try { localStorage.removeItem('parvaz_streak'); } catch {}
           break;
         case 'PROFILE_TITLE':
           active.profileTitleId = null;
+          try { localStorage.removeItem('parvaz_title'); } catch {}
           break;
         case 'TIMER_SKIN':
           active.timerSkinId = null;
+          try { localStorage.removeItem('parvaz_timerSkin'); } catch {}
           break;
         case 'FOCUS_ROOM':
           active.focusRoomId = null;
+          try { localStorage.removeItem('parvaz_focusRoom'); } catch {}
           break;
         case 'QUOTE_PACK':
           active.quotePackId = null;
+          try { localStorage.removeItem('parvaz_quotePack'); } catch {}
           break;
         case 'SOUNDTRACK':
           active.soundtrackId = null;
+          try { localStorage.removeItem('parvaz_soundtrack'); } catch {}
           break;
         case 'THEME':
           if (applyTheme) {
@@ -62,7 +69,7 @@ export function StoreLoadout() {
           }
           break;
       }
-      
+
       newState.user.stats.xpStore.active = active;
       return newState;
     });

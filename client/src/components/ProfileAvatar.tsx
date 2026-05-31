@@ -23,6 +23,9 @@ export function ProfileAvatar({
   const avatar = getAvatarDisplay(state);
   const title = getProfileTitleLabel(state);
 
+  // Don't render if no avatar is chosen (default)
+  if (avatar.name === 'Default') return null;
+
   return (
     <div className={cn('flex flex-col items-center gap-1', className)}>
       <div
