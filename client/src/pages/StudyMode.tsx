@@ -54,14 +54,30 @@ export default function StudyMode() {
 
       {/* Header */}
       <header className="border-b border-border/50 bg-card sticky top-0 z-40">
-        <div className="max-w-6xl mx-auto px-4 py-6">
-          <div className="flex items-start justify-between gap-4">
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <div className="flex items-start justify-between gap-4 mb-2">
             <div>
               <h1 className="text-3xl font-bold">Study Mode</h1>
             </div>
             <ProfileAvatar size="md" />
           </div>
-          <div className="flex justify-end mb-2">
+
+          {(dailyQuote || bonusMinutes > 0) && (
+            <div className="mb-3">
+              {dailyQuote && (
+                <p className="text-sm italic text-muted-foreground border-l-2 border-accent pl-3">
+                  "{dailyQuote}"
+                </p>
+              )}
+              {bonusMinutes > 0 && (
+                <p className="text-xs font-medium text-accent mt-1">
+                  Bonus project time banked: {bonusMinutes} minutes (Projects unlocked while active)
+                </p>
+              )}
+            </div>
+          )}
+
+          <div className="flex justify-end">
             <Button
               onClick={toggleEmergencyMode}
               variant="outline"
@@ -71,22 +87,6 @@ export default function StudyMode() {
               Emergency Mode
             </Button>
           </div>
-
-          {(dailyQuote || bonusMinutes > 0) && (
-            <div className="space-y-2">
-              {dailyQuote && (
-                <p className="text-sm italic text-muted-foreground border-l-2 border-accent pl-3">
-                  “{dailyQuote}”
-                </p>
-              )}
-              {bonusMinutes > 0 && (
-                <p className="text-xs font-medium text-accent">
-                  Bonus project time banked: {bonusMinutes} minutes (Projects unlocked while active)
-                </p>
-              )}
-            </div>
-          )}
-
           {/* Quick Stats */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
