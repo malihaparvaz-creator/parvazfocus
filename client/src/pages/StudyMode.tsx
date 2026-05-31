@@ -61,7 +61,7 @@ export default function StudyMode() {
             </div>
             <ProfileAvatar size="md" />
           </div>
-          <div className="flex justify-end">
+          <div className="flex justify-end mb-2">
             <Button
               onClick={toggleEmergencyMode}
               variant="outline"
@@ -73,7 +73,7 @@ export default function StudyMode() {
           </div>
 
           {(dailyQuote || bonusMinutes > 0) && (
-            <div className="mt-1 space-y-2">
+            <div className="space-y-2">
               {dailyQuote && (
                 <p className="text-sm italic text-muted-foreground border-l-2 border-accent pl-3">
                   “{dailyQuote}”
