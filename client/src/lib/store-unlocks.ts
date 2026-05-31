@@ -94,6 +94,37 @@ const QUOTE_PACKS: Record<string, string[]> = {
     'Gentle consistency beats harsh intensity.',
     'Notice the urge to scroll, then choose your task.',
   ],
+  quotes_yearly: [
+    'January: Begin with the end in mind.',
+    'February: Consistency beats intensity.',
+    'March: Small steps lead to big changes.',
+    'April: Growth requires discomfort.',
+    'May: Focus on what you can control.',
+    'June: Progress, not perfection.',
+    'July: Rest is part of the work.',
+    'August: Discipline is freedom.',
+    'September: Start where you are.',
+    'October: Fall in love with the process.',
+    'November: Gratitude fuels growth.',
+    'December: Reflect to redirect.',
+    'Day 13: Your habits define you.',
+    'Day 31: Every expert was once a beginner.',
+    'Day 45: The best time to start was yesterday. The second best time is now.',
+    'Day 60: Momentum is your greatest ally.',
+    'Day 90: What you do daily matters more than what you do occasionally.',
+    'Day 100: Celebrate small wins.',
+    'Day 120: Focus on the system, not the goal.',
+    'Day 150: Your future self is watching.',
+    'Day 180: Halfway there. Keep pushing.',
+    'Day 200: Adaptability is a superpower.',
+    'Day 220: Learn from yesterday, live for today.',
+    'Day 240: The struggle is part of the story.',
+    'Day 270: You are stronger than you think.',
+    'Day 300: Three hundred days of progress.',
+    'Day 330: The finish line is in sight.',
+    'Day 365: You made it. Now what\'s next?',
+    'Day 366: Leap year bonus day.',
+  ],
 };
 
 export const STORE_SOUNDTRACKS: Record<string, MusicTrack> = {
@@ -205,7 +236,9 @@ function persistActiveKey(key: keyof typeof LS_KEYS, value: string | null) {
 function restoreIfOwned(active: XPStoreActive, purchased: string[], key: keyof typeof LS_KEYS, field: keyof XPStoreActive) {
   try {
     const stored = localStorage.getItem(LS_KEYS[key]);
-    if (stored && purchased.includes(stored)) {
+    // Only restore if stored value exists AND is in purchased items AND the field is not already null
+    // This prevents reactivating items that were explicitly deactivated
+    if (stored && purchased.includes(stored) && active[field] !== null) {
       (active as Record<string, unknown>)[field] = stored;
     }
   } catch {}
@@ -282,13 +315,14 @@ export function syncAllStoreCosmetics(state: AppState) {
   body.dataset.focusRoom = active?.focusRoomId || '';
 }
 
-export function getQuoteForState(state: AppState): string {
+export function getQuoteForState(state: AppState): string | null {
   const packId = state.user.stats.xpStore.active?.quotePackId;
   if (packId && QUOTE_PACKS[packId]) {
     const quotes = QUOTE_PACKS[packId];
     return quotes[new Date().getDate() % quotes.length];
   }
-  return DAILY_QUOTES[new Date().getDate() % DAILY_QUOTES.length];
+  // Return null when no quote pack is active (user deactivated it)
+  return null;
 }
 
 export function getFocusRoomClass(state: AppState): string | null {
@@ -452,7 +486,10 @@ export function applyStorePurchase(state: AppState, item: StoreItemData): AppSta
     case 'QUOTE_PACK':
       active.quotePackId = item.id;
       persistActiveKey('quotePack', item.id);
-      state.today.brief = { ...state.today.brief, quote: getQuoteForState(state) };
+      const quote = getQuoteForState(state);
+      if (quote) {
+        state.today.brief = { ...state.today.brief, quote };
+      }
       break;
     case 'FOCUS_ROOM':
       active.focusRoomId = item.id;

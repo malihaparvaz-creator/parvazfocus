@@ -189,23 +189,37 @@ export function updateStreak(state: AppState): AppState {
 /**
  * Update level based on currentXP
  * Level up when currentXP >= nextLevelXP
- * Each level requires 50% more XP than previous (100, 150, 225, 337, 506, 759)
+ * Level is persistent - once achieved, never decreases even if XP drops
+ * Each level requires 500 XP (500, 1000, 1500, 2000, 2500, 3000)
  */
 export function updateLevel(state: AppState): AppState {
   const nextState = { ...state };
   const LEVEL_NAMES = ['Focused', 'Consistent', 'Disciplined', 'Relentless', 'Unstoppable', 'Legendary'];
   const MAX_LEVEL = LEVEL_NAMES.length;
+  const XP_PER_LEVEL = 500;
+
   const totalXP = nextState.user.stats.totalXP;
-  const level = Math.min(1 + Math.floor(totalXP / 500), MAX_LEVEL);
-  const currentXP = totalXP % 500;
-  const nextLevelXP = level >= MAX_LEVEL ? 0 : 500;
+  const currentLevel = nextState.user.stats.currentLevel.level;
+
+  // Calculate what level the current totalXP would give us
+  const calculatedLevel = Math.min(1 + Math.floor(totalXP / XP_PER_LEVEL), MAX_LEVEL);
+
+  // Level never decreases - use the max of current level and calculated level
+  const newLevel = Math.max(currentLevel, calculatedLevel);
+
+  // Calculate XP progress toward next level
+  // For level N, you need (N-1) * 500 XP to reach it, and N * 500 XP for next level
+  const xpForCurrentLevel = (newLevel - 1) * XP_PER_LEVEL;
+  const xpForNextLevel = newLevel * XP_PER_LEVEL;
+  const currentXP = Math.max(0, totalXP - xpForCurrentLevel);
+  const nextLevelXP = newLevel >= MAX_LEVEL ? 0 : xpForNextLevel - xpForCurrentLevel;
 
   nextState.user.stats.currentLevel = {
-    level,
+    level: newLevel,
     currentXP,
     totalXP,
     nextLevelXP,
-    levelName: LEVEL_NAMES[Math.min(level - 1, LEVEL_NAMES.length - 1)],
+    levelName: LEVEL_NAMES[Math.min(newLevel - 1, LEVEL_NAMES.length - 1)],
   };
 
   return nextState;

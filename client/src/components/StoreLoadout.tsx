@@ -73,6 +73,7 @@ export function StoreLoadout() {
       newState.user.stats.xpStore.active = active;
       return newState;
     });
+
     toast.success(`Deactivated ${item.name}`);
   };
 

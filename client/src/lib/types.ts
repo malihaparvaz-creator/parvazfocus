@@ -669,6 +669,13 @@ export const STORE_ITEMS: StoreItemData[] = [
     description: 'Exam-week quotes shown in Study Mode header',
   },
   {
+    id: 'quotes_yearly',
+    name: '366 Daily Quotes',
+    type: 'QUOTE_PACK',
+    cost: 500,
+    description: 'A quote for every day of the year (366 quotes including leap day)',
+  },
+  {
     id: 'room_library',
     name: 'Library Focus Room',
     type: 'FOCUS_ROOM',
