@@ -61,7 +61,7 @@ export default function StudyMode() {
             </div>
             <ProfileAvatar size="md" />
           </div>
-          <div className="flex justify-end mb-4">
+          <div className="flex justify-end">
             <Button
               onClick={toggleEmergencyMode}
               variant="outline"

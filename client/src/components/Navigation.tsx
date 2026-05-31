@@ -37,7 +37,7 @@ export function Navigation() {
 
         <div className="flex-1" />
 
-        <ProfileAvatar size="sm" showTitle={false} className="mb-2" />
+        <ProfileAvatar size="sm" showTitle={false} />
 
         <Button
           onClick={() => navigate('/settings')}

@@ -244,8 +244,14 @@ export function syncFocusRoomDom(roomClass: string | null) {
     root.classList.remove(cls);
     body.classList.remove(cls);
   });
-  // Focus rooms are disabled to prevent theme conflicts
-  delete root.dataset.focusRoom;
+  // Apply focus room class if provided
+  if (roomClass) {
+    root.classList.add(roomClass);
+    body.classList.add(roomClass);
+    root.dataset.focusRoom = roomClass.replace(FOCUS_ROOM_CLASS_PREFIX, '');
+  } else {
+    delete root.dataset.focusRoom;
+  }
 }
 
 export function syncAllStoreCosmetics(state: AppState) {
@@ -253,10 +259,12 @@ export function syncAllStoreCosmetics(state: AppState) {
   syncFocusRoomDom(getFocusRoomClass(state));
 
   const body = document.body;
+  // Remove all cosmetic classes first
   Object.values(AVATAR_STYLES).forEach(a => body.classList.remove(a.frameClass));
   Object.values(STREAK_EFFECTS).forEach(s => body.classList.remove(s.cssClass));
   Object.values(TIMER_SKINS).forEach(t => body.classList.remove(t.bodyClass));
 
+  // Apply active cosmetics
   const avatar = active?.avatarStyleId ? AVATAR_STYLES[active.avatarStyleId] : null;
   if (avatar) body.classList.add(avatar.frameClass);
 
@@ -266,9 +274,12 @@ export function syncAllStoreCosmetics(state: AppState) {
   const timer = active?.timerSkinId ? TIMER_SKINS[active.timerSkinId] : null;
   if (timer) body.classList.add(timer.bodyClass);
 
+  // Update dataset attributes
   body.dataset.avatarStyle = active?.avatarStyleId || '';
   body.dataset.profileTitle = active?.profileTitleId || '';
   body.dataset.timerSkin = active?.timerSkinId || '';
+  body.dataset.streakEffect = active?.streakEffectId || '';
+  body.dataset.focusRoom = active?.focusRoomId || '';
 }
 
 export function getQuoteForState(state: AppState): string {
@@ -426,9 +437,6 @@ export function applyStorePurchase(state: AppState, item: StoreItemData): AppSta
         const root = document.documentElement;
         Array.from(root.classList)
           .filter(c => c.startsWith('theme-') || c === 'dark')
-          .forEach(c => root.classList.remove(c));
-        Array.from(root.classList)
-          .filter(c => c.startsWith('focus-room-'))
           .forEach(c => root.classList.remove(c));
         const themeClass = `theme-${key}`;
         root.classList.add(themeClass);
