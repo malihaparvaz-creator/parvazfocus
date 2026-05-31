@@ -54,56 +54,55 @@ export default function StudyMode() {
 
       {/* Header */}
       <header className="border-b border-border/50 bg-card sticky top-0 z-40">
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <div className="flex items-start justify-between gap-4 mb-2">
-            <div>
-              <h1 className="text-3xl font-bold">Study Mode</h1>
+        <div className="max-w-6xl mx-auto px-4 py-2">
+          <div className="flex items-center justify-between gap-4 mb-1">
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold">Study Mode</h1>
+              <Button
+                onClick={toggleEmergencyMode}
+                variant="outline"
+                size="sm"
+                className="gap-1 border-destructive/50 text-destructive hover:bg-destructive/10 text-xs"
+              >
+                <AlertTriangle className="w-3 h-3" />
+                Emergency
+              </Button>
             </div>
             <ProfileAvatar size="md" />
           </div>
 
           {(dailyQuote || bonusMinutes > 0) && (
-            <div className="mb-3">
+            <div className="mb-1">
               {dailyQuote && (
-                <p className="text-sm italic text-muted-foreground border-l-2 border-accent pl-3">
+                <p className="text-xs italic text-muted-foreground border-l-2 border-accent pl-2">
                   "{dailyQuote}"
                 </p>
               )}
               {bonusMinutes > 0 && (
-                <p className="text-xs font-medium text-accent mt-1">
+                <p className="text-xs font-medium text-accent">
                   Bonus project time banked: {bonusMinutes} minutes (Projects unlocked while active)
                 </p>
               )}
             </div>
           )}
 
-          <div className="flex justify-end">
-            <Button
-              onClick={toggleEmergencyMode}
-              variant="outline"
-              className="gap-2 border-destructive/50 text-destructive hover:bg-destructive/10"
-            >
-              <AlertTriangle className="w-4 h-4" />
-              Emergency Mode
-            </Button>
-          </div>
           {/* Quick Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-4 gap-2 mt-1">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Level</p>
-              <p className="text-2xl font-bold">{state.user.stats.currentLevel.level}</p>
+              <p className="text-xs text-muted-foreground">Level</p>
+              <p className="text-xl font-bold">{state.user.stats.currentLevel.level}</p>
             </div>
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Total XP</p>
-              <p className="text-2xl font-bold">{state.user.stats.totalXP}</p>
+              <p className="text-xs text-muted-foreground">Total XP</p>
+              <p className="text-xl font-bold">{state.user.stats.totalXP}</p>
             </div>
             <div className={streakEffectClass ? `rounded-lg p-1 store-streak-display ${streakEffectClass}` : 'store-streak-display'}>
-              <p className="text-xs text-muted-foreground mb-1">Streak</p>
-              <p className="text-2xl font-bold text-accent">{state.user.stats.streak}</p>
+              <p className="text-xs text-muted-foreground">Streak</p>
+              <p className="text-xl font-bold text-accent">{state.user.stats.streak}</p>
             </div>
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Focus Hours</p>
-              <p className="text-2xl font-bold">{state.user.stats.totalFocusHours.toFixed(2)}h</p>
+              <p className="text-xs text-muted-foreground">Focus Hours</p>
+              <p className="text-xl font-bold">{state.user.stats.totalFocusHours.toFixed(2)}h</p>
             </div>
           </div>
         </div>
@@ -249,6 +248,7 @@ export default function StudyMode() {
               </Card>
             )}
           </TabsContent>
+
           {/* Neuroscience Music Tab */}
           <TabsContent value="music" className="space-y-6">
             <NeuroMusic />
