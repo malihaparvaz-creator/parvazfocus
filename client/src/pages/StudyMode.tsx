@@ -53,10 +53,10 @@ export default function StudyMode() {
 
       {/* Header */}
       <header className="border-b border-border/50 bg-card sticky top-0 z-40">
-        <div className="max-w-6xl mx-auto px-4 py-4" style={{ paddingTop: 'calc(1rem + 2px)' }}>
-          <div className="flex items-center justify-between" style={{ gap: '2px', marginBottom: '2px' }}>
+        <div className="max-w-6xl mx-auto px-4 py-4" style={{ paddingTop: 'calc(1rem + 3.5px)' }}>
+          <div className="flex items-center justify-between" style={{ gap: '3.5px', marginBottom: '3.5px' }}>
             <h1 className="text-4xl font-bold">Study Mode</h1>
-            <div className="flex items-center" style={{ gap: '2px' }}>
+            <div className="flex items-center" style={{ gap: '3.5px' }}>
               <Button
                 onClick={toggleEmergencyMode}
                 variant="outline"
@@ -71,7 +71,7 @@ export default function StudyMode() {
           </div>
 
           {(dailyQuote || bonusMinutes > 0) && (
-            <div style={{ marginBottom: '2px' }}>
+            <div style={{ marginBottom: '3.5px' }}>
               {dailyQuote && (
                 <p className="text-base italic text-muted-foreground border-l-2 border-accent pl-3">
                   "{dailyQuote}"
