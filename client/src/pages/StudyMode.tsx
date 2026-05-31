@@ -54,9 +54,9 @@ export default function StudyMode() {
       {/* Header */}
       <header className="border-b border-border/50 bg-card sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-4 py-4">
-          <div className="flex items-start justify-between gap-4 mb-2">
+          <div className="flex items-center justify-between gap-4 mb-3">
+            <h1 className="text-3xl font-bold">Study Mode</h1>
             <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-bold">Study Mode</h1>
               <Button
                 onClick={toggleEmergencyMode}
                 variant="outline"
@@ -66,8 +66,8 @@ export default function StudyMode() {
                 <AlertTriangle className="w-4 h-4" />
                 Emergency
               </Button>
+              <ProfileAvatar size="md" />
             </div>
-            <ProfileAvatar size="md" />
           </div>
 
           {(dailyQuote || bonusMinutes > 0) && (
@@ -86,7 +86,7 @@ export default function StudyMode() {
           )}
 
           {/* Quick Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
             <div>
               <p className="text-xs text-muted-foreground mb-1">Level</p>
               <p className="text-2xl font-bold">{state.user.stats.currentLevel.level}</p>
@@ -121,27 +121,22 @@ export default function StudyMode() {
             <TabsTrigger value="music">Music</TabsTrigger>
           </TabsList>
 
-          {/* Exam Countdown Tab */}
           <TabsContent value="exams" className="space-y-6">
             <ExamCountdownDisplay />
           </TabsContent>
 
-          {/* Tasks Tab */}
           <TabsContent value="tasks" className="space-y-6">
             <EnhancedTaskCategories />
           </TabsContent>
 
-          {/* Pomodoro Timer Tab */}
           <TabsContent value="timer" className="space-y-6">
             <AdvancedPomodoroTimer />
           </TabsContent>
 
-          {/* Simple Timer Tab */}
           <TabsContent value="simple-timer" className="space-y-6">
             <SimpleTimer />
           </TabsContent>
 
-          {/* Stats Tab */}
           <TabsContent value="stats" className="space-y-6">
             <TrustScoreCard />
             <SubjectTaskTracker />
@@ -197,7 +192,6 @@ export default function StudyMode() {
             </Card>
           </TabsContent>
 
-          {/* Reflection Tab */}
           <TabsContent value="reflection" className="space-y-6">
             <Card className="p-8 shadow-md text-center">
               <h2 className="text-2xl font-bold mb-4">End of Day Reflection</h2>
@@ -243,7 +237,6 @@ export default function StudyMode() {
             )}
           </TabsContent>
 
-          {/* Neuroscience Music Tab */}
           <TabsContent value="music" className="space-y-6">
             <NeuroMusic />
           </TabsContent>
