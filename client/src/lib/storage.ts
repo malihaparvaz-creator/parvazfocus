@@ -1,6 +1,7 @@
 import { AppState, LEVEL_NAMES, STORE_ITEMS, MoneyTrackerDraft } from './types';
 import { updateStreak } from './time-aggregation';
 import { DEFAULT_STORE_ACTIVE, migrateStoreActive } from './store-unlocks';
+import { consolidateSubjectTracker } from './subject-tracker';
 import { updateExamCountdown } from './exam-countdown';
 
 const STORAGE_KEY = 'parvaz-focus-state';
@@ -293,6 +294,7 @@ export function migrateAppState(state: AppState): AppState {
   }
 
   migrateStoreActive(state);
+  consolidateSubjectTracker(state);
   
   if (!state.user.subjectSettings) {
     state.user.subjectSettings = {

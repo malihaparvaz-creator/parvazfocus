@@ -40,6 +40,8 @@ function ThemeSelector({ state }: { state: any }) {
 }
 
 import { SubjectTaskTracker } from '@/components/SubjectTaskTracker';
+import { getOtherTasksCompleted, getSubjectTasksCompleted } from '@/lib/subject-utils';
+import { consolidateSubjectTracker } from '@/lib/subject-tracker';
 import { StoreLoadout } from '@/components/StoreLoadout';
 import { resetCoreStats, resetWeeklyTracking, resetTodaysActivity } from '@/lib/time-aggregation';
 
@@ -119,14 +121,26 @@ export default function Settings() {
   const handleAddSubject = () => {
     const trimmedSubject = newSubject.trim();
     if (trimmedSubject) {
-      const newState = { ...state };
-      const existingSubjects = newState.user.subjectSettings.subjects.map(s => s.toLowerCase());
-      if (!existingSubjects.includes(trimmedSubject.toLowerCase())) {
-        newState.user.subjectSettings.subjects.push(trimmedSubject);
-        newState.user.subjectSettings.lastUpdated = new Date();
-        updateState(newState);
-        setNewSubject('');
-      }
+      updateState(prev => {
+        const existingSubjects = prev.user.subjectSettings.subjects.map(s => s.toLowerCase());
+        if (existingSubjects.includes(trimmedSubject.toLowerCase())) {
+          return prev;
+        }
+        const next: typeof prev = {
+          ...prev,
+          user: {
+            ...prev.user,
+            subjectSettings: {
+              ...prev.user.subjectSettings,
+              subjects: [...prev.user.subjectSettings.subjects, trimmedSubject],
+              lastUpdated: new Date(),
+            },
+          },
+        };
+        consolidateSubjectTracker(next);
+        return next;
+      });
+      setNewSubject('');
     }
   };
 
@@ -353,15 +367,13 @@ export default function Settings() {
   const subjectTracker = state.user.stats.subjectTracker;
 
   const subjectCounts = subjects.reduce<Record<string, number>>((acc, subject) => {
-    const performance = subjectTracker.subjects.find(s => s.subject.toLowerCase() === subject.toLowerCase());
-    acc[subject] = performance?.tasksCompleted || 0;
+    acc[subject] = getSubjectTasksCompleted(subjectTracker.subjects, subject, subjects);
     return acc;
-  }, {});
+  }, {} as Record<string, number>);
 
-  // Add Other count
-  const otherPerformance = subjectTracker.subjects.find(s => s.subject === 'Other');
-  if (otherPerformance && otherPerformance.tasksCompleted > 0) {
-    subjectCounts['Other'] = otherPerformance.tasksCompleted;
+  const otherTasks = getOtherTasksCompleted(subjectTracker.subjects, subjects);
+  if (otherTasks > 0) {
+    subjectCounts.Other = otherTasks;
   }
 
   return (

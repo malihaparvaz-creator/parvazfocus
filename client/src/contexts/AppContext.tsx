@@ -3,6 +3,7 @@ import { AppState, Task } from '@/lib/types';
 import { loadAppState, saveAppState, saveAppStateWithSync, migrateAppState } from '@/lib/storage';
 import { subscribeToFirestoreState } from '@/lib/firebase';
 import { updateSubjectPerformance } from '@/lib/subject-tracker';
+import { resolveSubjectBucket } from '@/lib/subject-utils';
 import { updateStreak, updateLevel } from '@/lib/time-aggregation';
 import { updateTrustScore, updateFocusRank } from '@/lib/xp-system';
 
@@ -141,14 +142,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           newState.user.stats.currentLevel.currentXP += totalXP;
         }
 
-        // Normalize defined subjects for comparison
         const definedSubjects = newState.user.subjectSettings.subjects;
 
-        // Update subject performance for each subject occurrence
         subjectsToProcess.forEach(subjRaw => {
-          const matchedSubject = definedSubjects.find(ds => ds.toLowerCase() === subjRaw.toLowerCase());
-          const bucket = matchedSubject || 'Other';
-          newState = updateSubjectPerformance(newState, { ...task, subject: bucket, completed: true }, xpReward, task.estimatedTime || 25);
+          const bucket = resolveSubjectBucket(subjRaw, definedSubjects);
+          newState = updateSubjectPerformance(
+            newState,
+            { ...task, subject: bucket, completed: true },
+            xpReward,
+            task.estimatedTime || 25
+          );
         });
 
         newState = updateLevel(newState);

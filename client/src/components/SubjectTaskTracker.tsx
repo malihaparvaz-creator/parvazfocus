@@ -7,6 +7,7 @@
 
 import { useMemo } from 'react';
 import { useAppContext } from '@/contexts/AppContext';
+import { getOtherTasksCompleted, getSubjectTasksCompleted } from '@/lib/subject-utils';
 import { Card } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { BookOpen } from 'lucide-react';
@@ -40,24 +41,23 @@ export function SubjectTaskTracker() {
   const subjectTracker = state.user.stats.subjectTracker;
 
   const chartData = useMemo(() => {
-    const buckets = subjects.filter(Boolean).map((subject, index) => {
-      const performance = subjectTracker.subjects.find(s => s.subject.toLowerCase() === subject.toLowerCase());
-      return {
-        subject,
-        tasks: performance?.tasksCompleted || 0,
-        color: COLORS[index % COLORS.length],
-      };
-    });
+    const performances = subjectTracker.subjects;
 
-    // Find Other bucket (subjects not in the defined list)
-    const otherPerformance = subjectTracker.subjects.find(s => s.subject === 'Other');
-    const otherBucket = otherPerformance && otherPerformance.tasksCompleted > 0
-      ? {
-          subject: 'Other',
-          tasks: otherPerformance.tasksCompleted,
-          color: COLORS[buckets.length % COLORS.length],
-        }
-      : null;
+    const buckets = subjects.filter(Boolean).map((subject, index) => ({
+      subject,
+      tasks: getSubjectTasksCompleted(performances, subject, subjects),
+      color: COLORS[index % COLORS.length],
+    }));
+
+    const otherTasks = getOtherTasksCompleted(performances, subjects);
+    const otherBucket =
+      otherTasks > 0
+        ? {
+            subject: 'Other',
+            tasks: otherTasks,
+            color: COLORS[buckets.length % COLORS.length],
+          }
+        : null;
 
     return buckets.concat(otherBucket ? [otherBucket] : []);
   }, [subjects, subjectTracker.subjects]);

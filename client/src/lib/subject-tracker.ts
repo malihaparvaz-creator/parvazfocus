@@ -3,6 +3,7 @@
 */
 
 import { AppState, SubjectPerformance, Task } from './types';
+import { resolveSubjectBucket, subjectKey } from './subject-utils';
 
 /**
  * Calculate performance score for a subject (0-100)
@@ -33,15 +34,18 @@ export function updateSubjectPerformance(
 ): AppState {
   if (!task.subject) return state;
 
-  const newState = { ...state };
-  const subjectTracker = newState.user.stats.subjectTracker;
-  
-  // Find or create subject
-  let subject = subjectTracker.subjects.find(s => s.subject === task.subject);
-  
+  const definedSubjects = state.user.subjectSettings?.subjects || [];
+  const bucket = resolveSubjectBucket(task.subject, definedSubjects);
+  const bucketKey = subjectKey(bucket);
+
+  const subjectTracker = state.user.stats.subjectTracker;
+  const subjects = subjectTracker.subjects.map(s => ({ ...s }));
+
+  let subject = subjects.find(s => subjectKey(s.subject) === bucketKey);
+
   if (!subject) {
     subject = {
-      subject: task.subject,
+      subject: bucket,
       tasksCompleted: 0,
       totalTasks: 0,
       averageScore: 0,
@@ -49,34 +53,98 @@ export function updateSubjectPerformance(
       focusHours: 0,
       trend: 'stable',
     };
-    subjectTracker.subjects.push(subject);
+    subjects.push(subject);
+  } else {
+    subject.subject = bucket;
   }
-  
-  // Update subject stats
+
   subject.totalTasks += 1;
   if (task.completed) {
     subject.tasksCompleted += 1;
   }
   subject.totalXPEarned += xpEarned;
-  subject.focusHours += focusDuration / 60; // Convert minutes to hours
+  subject.focusHours += focusDuration / 60;
   subject.lastStudiedAt = new Date();
   subject.averageScore = calculateSubjectScore(subject);
-  
-  // Update all-time stats
-  subjectTracker.allTimeStats.totalSubjectsStudied = subjectTracker.subjects.length;
-  subjectTracker.allTimeStats.averagePerformance = Math.round(
-    subjectTracker.subjects.reduce((sum, s) => sum + s.averageScore, 0) / 
-    subjectTracker.subjects.length
-  );
-  
-  // Find strongest and weakest
-  const sorted = [...subjectTracker.subjects].sort((a, b) => b.averageScore - a.averageScore);
-  subjectTracker.allTimeStats.strongestSubject = sorted[0]?.subject;
-  subjectTracker.allTimeStats.weakestSubject = sorted[sorted.length - 1]?.subject;
-  
-  subjectTracker.lastUpdated = new Date();
-  
-  return newState;
+
+  const newTracker = {
+    ...subjectTracker,
+    subjects,
+    lastUpdated: new Date(),
+  };
+
+  if (subjects.length > 0) {
+    newTracker.allTimeStats = {
+      ...subjectTracker.allTimeStats,
+      totalSubjectsStudied: subjects.length,
+      averagePerformance: Math.round(
+        subjects.reduce((sum, s) => sum + s.averageScore, 0) / subjects.length
+      ),
+    };
+    const sorted = [...subjects].sort((a, b) => b.averageScore - a.averageScore);
+    newTracker.allTimeStats.strongestSubject = sorted[0]?.subject;
+    newTracker.allTimeStats.weakestSubject = sorted[sorted.length - 1]?.subject;
+  }
+
+  return {
+    ...state,
+    user: {
+      ...state.user,
+      stats: {
+        ...state.user.stats,
+        subjectTracker: newTracker,
+      },
+    },
+  };
+}
+
+/**
+ * Merge duplicate subject rows (e.g. "English" vs "english" vs "English Lit")
+ * into canonical buckets from Settings subjects.
+ */
+export function consolidateSubjectTracker(state: AppState): void {
+  const defined = state.user.subjectSettings?.subjects || [];
+  const tracker = state.user.stats.subjectTracker;
+  if (!tracker?.subjects?.length) return;
+
+  const merged = new Map<string, SubjectPerformance>();
+
+  for (const perf of tracker.subjects) {
+    const bucket = resolveSubjectBucket(perf.subject, defined);
+    const key = subjectKey(bucket);
+    const existing = merged.get(key);
+
+    if (!existing) {
+      merged.set(key, { ...perf, subject: bucket });
+      continue;
+    }
+
+    existing.tasksCompleted += perf.tasksCompleted;
+    existing.totalTasks += perf.totalTasks;
+    existing.totalXPEarned += perf.totalXPEarned;
+    existing.focusHours += perf.focusHours;
+    if (perf.lastStudiedAt) {
+      const perfDate = new Date(perf.lastStudiedAt);
+      const existingDate = existing.lastStudiedAt ? new Date(existing.lastStudiedAt) : null;
+      if (!existingDate || perfDate > existingDate) {
+        existing.lastStudiedAt = perf.lastStudiedAt;
+      }
+    }
+    existing.averageScore = calculateSubjectScore(existing);
+  }
+
+  tracker.subjects = Array.from(merged.values());
+
+  if (tracker.subjects.length > 0) {
+    tracker.allTimeStats.totalSubjectsStudied = tracker.subjects.length;
+    tracker.allTimeStats.averagePerformance = Math.round(
+      tracker.subjects.reduce((sum, s) => sum + s.averageScore, 0) / tracker.subjects.length
+    );
+    const sorted = [...tracker.subjects].sort((a, b) => b.averageScore - a.averageScore);
+    tracker.allTimeStats.strongestSubject = sorted[0]?.subject;
+    tracker.allTimeStats.weakestSubject = sorted[sorted.length - 1]?.subject;
+  }
+  tracker.lastUpdated = new Date();
 }
 
 /**

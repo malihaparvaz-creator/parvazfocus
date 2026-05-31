@@ -10,9 +10,17 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Plus, Trash2, Edit2, AlertCircle, Target, Sparkles } from 'lucide-react';
 import { Task } from '@/lib/types';
 import { nanoid } from 'nanoid';
+import { resolveSubjectBucket } from '@/lib/subject-utils';
 
 
 interface TaskCategory {
@@ -40,6 +48,7 @@ export function EnhancedTaskCategories() {
   const [editingSubject, setEditingSubject] = useState('');
 
   const mission = state.today.mission;
+  const definedSubjects = state.user.subjectSettings.subjects.filter(Boolean);
 
   const categories: Record<string, TaskCategory> = {
     TOP_PRIORITY: {
@@ -77,6 +86,10 @@ export function EnhancedTaskCategories() {
   const handleAddTask = () => {
     if (!taskTitle) return;
 
+    const subjectBucket = taskSubject.trim()
+      ? resolveSubjectBucket(taskSubject, definedSubjects)
+      : undefined;
+
     const newTask: Task = {
       id: nanoid(),
       title: taskTitle,
@@ -85,7 +98,7 @@ export function EnhancedTaskCategories() {
       completed: false,
       estimatedTime: parseInt(taskTime) || 25,
       createdAt: new Date(),
-      subject: taskSubject,
+      subject: subjectBucket && subjectBucket !== 'Other' ? subjectBucket : taskSubject.trim() || undefined,
     };
 
     addNewTask(newTask);
@@ -116,13 +129,48 @@ export function EnhancedTaskCategories() {
               title: editingTitle,
               description: editingDescription,
               estimatedTime: parseInt(editingTime) || 25,
-              subject: editingSubject,
+              subject: editingSubject.trim()
+                ? resolveSubjectBucket(editingSubject, definedSubjects)
+                : undefined,
             }
           : task
       );
       return nextState;
     });
     setEditingTask(null);
+  };
+
+  const subjectField = (value: string, onChange: (v: string) => void) => {
+    if (definedSubjects.length === 0) {
+      return (
+        <div>
+          <Input
+            placeholder="e.g., English, Math"
+            value={value}
+            onChange={e => onChange(e.target.value)}
+          />
+          <p className="text-[11px] text-muted-foreground mt-1">
+            Add subjects in Settings → Subjects for accurate progress bars.
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <Select value={value || '__none__'} onValueChange={v => onChange(v === '__none__' ? '' : v)}>
+        <SelectTrigger>
+          <SelectValue placeholder="Select subject" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="__none__">No subject</SelectItem>
+          {definedSubjects.map(s => (
+            <SelectItem key={s} value={s}>
+              {s}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    );
   };
 
   return (
@@ -200,11 +248,7 @@ export function EnhancedTaskCategories() {
                   </div>
                   <div>
                     <label className="text-sm font-semibold mb-1 block">Subject</label>
-                    <Input
-                      placeholder="e.g., Math, Biology"
-                      value={taskSubject}
-                      onChange={e => setTaskSubject(e.target.value)}
-                    />
+                    {subjectField(taskSubject, setTaskSubject)}
                   </div>
                 </div>
                 <Button onClick={handleAddTask} className="w-full">
@@ -259,11 +303,7 @@ export function EnhancedTaskCategories() {
                     </div>
                     <div>
                       <label className="text-sm font-semibold mb-1 block">Subject</label>
-                      <Input
-                        placeholder="e.g., Math, Biology"
-                        value={taskSubject}
-                        onChange={e => setTaskSubject(e.target.value)}
-                      />
+                      {subjectField(taskSubject, setTaskSubject)}
                     </div>
                   </div>
                   <Button onClick={handleAddTask} className="w-full">
@@ -360,10 +400,7 @@ export function EnhancedTaskCategories() {
               </div>
               <div>
                 <label className="text-sm font-semibold mb-1 block">Subject</label>
-                <Input
-                  value={editingSubject}
-                  onChange={e => setEditingSubject(e.target.value)}
-                />
+                {subjectField(editingSubject, setEditingSubject)}
               </div>
             </div>
             <Button onClick={handleUpdateTask} className="w-full">
