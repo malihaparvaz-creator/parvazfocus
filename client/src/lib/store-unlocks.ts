@@ -244,13 +244,8 @@ export function syncFocusRoomDom(roomClass: string | null) {
     root.classList.remove(cls);
     body.classList.remove(cls);
   });
-  if (roomClass) {
-    root.classList.add(roomClass);
-    body.classList.add(roomClass);
-    root.dataset.focusRoom = roomClass.replace(FOCUS_ROOM_CLASS_PREFIX, '');
-  } else {
-    delete root.dataset.focusRoom;
-  }
+  // Focus rooms are disabled to prevent theme conflicts
+  delete root.dataset.focusRoom;
 }
 
 export function syncAllStoreCosmetics(state: AppState) {
@@ -427,6 +422,17 @@ export function applyStorePurchase(state: AppState, item: StoreItemData): AppSta
       const key = item.id.replace('theme_', '');
       try {
         localStorage.setItem('theme', key);
+        // Force immediate theme application
+        const root = document.documentElement;
+        Array.from(root.classList)
+          .filter(c => c.startsWith('theme-') || c === 'dark')
+          .forEach(c => root.classList.remove(c));
+        Array.from(root.classList)
+          .filter(c => c.startsWith('focus-room-'))
+          .forEach(c => root.classList.remove(c));
+        const themeClass = `theme-${key}`;
+        root.classList.add(themeClass);
+        if (key === 'dark') root.classList.add('dark');
         window.dispatchEvent(new CustomEvent('themeChange', { detail: { theme: key } }));
       } catch {}
       break;

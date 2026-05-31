@@ -37,6 +37,11 @@ export function ThemeProvider({
       .filter(c => c.startsWith('theme-') || c === 'dark')
       .forEach(c => root.classList.remove(c));
 
+    // Remove any focus-room classes that might interfere with theme
+    Array.from(root.classList)
+      .filter(c => c.startsWith('focus-room-'))
+      .forEach(c => root.classList.remove(c));
+
     // Add applied theme class
     const themeClass = `theme-${theme}`;
     root.classList.add(themeClass);
