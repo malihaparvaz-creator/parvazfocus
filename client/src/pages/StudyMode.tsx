@@ -54,9 +54,9 @@ export default function StudyMode() {
       {/* Header */}
       <header className="border-b border-border/50 bg-card sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between gap-4 mb-3">
-            <h1 className="text-3xl font-bold">Study Mode</h1>
-            <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between mb-3" style={{ gap: '1.5px' }}>
+            <h1 className="text-4xl font-bold">Study Mode</h1>
+            <div className="flex items-center" style={{ gap: '1.5px' }}>
               <Button
                 onClick={toggleEmergencyMode}
                 variant="outline"
@@ -73,12 +73,12 @@ export default function StudyMode() {
           {(dailyQuote || bonusMinutes > 0) && (
             <div className="mb-3">
               {dailyQuote && (
-                <p className="text-sm italic text-muted-foreground border-l-2 border-accent pl-3">
+                <p className="text-base italic text-muted-foreground border-l-2 border-accent pl-3">
                   "{dailyQuote}"
                 </p>
               )}
               {bonusMinutes > 0 && (
-                <p className="text-xs font-medium text-accent mt-1">
+                <p className="text-sm font-medium text-accent mt-1">
                   Bonus project time banked: {bonusMinutes} minutes (Projects unlocked while active)
                 </p>
               )}
